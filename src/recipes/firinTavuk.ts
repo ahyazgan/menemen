@@ -3,10 +3,13 @@ import type { Recipe } from '../engine/types';
 
 export const firinTavuk: Recipe = {
   id: 'firin-tavuk',
-  title: 'Fırında Tavuk Baget',
+  title: { tr: 'Fırında Tavuk Baget', en: 'Baked Chicken Drumsticks' },
   servings: 4,
   locale: 'tr',
-  summary: 'Baharatlı, çıtır kabuklu fırın tavuk.',
+  summary: {
+    tr: 'Baharatlı, çıtır kabuklu fırın tavuk.',
+    en: 'Spiced, crispy-skinned baked chicken.',
+  },
   totalMinutes: 55,
   nodes: [
     {

@@ -42,6 +42,12 @@ export const en: TranslationTree = {
   intent: {
     unknown: "Sorry, I didn't catch that — say it again?",
   },
+  voice: {
+    secondsLeft: 'seconds left',
+    noTimer: 'Nothing on a timer right now.',
+    checkPrompt: 'Point the phone at the pot — taking a photo now.',
+    recoveryDefault: "Don't worry, we've got this. Lower the heat and tell me what's up.",
+  },
   subscription: {
     title: 'Lezzet Pro',
     subtitle: 'A pro by your side in the kitchen. First week free.',

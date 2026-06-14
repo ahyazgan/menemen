@@ -3,10 +3,13 @@ import type { Recipe } from '../engine/types';
 
 export const izgaraBalik: Recipe = {
   id: 'izgara-balik',
-  title: 'Izgara Balık',
+  title: { tr: 'Izgara Balık', en: 'Grilled Fish' },
   servings: 2,
   locale: 'tr',
-  summary: 'Limonlu, sade ve sağlıklı ızgara balık.',
+  summary: {
+    tr: 'Limonlu, sade ve sağlıklı ızgara balık.',
+    en: 'Simple, healthy grilled fish with lemon.',
+  },
   totalMinutes: 20,
   nodes: [
     {

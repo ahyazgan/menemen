@@ -3,10 +3,13 @@ import type { Recipe } from '../engine/types';
 
 export const cobanSalatasi: Recipe = {
   id: 'coban-salatasi',
-  title: 'Çoban Salatası',
+  title: { tr: 'Çoban Salatası', en: "Shepherd's Salad" },
   servings: 2,
   locale: 'tr',
-  summary: 'Pişirmeden, dakikalar içinde ferah bir salata.',
+  summary: {
+    tr: 'Pişirmeden, dakikalar içinde ferah bir salata.',
+    en: 'A fresh, no-cook salad ready in minutes.',
+  },
   totalMinutes: 10,
   nodes: [
     {

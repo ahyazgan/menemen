@@ -21,6 +21,20 @@ test('her tarifte başlangıçta en az bir hazır düğüm var', () => {
   }
 });
 
+function asMap(value: unknown): Record<string, string> {
+  assert.equal(typeof value, 'object', 'çift dilli (nesne) bekleniyordu');
+  return value as Record<string, string>;
+}
+
+test('her tarifin başlığı ve özeti çift dilli (tr + en)', () => {
+  for (const recipe of recipeList) {
+    const title = asMap(recipe.title);
+    assert.ok(title.tr && title.en, `${recipe.id}: başlıkta tr/en eksik`);
+    const summary = asMap(recipe.summary);
+    assert.ok(summary.tr && summary.en, `${recipe.id}: özette tr/en eksik`);
+  }
+});
+
 test('kritik güvenlik adımları iç sıcaklık eşiği taşır (gıda güvenliği)', () => {
   for (const recipe of recipeList) {
     for (const node of recipe.nodes) {

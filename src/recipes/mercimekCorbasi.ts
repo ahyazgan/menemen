@@ -6,10 +6,13 @@ import type { Recipe } from '../engine/types';
 
 export const mercimekCorbasi: Recipe = {
   id: 'mercimek-corbasi',
-  title: 'Mercimek Çorbası',
+  title: { tr: 'Mercimek Çorbası', en: 'Red Lentil Soup' },
   servings: 4,
   locale: 'tr',
-  summary: 'Kırmızı mercimekle pürüzsüz, ısıtan klasik çorba.',
+  summary: {
+    tr: 'Kırmızı mercimekle pürüzsüz, ısıtan klasik çorba.',
+    en: 'A smooth, warming classic made with red lentils.',
+  },
   totalMinutes: 35,
   nodes: [
     {

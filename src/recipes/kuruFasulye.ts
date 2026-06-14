@@ -3,10 +3,13 @@ import type { Recipe } from '../engine/types';
 
 export const kuruFasulye: Recipe = {
   id: 'kuru-fasulye',
-  title: 'Kuru Fasulye',
+  title: { tr: 'Kuru Fasulye', en: 'White Bean Stew' },
   servings: 4,
   locale: 'tr',
-  summary: 'Salçalı, doyurucu Türk klasiği.',
+  summary: {
+    tr: 'Salçalı, doyurucu Türk klasiği.',
+    en: 'A hearty Turkish classic in a tomato-paste sauce.',
+  },
   totalMinutes: 50,
   nodes: [
     {

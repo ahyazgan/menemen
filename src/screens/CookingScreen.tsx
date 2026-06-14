@@ -8,7 +8,8 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useCookingStore } from '../state/cookingStore';
 import { VoiceButton } from '../components/VoiceButton';
 import { PotCheckButton } from '../components/PotCheckButton';
-import { t } from '../i18n';
+import { getLocale, t } from '../i18n';
+import { localize } from '../engine';
 import type { Recipe } from '../engine/types';
 
 interface Props {
@@ -45,6 +46,7 @@ export function CookingScreen({ recipe, onBack }: Props) {
 
   if (!engine || !snapshot) return null;
 
+  const locale = getLocale();
   const current = currentNodeId ? engine.node(currentNodeId) : null;
   const remaining = currentNodeId ? engine.remainingSec(currentNodeId) : null;
 
@@ -55,7 +57,7 @@ export function CookingScreen({ recipe, onBack }: Props) {
           <Text style={styles.backText}>{t('cooking.back')}</Text>
         </Pressable>
       )}
-      <Text style={styles.title}>{recipe.title}</Text>
+      <Text style={styles.title}>{localize(recipe.title, locale)}</Text>
 
       {/* İlerleme */}
       <Text style={styles.progress}>
@@ -67,15 +69,15 @@ export function CookingScreen({ recipe, onBack }: Props) {
       ) : current ? (
         <View style={styles.card}>
           <Text style={styles.cardLabel}>{t('cooking.active')}</Text>
-          <Text style={styles.cardTitle}>{current.title}</Text>
-          <Text style={styles.instruction}>{current.instruction}</Text>
+          <Text style={styles.cardTitle}>{localize(current.title, locale)}</Text>
+          <Text style={styles.instruction}>{localize(current.instruction, locale)}</Text>
           {remaining != null && (
             <Text style={styles.timer}>
               ⏱ {remaining} sn {t('cooking.remaining')}
             </Text>
           )}
           {current.safety && (
-            <Text style={styles.safety}>⚠️ {current.safety.message}</Text>
+            <Text style={styles.safety}>⚠️ {localize(current.safety.message, locale)}</Text>
           )}
 
           <View style={styles.row}>
@@ -100,7 +102,7 @@ export function CookingScreen({ recipe, onBack }: Props) {
           <Text style={styles.sectionTitle}>{t('cooking.ready')}</Text>
           {snapshot.ready.map((id) => (
             <Pressable key={id} style={styles.readyItem} onPress={() => void startNode(id)}>
-              <Text style={styles.readyText}>▶ {engine.node(id).title}</Text>
+              <Text style={styles.readyText}>▶ {localize(engine.node(id).title, locale)}</Text>
             </Pressable>
           ))}
         </View>
@@ -112,7 +114,7 @@ export function CookingScreen({ recipe, onBack }: Props) {
           <Text style={styles.sectionTitle}>{t('cooking.done')}</Text>
           {snapshot.done.map((id) => (
             <Text key={id} style={styles.doneItem}>
-              ✓ {engine.node(id).title}
+              ✓ {localize(engine.node(id).title, locale)}
             </Text>
           ))}
         </View>

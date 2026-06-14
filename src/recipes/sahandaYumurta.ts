@@ -6,10 +6,13 @@ import type { Recipe } from '../engine/types';
 
 export const sahandaYumurta: Recipe = {
   id: 'sahanda-yumurta',
-  title: 'Sahanda Yumurta',
+  title: { tr: 'Sahanda Yumurta', en: 'Fried Eggs' },
   servings: 1,
   locale: 'tr',
-  summary: 'Tereyağında, dakikalar içinde hazır kahvaltılık.',
+  summary: {
+    tr: 'Tereyağında, dakikalar içinde hazır kahvaltılık.',
+    en: 'A buttery breakfast ready in minutes.',
+  },
   totalMinutes: 7,
   nodes: [
     {

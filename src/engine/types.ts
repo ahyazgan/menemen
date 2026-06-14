@@ -21,6 +21,13 @@ export type NodeStatus =
 export type NodeKind = 'prep' | 'action' | 'finish';
 
 /**
+ * Çok dilli metin: ya düz string (tüm dillerde aynı / yalnızca kaynak dil) ya da
+ * dil koduna göre eşleme ({ tr: "...", en: "..." }). `localize()` ile çözülür.
+ * Geriye dönük uyumlu: eski düz string'ler olduğu gibi çalışır.
+ */
+export type LocalizedText = string | Record<string, string>;
+
+/**
  * Tamamlanma türü — bir düğümün nasıl "done" olacağını belirler.
  * - user:   sesli onay (kullanıcı "tamam/bitti" der)
  * - timer:  süre dolunca
@@ -37,24 +44,24 @@ export type CompletionType = 'user' | 'timer' | 'vision' | 'auto';
 export interface SafetyRule {
   /** true ise adım atlanamaz. */
   critical: boolean;
-  /** Kullanıcıya gösterilecek uyarı (TR; ileride i18n anahtarı). */
-  message: string;
+  /** Kullanıcıya gösterilecek uyarı (çok dilli). */
+  message: LocalizedText;
   /** Uygun olduğunda güvenli minimum iç sıcaklık (°C). */
   minInternalTempC?: number;
 }
 
 /**
- * Bir adıma özel kurtarma kuralları: kullanıcı niyeti → kurtarma cevabı.
- * Örn. { "yaktim": "Ocağı kıs, yanan kısma dokunma; üstten al.", ... }
+ * Bir adıma özel kurtarma kuralları: kullanıcı niyeti → kurtarma cevabı (çok dilli).
+ * Anahtarlar dil bağımsızdır (örn. "yaktim", "tuzlu").
  */
-export type RecoveryRules = Record<string, string>;
+export type RecoveryRules = Record<string, LocalizedText>;
 
 export interface RecipeNode {
   id: string;
-  /** Listeler/başlıklar için kısa etiket. */
-  title: string;
-  /** Tam yönerge; ekranda gösterilir ve TTS ile seslendirilir. */
-  instruction: string;
+  /** Listeler/başlıklar için kısa etiket (çok dilli). */
+  title: LocalizedText;
+  /** Tam yönerge; ekranda gösterilir ve TTS ile seslendirilir (çok dilli). */
+  instruction: LocalizedText;
   kind: NodeKind;
   /** Bu düğümden önce `done`/`skipped` olması gereken düğüm id'leri. */
   requires: string[];
@@ -63,10 +70,10 @@ export interface RecipeNode {
   completion: CompletionType;
   /** timer/active düğümler için geri sayım (saniye). */
   durationSec?: number;
-  /** Düğüme girince söylenecek kısa, sıcak metin. */
-  voice_on_enter?: string;
-  /** Düğüm tamamlanınca söylenecek metin. */
-  voice_on_complete?: string;
+  /** Düğüme girince söylenecek kısa, sıcak metin (çok dilli). */
+  voice_on_enter?: LocalizedText;
+  /** Düğüm tamamlanınca söylenecek metin (çok dilli). */
+  voice_on_complete?: LocalizedText;
   /** Adıma özgü kurtarma kuralları. */
   recovery_rules?: RecoveryRules;
   /** Gıda güvenliği kısıtı. */
@@ -75,12 +82,13 @@ export interface RecipeNode {
 
 export interface Recipe {
   id: string;
-  title: string;
+  /** Tarif adı (çok dilli). */
+  title: LocalizedText;
   servings: number;
-  /** Yazılı metnin BCP-47 yerel ayarı, örn. "tr". */
+  /** İçeriğin kaynak BCP-47 yerel ayarı, örn. "tr". */
   locale: string;
-  /** Tarif seçim ekranında gösterilen kısa tanıtım (opsiyonel). */
-  summary?: string;
+  /** Tarif seçim ekranında gösterilen kısa tanıtım (çok dilli, opsiyonel). */
+  summary?: LocalizedText;
   /** Tahmini süre (dakika), seçim ekranı için (opsiyonel). */
   totalMinutes?: number;
   nodes: RecipeNode[];

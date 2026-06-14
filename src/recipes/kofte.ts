@@ -3,10 +3,13 @@ import type { Recipe } from '../engine/types';
 
 export const kofte: Recipe = {
   id: 'kofte',
-  title: 'Tava Köfte',
+  title: { tr: 'Tava Köfte', en: 'Pan Meatballs' },
   servings: 4,
   locale: 'tr',
-  summary: 'Baharatlı, sulu ev köftesi.',
+  summary: {
+    tr: 'Baharatlı, sulu ev köftesi.',
+    en: 'Spiced, juicy homemade meatballs.',
+  },
   totalMinutes: 40,
   nodes: [
     {

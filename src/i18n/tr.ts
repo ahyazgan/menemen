@@ -40,6 +40,12 @@ export const tr = {
   intent: {
     unknown: 'Tam anlayamadım, tekrar söyler misin?',
   },
+  voice: {
+    secondsLeft: 'saniye kaldı',
+    noTimer: 'Şu an süreli bir iş yok.',
+    checkPrompt: 'Telefonu tencereye doğrult, fotoğrafı çekiyorum.',
+    recoveryDefault: 'Merak etme, hallederiz. Ateşi biraz kıs ve bana anlat.',
+  },
   subscription: {
     title: 'Lezzet Pro',
     subtitle: 'Mutfakta yanında bir usta. İlk hafta ücretsiz.',

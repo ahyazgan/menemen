@@ -3,10 +3,13 @@ import type { Recipe } from '../engine/types';
 
 export const sigaraBoregi: Recipe = {
   id: 'sigara-boregi',
-  title: 'Sigara Böreği',
+  title: { tr: 'Sigara Böreği', en: 'Cheese Rolls (Sigara Böreği)' },
   servings: 4,
   locale: 'tr',
-  summary: 'Çıtır çıtır, peynirli klasik börek.',
+  summary: {
+    tr: 'Çıtır çıtır, peynirli klasik börek.',
+    en: 'Crispy, cheese-filled classic pastry rolls.',
+  },
   totalMinutes: 25,
   nodes: [
     {

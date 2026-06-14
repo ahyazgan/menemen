@@ -9,7 +9,7 @@
  * Bu modül SAFTIR ve motorun geri kalanına bağlı değildir; servisler (örn.
  * Vision "pişmiş mi?") ve UI tarafından da yeniden kullanılabilir.
  */
-import type { Recipe, RecipeNode } from './types';
+import type { LocalizedText, Recipe, RecipeNode } from './types';
 
 /** Güvenli minimum iç pişirme sıcaklıkları (°C). Kamuya açık rehberlerden. */
 export const SAFE_MIN_TEMP_C = {
@@ -45,10 +45,9 @@ export function canSkipNode(node: RecipeNode): boolean {
  */
 export function assertSkippable(node: RecipeNode): void {
   if (!canSkipNode(node)) {
-    throw new SafetyError(
-      node.safety?.message ?? `"${node.title}" güvenlik açısından atlanamaz.`,
-      node.id,
-    );
+    // Dev mesajı (locale bağımsız). Kullanıcıya gösterilecek metin için arayan
+    // taraf node.safety.message'ı localize eder.
+    throw new SafetyError(`Güvenlik açısından atlanamaz: ${node.id}`, node.id);
   }
 }
 
@@ -65,13 +64,16 @@ export function reachesSafeTemp(measuredC: number, category: FoodCategory): bool
  * Şüpheli/güvenli olmayan bir Vision gözlemini, kurala uygun bir ÖNERİYE
  * çevirir. Asla onay vermez; daima "biraz daha pişir" tarafına düşer.
  */
-export function safeCookingAdvice(category: FoodCategory): string {
-  const t = SAFE_MIN_TEMP_C[category];
-  return `Emin olamıyorum — biraz daha pişirelim. Mümkünse iç sıcaklığa bak, ${t}°C olmalı.`;
+export function safeCookingAdvice(category: FoodCategory, locale = 'tr'): string {
+  const temp = SAFE_MIN_TEMP_C[category];
+  if (locale === 'en') {
+    return `I'm not sure — let's cook it a little more. If you can, check the internal temperature; it should reach ${temp}°C.`;
+  }
+  return `Emin olamıyorum — biraz daha pişirelim. Mümkünse iç sıcaklığa bak, ${temp}°C olmalı.`;
 }
 
 /** Bir tarifin bildirdiği tüm güvenlik uyarıları (baştan bilgilendirme için). */
-export function safetyWarnings(recipe: Recipe): { nodeId: string; message: string }[] {
+export function safetyWarnings(recipe: Recipe): { nodeId: string; message: LocalizedText }[] {
   return recipe.nodes
     .filter((n) => n.safety)
     .map((n) => ({ nodeId: n.id, message: n.safety!.message }));

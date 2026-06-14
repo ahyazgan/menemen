@@ -3,10 +3,13 @@ import type { Recipe } from '../engine/types';
 
 export const pilav: Recipe = {
   id: 'pilav',
-  title: 'Tereyağlı Pirinç Pilavı',
+  title: { tr: 'Tereyağlı Pirinç Pilavı', en: 'Buttery Rice Pilaf' },
   servings: 4,
   locale: 'tr',
-  summary: 'Tane tane, şehriyeli klasik pilav.',
+  summary: {
+    tr: 'Tane tane, şehriyeli klasik pilav.',
+    en: 'Fluffy, separate grains — the classic vermicelli pilaf.',
+  },
   totalMinutes: 30,
   nodes: [
     {

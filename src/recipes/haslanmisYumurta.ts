@@ -3,10 +3,13 @@ import type { Recipe } from '../engine/types';
 
 export const haslanmisYumurta: Recipe = {
   id: 'haslanmis-yumurta',
-  title: 'Haşlanmış Yumurta',
+  title: { tr: 'Haşlanmış Yumurta', en: 'Boiled Eggs' },
   servings: 2,
   locale: 'tr',
-  summary: 'İstediğin kıvamda, zamanlayıcıyla kusursuz.',
+  summary: {
+    tr: 'İstediğin kıvamda, zamanlayıcıyla kusursuz.',
+    en: 'Perfect every time with a timer, to your liking.',
+  },
   totalMinutes: 12,
   nodes: [
     {

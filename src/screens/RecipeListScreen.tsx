@@ -5,7 +5,8 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { recipeList, randomRecipe } from '../recipes';
-import { t } from '../i18n';
+import { getLocale, t } from '../i18n';
+import { localize } from '../engine';
 import type { Recipe } from '../engine/types';
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export function RecipeListScreen({ onSelect }: Props) {
+  const locale = getLocale();
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <Text style={styles.title}>{t('picker.title')}</Text>
@@ -24,8 +26,8 @@ export function RecipeListScreen({ onSelect }: Props) {
 
       {recipeList.map((recipe) => (
         <Pressable key={recipe.id} style={styles.card} onPress={() => onSelect(recipe)}>
-          <Text style={styles.cardTitle}>{recipe.title}</Text>
-          {recipe.summary && <Text style={styles.cardSummary}>{recipe.summary}</Text>}
+          <Text style={styles.cardTitle}>{localize(recipe.title, locale)}</Text>
+          {recipe.summary && <Text style={styles.cardSummary}>{localize(recipe.summary, locale)}</Text>}
           <Text style={styles.cardMeta}>
             {recipe.totalMinutes != null ? `${recipe.totalMinutes} ${t('picker.minutes')} · ` : ''}
             {recipe.servings} {t('picker.servings')}

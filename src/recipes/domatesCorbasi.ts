@@ -3,10 +3,13 @@ import type { Recipe } from '../engine/types';
 
 export const domatesCorbasi: Recipe = {
   id: 'domates-corbasi',
-  title: 'Domates Çorbası',
+  title: { tr: 'Domates Çorbası', en: 'Tomato Soup' },
   servings: 4,
   locale: 'tr',
-  summary: 'Kadifemsi, sıcacık ev usulü domates çorbası.',
+  summary: {
+    tr: 'Kadifemsi, sıcacık ev usulü domates çorbası.',
+    en: 'A velvety, warming homemade tomato soup.',
+  },
   totalMinutes: 25,
   nodes: [
     {

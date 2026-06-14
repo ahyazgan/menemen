@@ -3,10 +3,13 @@ import type { Recipe } from '../engine/types';
 
 export const tavukSote: Recipe = {
   id: 'tavuk-sote',
-  title: 'Tavuk Sote',
+  title: { tr: 'Tavuk Sote', en: 'Chicken Sauté' },
   servings: 3,
   locale: 'tr',
-  summary: 'Sebzeli, sulu, pratik tavuk sote.',
+  summary: {
+    tr: 'Sebzeli, sulu, pratik tavuk sote.',
+    en: 'A quick, saucy chicken sauté with vegetables.',
+  },
   totalMinutes: 30,
   nodes: [
     {

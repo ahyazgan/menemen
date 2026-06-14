@@ -10,6 +10,7 @@ import { create } from 'zustand';
 import {
   RecipeEngine,
   SafetyError,
+  localize,
   safeCookingAdvice,
   type EngineSnapshot,
   type Recipe,
@@ -17,6 +18,7 @@ import {
 import type { Services, VisionResult } from '../services/types';
 import { createMockServices } from '../services/mock';
 import { INTENT_CONFIDENCE_THRESHOLD } from '../config';
+import { getLocale, t } from '../i18n';
 
 interface CookingState {
   // --- durum ---
@@ -89,7 +91,7 @@ export const useCookingStore = create<CookingState>((set, get) => ({
     const snapshot = engine.start(nodeId);
     set({ snapshot, currentNodeId: nodeId, safetyNotice: null });
     const node = engine.node(nodeId);
-    if (node.voice_on_enter) await get().speak(node.voice_on_enter);
+    if (node.voice_on_enter) await get().speak(localize(node.voice_on_enter, getLocale()));
   },
 
   completeNode: async (nodeId) => {
@@ -97,12 +99,12 @@ export const useCookingStore = create<CookingState>((set, get) => ({
     if (!engine) return;
     const node = engine.node(nodeId);
     const snapshot = engine.complete(nodeId);
-    if (node.voice_on_complete) await get().speak(node.voice_on_complete);
+    if (node.voice_on_complete) await get().speak(localize(node.voice_on_complete, getLocale()));
     // Odağı bir sonraki hazır adıma taşı; bittiyse kutla.
     const nextId = snapshot.ready[0] ?? null;
     set({ snapshot, currentNodeId: nextId, safetyNotice: null });
     if (snapshot.complete) {
-      await get().speak('Yemek hazır, afiyet olsun!');
+      await get().speak(t('cooking.finished'));
     } else if (nextId) {
       await get().startNode(nextId);
     }
@@ -117,8 +119,11 @@ export const useCookingStore = create<CookingState>((set, get) => ({
       set({ snapshot, currentNodeId: nextId, safetyNotice: null });
     } catch (err) {
       if (err instanceof SafetyError) {
-        set({ safetyNotice: err.message });
-        await get().speak(err.message, true);
+        // Kullanıcıya gösterilecek metni güvenlik kuralından localize et.
+        const message =
+          localize(engine.node(nodeId).safety?.message, getLocale()) || t('safety.cannotSkip');
+        set({ safetyNotice: message });
+        await get().speak(message, true);
       } else {
         throw err;
       }
@@ -156,8 +161,10 @@ export const useCookingStore = create<CookingState>((set, get) => ({
       recoveryKeys: node?.recovery_rules ? Object.keys(node.recovery_rules) : [],
     });
 
+    const locale = getLocale();
+
     if (intent.confidence < INTENT_CONFIDENCE_THRESHOLD && intent.kind === 'unknown') {
-      await get().speak('Tam anlayamadım, tekrar söyler misin?');
+      await get().speak(t('intent.unknown'));
       return;
     }
 
@@ -166,46 +173,49 @@ export const useCookingStore = create<CookingState>((set, get) => ({
         if (currentNodeId) await get().completeNode(currentNodeId);
         break;
       case 'repeat':
-        if (node) await get().speak(node.instruction);
+        if (node) await get().speak(localize(node.instruction, locale));
         break;
       case 'how_long': {
         const active = engine.snapshot().active.find((id) => engine.remainingSec(id) != null);
         const remaining = active ? engine.remainingSec(active) : null;
         await get().speak(
-          remaining != null ? `Yaklaşık ${remaining} saniye kaldı.` : 'Şu an süreli bir iş yok.',
+          remaining != null ? `${remaining} ${t('voice.secondsLeft')}` : t('voice.noTimer'),
         );
         break;
       }
       case 'what_now': {
         const snap = engine.snapshot();
         const next = snap.ready[0] ?? snap.active[0];
-        await get().speak(next ? engine.node(next).instruction : 'Şu an yapılacak hazır adım yok.');
+        await get().speak(
+          next ? localize(engine.node(next).instruction, locale) : t('cooking.nothingReady'),
+        );
         break;
       }
       case 'check':
-        await get().speak('Telefonu tencereye doğrult, fotoğrafı çekiyorum.');
+        await get().speak(t('voice.checkPrompt'));
         break;
       case 'recovery': {
-        const advice = intent.recoveryKey && node?.recovery_rules?.[intent.recoveryKey];
-        await get().speak(advice || 'Merak etme, hallederiz. Ateşi biraz kıs ve bana anlat.');
+        const advice = intent.recoveryKey ? node?.recovery_rules?.[intent.recoveryKey] : undefined;
+        await get().speak(advice ? localize(advice, locale) : t('voice.recoveryDefault'));
         break;
       }
       case 'pause':
         await get().services.tts.stop();
         break;
       default:
-        await get().speak('Tam anlayamadım, tekrar söyler misin?');
+        await get().speak(t('intent.unknown'));
     }
   },
 
   checkPot: async (imageUri) => {
     const { engine, currentNodeId, services } = get();
     const node = currentNodeId && engine ? engine.node(currentNodeId) : undefined;
-    const result = await services.vision.analyze(imageUri, node?.instruction ?? '');
+    const prompt = node ? localize(node.instruction, getLocale()) : '';
+    const result = await services.vision.analyze(imageUri, prompt);
     set({ lastVision: result });
     // GIDA GÜVENLİĞİ: kritik adımda asla onay verme — temkinli öneriye düş.
     if (node?.safety?.critical) {
-      await get().speak(`${result.observation} ${safeCookingAdvice('eggDishes')}`);
+      await get().speak(`${result.observation} ${safeCookingAdvice('eggDishes', getLocale())}`);
     } else {
       await get().speak(`${result.observation} ${result.suggestion}`);
     }
