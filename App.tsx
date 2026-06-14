@@ -11,13 +11,15 @@ import { RecipeListScreen } from './src/screens/RecipeListScreen';
 import { SubscriptionGate } from './src/components/SubscriptionGate';
 import { initLocaleFromDevice } from './src/i18n/deviceLocale';
 import { useCookingStore } from './src/state/cookingStore';
+import { useUiStore } from './src/state/uiStore';
 import { createExpoNotify } from './src/services/notify';
 import type { Recipe } from './src/engine/types';
 
 export default function App() {
-  // İlk render'dan önce: cihaz dilini uygula + gerçek bildirim servisini bağla.
+  // İlk render'dan önce: cihaz dilini uygula + uiStore'a yansıt + bildirim servisi.
   useState(() => {
-    initLocaleFromDevice();
+    const detected = initLocaleFromDevice();
+    useUiStore.getState().setLocale(detected);
     useCookingStore.getState().setNotify(createExpoNotify());
     return null;
   });

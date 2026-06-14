@@ -6,9 +6,10 @@ import { useEffect } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { useCookingStore } from '../state/cookingStore';
+import { useUiStore } from '../state/uiStore';
 import { VoiceButton } from '../components/VoiceButton';
 import { PotCheckButton } from '../components/PotCheckButton';
-import { getLocale, t } from '../i18n';
+import { t } from '../i18n';
 import { localize } from '../engine';
 import type { Recipe } from '../engine/types';
 
@@ -32,6 +33,7 @@ export function CookingScreen({ recipe, onBack }: Props) {
     startNode,
     tick,
   } = useCookingStore();
+  const locale = useUiStore((s) => s.locale);
 
   // Tarifi yükle ve pişirmeyi başlat.
   useEffect(() => {
@@ -46,7 +48,6 @@ export function CookingScreen({ recipe, onBack }: Props) {
 
   if (!engine || !snapshot) return null;
 
-  const locale = getLocale();
   const current = currentNodeId ? engine.node(currentNodeId) : null;
   const remaining = currentNodeId ? engine.remainingSec(currentNodeId) : null;
 

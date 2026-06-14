@@ -43,7 +43,8 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   mesajları dahil); bir test her tarifin her metin alanında tr+en olmasını zorlar.
 - **`src/i18n/`, `src/config/`** — TR + EN metinler (`setLocale`/`getLocale`,
   anahtar paritesi tsc + testle zorlanıyor), **cihaz dili tespiti**
-  (`deviceLocale.ts` + saf/test edilebilir `pickSupportedLocale`) ve yapılandırma.
+  (`deviceLocale.ts` + saf/test edilebilir `pickSupportedLocale`) ve **uygulama
+  içi dil değiştirme** (reaktif `uiStore`; ekranlar anında güncellenir).
 
 ## Kurulum
 

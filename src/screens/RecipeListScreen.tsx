@@ -8,7 +8,8 @@ import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-
 
 import { recipeList, randomRecipe } from '../recipes';
 import { CATEGORIES, filterRecipes } from '../recipes/filter';
-import { getLocale, t } from '../i18n';
+import { AVAILABLE_LOCALES, t } from '../i18n';
+import { useUiStore } from '../state/uiStore';
 import { localize } from '../engine';
 import type { Recipe, RecipeCategory } from '../engine/types';
 
@@ -17,7 +18,8 @@ interface Props {
 }
 
 export function RecipeListScreen({ onSelect }: Props) {
-  const locale = getLocale();
+  const locale = useUiStore((s) => s.locale);
+  const setLocale = useUiStore((s) => s.setLocale);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<RecipeCategory | null>(null);
 
@@ -25,7 +27,22 @@ export function RecipeListScreen({ onSelect }: Props) {
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>{t('picker.title')}</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>{t('picker.title')}</Text>
+        <View style={styles.langRow}>
+          {AVAILABLE_LOCALES.map((code) => (
+            <Pressable
+              key={code}
+              style={[styles.lang, locale === code && styles.langActive]}
+              onPress={() => setLocale(code)}
+            >
+              <Text style={[styles.langText, locale === code && styles.langTextActive]}>
+                {code.toUpperCase()}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      </View>
       <Text style={styles.subtitle}>{t('picker.subtitle')}</Text>
 
       <TextInput
@@ -86,6 +103,18 @@ function Chip({ label, active, onPress }: { label: string; active: boolean; onPr
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#FFF8F0' },
   content: { padding: 24, paddingTop: 56, paddingBottom: 40 },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  langRow: { flexDirection: 'row', gap: 6 },
+  lang: {
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#F0E2D6',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  langActive: { backgroundColor: '#B5300F', borderColor: '#B5300F' },
+  langText: { color: '#8A6D5B', fontSize: 13, fontWeight: '700' },
+  langTextActive: { color: '#FFF' },
   title: { fontSize: 32, fontWeight: '800', color: '#B5300F' },
   subtitle: { fontSize: 16, color: '#8A6D5B', marginTop: 6, marginBottom: 16 },
   search: {
