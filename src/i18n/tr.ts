@@ -14,6 +14,9 @@ export const tr = {
     servings: 'kişilik',
     search: 'Tarif ara…',
     all: 'Hepsi',
+    favorites: '★ Favoriler',
+    shopping: '🛒 Alışveriş listesi',
+    recent: 'Son pişirdiklerin',
     noResults: 'Sonuç yok.',
     categories: {
       kahvalti: 'Kahvaltı',
@@ -25,6 +28,9 @@ export const tr = {
   },
   cooking: {
     back: '‹ Tarifler',
+    ingredients: 'Malzemeler',
+    addToShopping: '🛒 Alışveriş listesine ekle',
+    added: 'Listeye eklendi ✓',
     ready: 'Hazır adımlar',
     active: 'Şu an',
     done: 'Bitti',
@@ -67,6 +73,12 @@ export const tr = {
     loading: 'Yükleniyor…',
     purchase: 'Başla',
     terms: 'Abonelik mağaza hesabından yenilenir; istediğin zaman iptal edebilirsin.',
+  },
+  shopping: {
+    title: 'Alışveriş Listesi',
+    empty: 'Liste boş. Bir tarifin malzemelerini ekleyebilirsin.',
+    clearChecked: 'Alınanları sil',
+    clearAll: 'Listeyi temizle',
   },
 };
 

@@ -15,6 +15,42 @@ export const sahandaYumurta: Recipe = {
     en: 'A buttery breakfast ready in minutes.',
   },
   totalMinutes: 7,
+  ingredients: [
+    {
+      "name": {
+        "tr": "yumurta",
+        "en": "egg"
+      },
+      "quantity": 2,
+      "unit": {
+        "tr": "adet",
+        "en": "pcs"
+      }
+    },
+    {
+      "name": {
+        "tr": "tereyağı",
+        "en": "butter"
+      },
+      "quantity": 1,
+      "unit": {
+        "tr": "yemek kaşığı",
+        "en": "tbsp"
+      }
+    },
+    {
+      "name": {
+        "tr": "tuz",
+        "en": "salt"
+      }
+    },
+    {
+      "name": {
+        "tr": "karabiber",
+        "en": "black pepper"
+      }
+    }
+  ],
   nodes: [
     {
       id: 'heat_pan',

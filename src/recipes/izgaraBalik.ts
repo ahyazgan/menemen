@@ -12,6 +12,53 @@ export const izgaraBalik: Recipe = {
     en: 'Simple, healthy grilled fish with lemon.',
   },
   totalMinutes: 20,
+  ingredients: [
+    {
+      "name": {
+        "tr": "balık",
+        "en": "fish"
+      },
+      "quantity": 2,
+      "unit": {
+        "tr": "adet",
+        "en": "pcs"
+      }
+    },
+    {
+      "name": {
+        "tr": "limon",
+        "en": "lemon"
+      },
+      "quantity": 1,
+      "unit": {
+        "tr": "adet",
+        "en": "pcs"
+      }
+    },
+    {
+      "name": {
+        "tr": "zeytinyağı",
+        "en": "olive oil"
+      },
+      "quantity": 2,
+      "unit": {
+        "tr": "yemek kaşığı",
+        "en": "tbsp"
+      }
+    },
+    {
+      "name": {
+        "tr": "tuz",
+        "en": "salt"
+      }
+    },
+    {
+      "name": {
+        "tr": "roka",
+        "en": "arugula"
+      }
+    }
+  ],
   nodes: [
     {
       id: 'prep_fish',

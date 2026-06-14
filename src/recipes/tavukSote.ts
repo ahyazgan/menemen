@@ -12,6 +12,75 @@ export const tavukSote: Recipe = {
     en: 'A quick, saucy chicken sauté with vegetables.',
   },
   totalMinutes: 30,
+  ingredients: [
+    {
+      "name": {
+        "tr": "tavuk göğsü",
+        "en": "chicken breast"
+      },
+      "quantity": 500,
+      "unit": {
+        "tr": "g",
+        "en": "g"
+      }
+    },
+    {
+      "name": {
+        "tr": "biber",
+        "en": "pepper"
+      },
+      "quantity": 2,
+      "unit": {
+        "tr": "adet",
+        "en": "pcs"
+      }
+    },
+    {
+      "name": {
+        "tr": "soğan",
+        "en": "onion"
+      },
+      "quantity": 1,
+      "unit": {
+        "tr": "adet",
+        "en": "pcs"
+      }
+    },
+    {
+      "name": {
+        "tr": "domates",
+        "en": "tomato"
+      },
+      "quantity": 2,
+      "unit": {
+        "tr": "adet",
+        "en": "pcs"
+      }
+    },
+    {
+      "name": {
+        "tr": "yağ",
+        "en": "oil"
+      },
+      "quantity": 2,
+      "unit": {
+        "tr": "yemek kaşığı",
+        "en": "tbsp"
+      }
+    },
+    {
+      "name": {
+        "tr": "tuz",
+        "en": "salt"
+      }
+    },
+    {
+      "name": {
+        "tr": "karabiber",
+        "en": "black pepper"
+      }
+    }
+  ],
   nodes: [
     {
       id: 'chop_chicken',

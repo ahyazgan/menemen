@@ -31,6 +31,15 @@ function assertBilingual(value: unknown, where: string): void {
   assert.ok(map.tr && map.en, `${where}: tr/en eksik`);
 }
 
+test('her tarifin malzeme listesi var', () => {
+  for (const recipe of recipeList) {
+    assert.ok(recipe.ingredients && recipe.ingredients.length > 0, `${recipe.id}: malzeme yok`);
+    for (const ing of recipe.ingredients ?? []) {
+      assertBilingual(ing.name, `${recipe.id}.ingredient.name`);
+    }
+  }
+});
+
 test('her tarifin başlığı ve özeti çift dilli (tr + en)', () => {
   for (const recipe of recipeList) {
     assertBilingual(recipe.title, `${recipe.id}.title`);

@@ -35,7 +35,10 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
 - **`src/recipes/`** — 13 tarif grafı (menemen, sahanda/haşlanmış yumurta, çoban
   salatası, mercimek/domates çorbası, pilav, sigara böreği, tavuk sote, köfte,
   fırın tavuk, ızgara balık, kuru fasulye) + `RecipeListScreen` ("Ne pişsem?",
-  **arama + kategori filtresi**, şansıma seç; filtre saf `filterRecipes` ile).
+  **arama + kategori filtresi + favoriler** (AsyncStorage'da kalıcı), şansıma seç;
+  filtre ve favori mantığı saf+testli). Her tarifte **malzeme listesi**,
+  **porsiyon ayarı** (miktarlar kişi sayısına göre ölçeklenir) ve **alışveriş
+  listesi** (kalıcı; işaretle/sil) — ölçekleme/etiketleme mantığı saf+testli.
   Her graf testlerle doğrulanıyor: geçerli DAG, başlatılabilir,
   tamamlanabilir ve her **kritik** pişirme adımı iç sıcaklık eşiği taşıyor.
   Metinler **çok dilli** (`LocalizedText` + saf `localize()`): **13/13 tarif
@@ -43,7 +46,8 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   mesajları dahil); bir test her tarifin her metin alanında tr+en olmasını zorlar.
 - **`src/i18n/`, `src/config/`** — TR + EN metinler (`setLocale`/`getLocale`,
   anahtar paritesi tsc + testle zorlanıyor), **cihaz dili tespiti**
-  (`deviceLocale.ts` + saf/test edilebilir `pickSupportedLocale`) ve yapılandırma.
+  (`deviceLocale.ts` + saf/test edilebilir `pickSupportedLocale`) ve **uygulama
+  içi dil değiştirme** (reaktif `uiStore`; ekranlar anında güncellenir).
 
 ## Kurulum
 
@@ -61,6 +65,9 @@ npm start        # Expo dev server
 npm run ios      # iOS simülatör
 npm run android  # Android emülatör
 ```
+
+> 📱 **Telefonda denemek** için adım adım kılavuz: [`RUN.md`](./RUN.md)
+> (en hızlısı: `npx expo start` + telefonda Expo Go ile QR okutma).
 
 ## Test & tip kontrolü
 

@@ -2,13 +2,18 @@
  * CookingScreen — canlı pişirme ekranı (CLAUDE.md → screens: sadece UI, mantık
  * yok). Tüm iş cookingStore action'larından geçer; burada servis çağrısı YOK.
  */
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { useCookingStore } from '../state/cookingStore';
+import { useUiStore } from '../state/uiStore';
+import { useShoppingStore } from '../state/shoppingStore';
+import { useHistoryStore } from '../state/historyStore';
 import { VoiceButton } from '../components/VoiceButton';
 import { PotCheckButton } from '../components/PotCheckButton';
-import { getLocale, t } from '../i18n';
+import { ingredientLabel } from '../recipes/ingredients';
+import type { ShoppingItem } from '../recipes/shopping';
+import { t } from '../i18n';
 import { localize } from '../engine';
 import type { Recipe } from '../engine/types';
 
@@ -32,6 +37,29 @@ export function CookingScreen({ recipe, onBack }: Props) {
     startNode,
     tick,
   } = useCookingStore();
+  const locale = useUiStore((s) => s.locale);
+  const addToShopping = useShoppingStore((s) => s.add);
+  const recordHistory = useHistoryStore((s) => s.record);
+  const [servings, setServings] = useState(recipe.servings);
+  const [added, setAdded] = useState(false);
+  const complete = snapshot?.complete ?? false;
+
+  // Tarif tamamlanınca pişirme geçmişine kaydet (bir kez).
+  useEffect(() => {
+    if (complete) void recordHistory(recipe.id);
+  }, [complete, recipe.id, recordHistory]);
+
+  function onAddToShopping(): void {
+    if (!recipe.ingredients) return;
+    const items: ShoppingItem[] = recipe.ingredients.map((ing, idx) => ({
+      id: `${recipe.id}:${idx}`,
+      label: ingredientLabel(ing, recipe.servings, servings, locale),
+      checked: false,
+    }));
+    void addToShopping(items);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000);
+  }
 
   // Tarifi yükle ve pişirmeyi başlat.
   useEffect(() => {
@@ -46,7 +74,6 @@ export function CookingScreen({ recipe, onBack }: Props) {
 
   if (!engine || !snapshot) return null;
 
-  const locale = getLocale();
   const current = currentNodeId ? engine.node(currentNodeId) : null;
   const remaining = currentNodeId ? engine.remainingSec(currentNodeId) : null;
 
@@ -63,6 +90,36 @@ export function CookingScreen({ recipe, onBack }: Props) {
       <Text style={styles.progress}>
         {t('cooking.progress')}: %{Math.round(snapshot.progress * 100)}
       </Text>
+
+      {/* Malzemeler + porsiyon ayarı */}
+      {recipe.ingredients && recipe.ingredients.length > 0 && (
+        <View style={styles.ingPanel}>
+          <View style={styles.ingHeader}>
+            <Text style={styles.ingTitle}>{t('cooking.ingredients')}</Text>
+            <View style={styles.stepper}>
+              <Pressable style={styles.stepBtn} onPress={() => setServings((s) => Math.max(1, s - 1))}>
+                <Text style={styles.stepText}>−</Text>
+              </Pressable>
+              <Text style={styles.servings}>
+                {servings} {t('picker.servings')}
+              </Text>
+              <Pressable style={styles.stepBtn} onPress={() => setServings((s) => s + 1)}>
+                <Text style={styles.stepText}>+</Text>
+              </Pressable>
+            </View>
+          </View>
+          {recipe.ingredients.map((ing, idx) => (
+            <Text key={idx} style={styles.ingItem}>
+              • {ingredientLabel(ing, recipe.servings, servings, locale)}
+            </Text>
+          ))}
+          <Pressable style={styles.addBtn} onPress={onAddToShopping}>
+            <Text style={styles.addText}>
+              {added ? t('cooking.added') : t('cooking.addToShopping')}
+            </Text>
+          </Pressable>
+        </View>
+      )}
 
       {snapshot.complete ? (
         <Text style={styles.finished}>{t('cooking.finished')}</Text>
@@ -152,6 +209,30 @@ const styles = StyleSheet.create({
   backText: { color: '#8A6D5B', fontSize: 16, fontWeight: '600' },
   title: { fontSize: 28, fontWeight: '700', color: '#B5300F', marginBottom: 4 },
   progress: { fontSize: 14, color: '#8A6D5B', marginBottom: 16 },
+  ingPanel: {
+    backgroundColor: '#FFFDF9',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#F0E2D6',
+    padding: 16,
+    marginBottom: 16,
+  },
+  ingHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 },
+  ingTitle: { fontSize: 16, fontWeight: '700', color: '#8A6D5B' },
+  stepper: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  stepBtn: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#F0E2D6',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  stepText: { fontSize: 18, color: '#B5300F', fontWeight: '700' },
+  servings: { fontSize: 14, color: '#2B2B2B', fontWeight: '600', minWidth: 64, textAlign: 'center' },
+  ingItem: { fontSize: 15, color: '#444', lineHeight: 24 },
+  addBtn: { marginTop: 12, backgroundColor: '#F0E2D6', borderRadius: 10, paddingVertical: 12, alignItems: 'center' },
+  addText: { color: '#8A6D5B', fontSize: 15, fontWeight: '700' },
   finished: { fontSize: 22, fontWeight: '700', color: '#2E7D32', marginVertical: 24 },
   card: {
     backgroundColor: '#FFFFFF',
