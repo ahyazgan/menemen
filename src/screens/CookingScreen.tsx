@@ -12,8 +12,10 @@ import { useHistoryStore } from '../state/historyStore';
 import { useNotesStore } from '../state/notesStore';
 import { useStepPhotosStore } from '../state/stepPhotosStore';
 import { useProfileStore } from '../state/profileStore';
+import { useShareStore } from '../state/shareStore';
 import { getStepPhoto } from '../recipes/stepPhotos';
 import { guidance } from '../recipes/skill';
+import { recipeDeepLink, buildShareText } from '../recipes/share';
 import { VoiceButton } from '../components/VoiceButton';
 import { PotCheckButton } from '../components/PotCheckButton';
 import { ingredientLabel } from '../recipes/ingredients';
@@ -55,7 +57,17 @@ export function CookingScreen({ recipe, onBack }: Props) {
   const removePhoto = useStepPhotosStore((s) => s.remove);
   const skill = useProfileStore((s) => s.profile.skill);
   const guide = guidance(skill);
+  const share = useShareStore((s) => s.share);
   const [servings, setServings] = useState(recipe.servings);
+
+  function onShare(): void {
+    const text = buildShareText(
+      t('cooking.shareText'),
+      localize(recipe.title, locale),
+      recipeDeepLink(recipe.id),
+    );
+    void share(text);
+  }
   const [added, setAdded] = useState(false);
   const complete = snapshot?.complete ?? false;
 
@@ -143,7 +155,12 @@ export function CookingScreen({ recipe, onBack }: Props) {
       )}
 
       {snapshot.complete ? (
-        <Text style={styles.finished}>{t('cooking.finished')}</Text>
+        <View>
+          <Text style={styles.finished}>{t('cooking.finished')}</Text>
+          <Pressable style={styles.share} onPress={onShare}>
+            <Text style={styles.shareText}>{t('cooking.share')}</Text>
+          </Pressable>
+        </View>
       ) : current ? (
         <View style={styles.card}>
           <Text style={styles.cardLabel}>{t('cooking.active')}</Text>
@@ -310,7 +327,15 @@ const makeStyles = (c: ThemeColors) =>
     ingItem: { fontSize: 15, color: c.textBody, lineHeight: 24 },
     addBtn: { marginTop: 12, backgroundColor: c.fill, borderRadius: 10, paddingVertical: 12, alignItems: 'center' },
     addText: { color: c.textMuted, fontSize: 15, fontWeight: '700' },
-    finished: { fontSize: 22, fontWeight: '700', color: c.success, marginVertical: 24 },
+    finished: { fontSize: 22, fontWeight: '700', color: c.success, marginTop: 24, marginBottom: 14 },
+    share: {
+      backgroundColor: c.primary,
+      borderRadius: 14,
+      paddingVertical: 15,
+      alignItems: 'center',
+      marginBottom: 24,
+    },
+    shareText: { color: c.onPrimary, fontSize: 16, fontWeight: '800' },
     card: {
       backgroundColor: c.surface,
       borderRadius: 16,

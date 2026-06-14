@@ -52,6 +52,8 @@ export const en: TranslationTree = {
     permissionNeeded: 'Permission required.',
     progress: 'Progress',
     finished: 'Your meal is ready — enjoy!',
+    share: '📣 I made it, share',
+    shareText: 'I just made "{title}" 🍳 So easy with Lezzet — give it a try: {link}',
     nothingReady: 'No ready step right now.',
     remaining: 'left',
     addPhoto: '📷 Add step photo',
