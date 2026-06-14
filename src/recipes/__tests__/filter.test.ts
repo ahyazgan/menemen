@@ -41,6 +41,16 @@ test('arama + kategori birlikte çalışır', () => {
   assert.ok(found.some((r) => r.id === 'tavuk-sote' || r.id === 'firin-tavuk'));
 });
 
+test('arama malzeme adında da eşleşir (TR)', () => {
+  const eggs = filterRecipes(recipeList, { query: 'yumurta' });
+  assert.ok(eggs.some((r) => r.id === 'menemen'));
+});
+
+test('arama malzeme adında da eşleşir (EN)', () => {
+  const eggs = filterRecipes(recipeList, { query: 'egg' });
+  assert.ok(eggs.some((r) => r.id === 'menemen'));
+});
+
 test('eşleşme yoksa boş döner', () => {
   assert.equal(filterRecipes(recipeList, { query: 'zzzznotexist' }).length, 0);
 });

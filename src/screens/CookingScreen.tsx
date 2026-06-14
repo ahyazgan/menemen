@@ -3,12 +3,13 @@
  * yok). Tüm iş cookingStore action'larından geçer; burada servis çağrısı YOK.
  */
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { useCookingStore } from '../state/cookingStore';
 import { useUiStore } from '../state/uiStore';
 import { useShoppingStore } from '../state/shoppingStore';
 import { useHistoryStore } from '../state/historyStore';
+import { useNotesStore } from '../state/notesStore';
 import { VoiceButton } from '../components/VoiceButton';
 import { PotCheckButton } from '../components/PotCheckButton';
 import { ingredientLabel } from '../recipes/ingredients';
@@ -40,6 +41,8 @@ export function CookingScreen({ recipe, onBack }: Props) {
   const locale = useUiStore((s) => s.locale);
   const addToShopping = useShoppingStore((s) => s.add);
   const recordHistory = useHistoryStore((s) => s.record);
+  const note = useNotesStore((s) => s.notes[recipe.id] ?? '');
+  const setNote = useNotesStore((s) => s.setNote);
   const [servings, setServings] = useState(recipe.servings);
   const [added, setAdded] = useState(false);
   const complete = snapshot?.complete ?? false;
@@ -182,6 +185,19 @@ export function CookingScreen({ recipe, onBack }: Props) {
       <PotCheckButton />
 
       {lastSpoken && <Text style={styles.spoken}>“{lastSpoken}”</Text>}
+
+      {/* Kişisel notlar (kalıcı) */}
+      <View style={styles.notesBlock}>
+        <Text style={styles.notesLabel}>{t('cooking.notes')}</Text>
+        <TextInput
+          style={styles.notesInput}
+          placeholder={t('cooking.notesPlaceholder')}
+          placeholderTextColor="#A8927F"
+          value={note}
+          onChangeText={(text) => void setNote(recipe.id, text)}
+          multiline
+        />
+      </View>
     </ScrollView>
   );
 }
@@ -285,4 +301,17 @@ const styles = StyleSheet.create({
   micActive: { backgroundColor: '#B5300F' },
   micText: { color: '#FFF', fontSize: 17, fontWeight: '600' },
   spoken: { marginTop: 14, fontStyle: 'italic', color: '#8A6D5B', textAlign: 'center' },
+  notesBlock: { marginTop: 24 },
+  notesLabel: { fontSize: 13, fontWeight: '700', color: '#8A6D5B', marginBottom: 8 },
+  notesInput: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#F0E2D6',
+    padding: 14,
+    fontSize: 15,
+    color: '#2B2B2B',
+    minHeight: 70,
+    textAlignVertical: 'top',
+  },
 });

@@ -19,6 +19,7 @@ export const en: TranslationTree = {
     favorites: '★ Favorites',
     shopping: '🛒 Shopping list',
     recent: 'Recently cooked',
+    times: '×',
     noResults: 'No results.',
     categories: {
       kahvalti: 'Breakfast',
@@ -33,6 +34,8 @@ export const en: TranslationTree = {
     ingredients: 'Ingredients',
     addToShopping: '🛒 Add to shopping list',
     added: 'Added to list ✓',
+    notes: 'Your notes',
+    notesPlaceholder: 'Add a note to this recipe… (e.g. less salt)',
     ready: 'Ready steps',
     active: 'Now',
     done: 'Done',

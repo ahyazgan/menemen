@@ -17,6 +17,7 @@ export const tr = {
     favorites: '★ Favoriler',
     shopping: '🛒 Alışveriş listesi',
     recent: 'Son pişirdiklerin',
+    times: 'kez',
     noResults: 'Sonuç yok.',
     categories: {
       kahvalti: 'Kahvaltı',
@@ -31,6 +32,8 @@ export const tr = {
     ingredients: 'Malzemeler',
     addToShopping: '🛒 Alışveriş listesine ekle',
     added: 'Listeye eklendi ✓',
+    notes: 'Notların',
+    notesPlaceholder: 'Bu tarife not ekle… (örn. daha az tuz)',
     ready: 'Hazır adımlar',
     active: 'Şu an',
     done: 'Bitti',

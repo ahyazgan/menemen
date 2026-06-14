@@ -12,6 +12,7 @@ import { AVAILABLE_LOCALES, t } from '../i18n';
 import { useUiStore } from '../state/uiStore';
 import { useFavoritesStore } from '../state/favoritesStore';
 import { useHistoryStore } from '../state/historyStore';
+import { cookCounts } from '../recipes/history';
 import { localize } from '../engine';
 import type { Recipe, RecipeCategory } from '../engine/types';
 
@@ -34,6 +35,7 @@ export function RecipeListScreen({ onSelect, onOpenShopping }: Props) {
         .slice(0, 6),
     [historyEntries],
   );
+  const counts = useMemo(() => cookCounts(historyEntries), [historyEntries]);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<RecipeCategory | null>(null);
   const [onlyFavorites, setOnlyFavorites] = useState(false);
@@ -138,6 +140,9 @@ export function RecipeListScreen({ onSelect, onOpenShopping }: Props) {
                   ? `${recipe.totalMinutes} ${t('picker.minutes')} · `
                   : ''}
                 {recipe.servings} {t('picker.servings')}
+                {(counts[recipe.id] ?? 0) > 0
+                  ? ` · ${counts[recipe.id]} ${t('picker.times')}`
+                  : ''}
               </Text>
             </Pressable>
           );

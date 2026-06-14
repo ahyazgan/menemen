@@ -4,8 +4,10 @@
  */
 export interface HistoryEntry {
   recipeId: string;
-  /** Tamamlanma anı (ms epoch). */
+  /** Son tamamlanma anı (ms epoch). */
   at: number;
+  /** Bu tarifin toplam kaç kez pişirildiği. */
+  count: number;
 }
 
 export function parseHistory(raw: string | null): HistoryEntry[] {
@@ -13,12 +15,14 @@ export function parseHistory(raw: string | null): HistoryEntry[] {
   try {
     const value: unknown = JSON.parse(raw);
     if (!Array.isArray(value)) return [];
-    return value.filter(
-      (x): x is HistoryEntry =>
-        !!x &&
-        typeof (x as HistoryEntry).recipeId === 'string' &&
-        typeof (x as HistoryEntry).at === 'number',
-    );
+    return value
+      .filter(
+        (x): x is { recipeId: string; at: number; count?: number } =>
+          !!x &&
+          typeof (x as HistoryEntry).recipeId === 'string' &&
+          typeof (x as HistoryEntry).at === 'number',
+      )
+      .map((x) => ({ recipeId: x.recipeId, at: x.at, count: typeof x.count === 'number' ? x.count : 1 }));
   } catch {
     return [];
   }
@@ -29,8 +33,8 @@ export function serializeHistory(entries: HistoryEntry[]): string {
 }
 
 /**
- * Bir tarifi geçmişin başına ekler. Aynı tarif zaten varsa eski kaydı kaldırır
- * (yinelenme yok), liste `max` ile sınırlanır (en yeniler kalır).
+ * Bir tarifi geçmişin başına ekler ve sayacını artırır. Aynı tarif varsa eski
+ * kaydı kaldırır (yinelenme yok) ama sayacı korur; liste `max` ile sınırlanır.
  */
 export function recordHistory(
   entries: HistoryEntry[],
@@ -38,6 +42,15 @@ export function recordHistory(
   at: number,
   max = 20,
 ): HistoryEntry[] {
+  const existing = entries.find((e) => e.recipeId === recipeId);
+  const count = (existing?.count ?? 0) + 1;
   const withoutDup = entries.filter((e) => e.recipeId !== recipeId);
-  return [{ recipeId, at }, ...withoutDup].slice(0, max);
+  return [{ recipeId, at, count }, ...withoutDup].slice(0, max);
+}
+
+/** recipeId → toplam pişirme sayısı eşlemesi. */
+export function cookCounts(entries: HistoryEntry[]): Record<string, number> {
+  const map: Record<string, number> = {};
+  for (const e of entries) map[e.recipeId] = e.count;
+  return map;
 }

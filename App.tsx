@@ -16,6 +16,7 @@ import { useUiStore } from './src/state/uiStore';
 import { useFavoritesStore } from './src/state/favoritesStore';
 import { useShoppingStore } from './src/state/shoppingStore';
 import { useHistoryStore } from './src/state/historyStore';
+import { useNotesStore } from './src/state/notesStore';
 import { createExpoNotify } from './src/services/notify';
 import { createAsyncStorage } from './src/services/storage';
 import type { Recipe } from './src/engine/types';
@@ -37,6 +38,9 @@ export default function App() {
     const history = useHistoryStore.getState();
     history.setStore(storage);
     void history.load();
+    const notes = useNotesStore.getState();
+    notes.setStore(storage);
+    void notes.load();
     return null;
   });
   const [recipe, setRecipe] = useState<Recipe | null>(null);
