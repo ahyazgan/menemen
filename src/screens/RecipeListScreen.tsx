@@ -25,6 +25,7 @@ interface Props {
   onOpenPantry: () => void;
   onOpenProfile: () => void;
   onOpenSuggest: () => void;
+  onOpenPlan: () => void;
 }
 
 export function RecipeListScreen({
@@ -33,6 +34,7 @@ export function RecipeListScreen({
   onOpenPantry,
   onOpenProfile,
   onOpenSuggest,
+  onOpenPlan,
 }: Props) {
   const locale = useUiStore((s) => s.locale);
   const setLocale = useUiStore((s) => s.setLocale);
@@ -150,9 +152,14 @@ export function RecipeListScreen({
           <Text style={styles.shoppingText}>{t('picker.pantry')}</Text>
         </Pressable>
       </View>
-      <Pressable style={styles.profile} onPress={onOpenProfile}>
-        <Text style={styles.shoppingText}>{t('profile.button')}</Text>
-      </Pressable>
+      <View style={styles.actionsRow}>
+        <Pressable style={[styles.shopping, styles.flex]} onPress={onOpenPlan}>
+          <Text style={styles.shoppingText}>{t('plan.button')}</Text>
+        </Pressable>
+        <Pressable style={[styles.shopping, styles.flex]} onPress={onOpenProfile}>
+          <Text style={styles.shoppingText}>{t('profile.button')}</Text>
+        </Pressable>
+      </View>
 
       {shown.length === 0 ? (
         <Text style={styles.empty}>{t('picker.noResults')}</Text>
@@ -291,14 +298,6 @@ const makeStyles = (c: ThemeColors) =>
       justifyContent: 'center',
     },
     shoppingText: { color: c.textMuted, fontSize: 15, fontWeight: '700' },
-    profile: {
-      backgroundColor: c.fill,
-      borderRadius: 14,
-      paddingVertical: 14,
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: 20,
-    },
     empty: { fontSize: 16, color: c.textMuted, textAlign: 'center', marginTop: 24 },
     card: {
       backgroundColor: c.surface,
