@@ -95,10 +95,10 @@ useCookingStore.getState().setServices(
 );
 ```
 
-Proxy artık **JWT (HS256) doğrulaması**, anahtar başına **hız sınırlama** ve
-temel **gözlem** (`/health`, `/metrics`, `reqId`'li JSON log) içeriyor; hepsi
-testli. Kalan üretim işleri (uç nokta allowlist'i, kalıcı metrik, RS256/JWKS)
-`server/README.md`'de.
+Proxy artık **JWT (HS256) doğrulaması**, anahtar başına **hız sınırlama**, **uç
+nokta allowlist'i** (yalnızca beklenen method+yol geçer) ve temel **gözlem**
+(`/health`, `/metrics`, `reqId`'li JSON log) içeriyor; hepsi testli. Kalan üretim
+işleri (kalıcı metrik, RS256/JWKS) `server/README.md`'de.
 
 ## Sıradaki gerçek işler (öncelik sırası)
 

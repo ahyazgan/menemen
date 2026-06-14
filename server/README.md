@@ -40,6 +40,21 @@ Not: proxy istemciden gelen `Authorization` başlığını yalnızca doğrulama 
 okur; yukarı akışa **iletmez** — gerçek sağlayıcı anahtarını kendisi ekler, yani
 istemci token'ı dışarı sızmaz.
 
+## Uç nokta allowlist'i
+
+Proxy yalnızca uygulamanın gerçekten kullandığı **method + yol** kombinasyonlarını
+iletir; gerisi `403 forbidden_endpoint` (iletmeden). Çalınmış bir istemci
+token'ıyla keyfi sağlayıcı uç noktasına gidilmesini engeller.
+
+| Yol | İzinli |
+| --- | --- |
+| `/anthropic` | `POST /v1/messages` |
+| `/deepgram` | `POST /v1/listen` |
+| `/elevenlabs` | `POST /v1/text-to-speech/{voiceId}` |
+
+Varsayılan AÇIK; `LEZZET_ALLOWLIST=off` ile kapatılabilir (önerilmez). Kurallar
+saf ve testlidir (`server/allowlist.mjs`, `server/__tests__/allowlist.test.mjs`).
+
 ## Gözlemlenebilirlik
 
 - **`/health`** → `200 {status, authMode}` (auth/rate-limit yok).
@@ -64,8 +79,8 @@ useCookingStore.getState().setServices(
 
 ## Üretim için kalanlar
 
-JWT auth, hız sınırlama ve temel gözlem hazır. Tam üretim için ek olarak:
-- Uç nokta/parametre **allowlist'i** (yalnızca beklenen yolların geçmesi).
+JWT auth, hız sınırlama, uç nokta allowlist'i ve temel gözlem hazır. Tam üretim
+için ek olarak:
 - Kalıcı metrik/iz (Prometheus/OpenTelemetry) — şu an bellekte sayaç.
 - JWT için **RS256/JWKS** (anahtar döndürme) — `verifyHS256` aynı arayüzle genişletilebilir.
-- Maliyet koruması ve sağlayıcı bazlı kota.
+- Maliyet koruması ve sağlayıcı bazlı kota; istek gövdesi boyut limiti.

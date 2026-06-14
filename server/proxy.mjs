@@ -24,6 +24,7 @@ import { randomUUID } from 'node:crypto';
 
 import { createRateLimiter } from './rateLimit.mjs';
 import { verifyHS256 } from './jwt.mjs';
+import { ALLOWLIST, isAllowed } from './allowlist.mjs';
 
 const PORT = Number(process.env.PORT ?? 8787);
 const JWT_SECRET = process.env.LEZZET_JWT_SECRET ?? '';
@@ -33,6 +34,8 @@ const CLIENT_TOKENS = (process.env.LEZZET_PROXY_TOKENS ?? '')
   .filter(Boolean);
 
 const AUTH_MODE = JWT_SECRET ? 'jwt' : CLIENT_TOKENS.length > 0 ? 'token' : 'dev';
+// Uç nokta allowlist'i varsayılan AÇIK; bilinçli kapatmak için LEZZET_ALLOWLIST=off.
+const ALLOWLIST_ON = (process.env.LEZZET_ALLOWLIST ?? 'on') !== 'off';
 
 const rateLimiter = createRateLimiter({
   limit: Number(process.env.RATE_LIMIT_RPM ?? 60),
@@ -163,6 +166,15 @@ const server = http.createServer((req, res) => {
 
   const route = ROUTES[prefix];
   const upstreamPath = url.slice(prefix.length) || '/';
+
+  // 4) Uç nokta allowlist'i — yalnızca beklenen method+yol geçer.
+  if (ALLOWLIST_ON) {
+    const pathname = upstreamPath.split('?')[0] ?? '/';
+    if (!isAllowed(ALLOWLIST[prefix], req.method, pathname)) {
+      finalize(res, reqId, prefix, 403);
+      return send(res, 403, { error: 'İzinsiz uç nokta', reason: 'forbidden_endpoint' }, reqId);
+    }
+  }
 
   let authHeaders;
   try {
