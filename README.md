@@ -100,10 +100,10 @@ useCookingStore.getState().setServices(
 );
 ```
 
-Proxy artık **JWT (HS256) doğrulaması**, anahtar başına **hız sınırlama**, **uç
-nokta allowlist'i** (yalnızca beklenen method+yol geçer) ve temel **gözlem**
-(`/health`, `/metrics`, `reqId`'li JSON log) içeriyor; hepsi testli. Kalan üretim
-işleri (kalıcı metrik, RS256/JWKS) `server/README.md`'de.
+Proxy artık **JWT doğrulaması (HS256 / RS256 / JWKS)**, anahtar başına **hız
+sınırlama**, **uç nokta allowlist'i**, **gövde boyut limiti** ve **gözlem**
+(`/health`, Prometheus `/metrics`, `reqId`'li JSON log) içeriyor; hepsi testli.
+Kalan üretim işleri (uzak JWKS çekme, OpenTelemetry) `server/README.md`'de.
 
 ## Sıradaki gerçek işler (öncelik sırası)
 

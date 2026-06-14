@@ -23,18 +23,36 @@ import https from 'node:https';
 import { randomUUID } from 'node:crypto';
 
 import { createRateLimiter } from './rateLimit.mjs';
-import { verifyHS256 } from './jwt.mjs';
+import { verifyHS256, verifyRS256, verifyJwtWithJwks } from './jwt.mjs';
 import { ALLOWLIST, isAllowed } from './allowlist.mjs';
 import { contentLengthExceeds } from './bodyLimit.mjs';
+import { toPrometheus } from './metrics.mjs';
 
 const PORT = Number(process.env.PORT ?? 8787);
-const JWT_SECRET = process.env.LEZZET_JWT_SECRET ?? '';
+const HS_SECRET = process.env.LEZZET_JWT_SECRET ?? '';
+const RS_PUBLIC = (process.env.LEZZET_JWT_PUBLIC_KEY ?? '').replace(/\\n/g, '\n').trim();
 const CLIENT_TOKENS = (process.env.LEZZET_PROXY_TOKENS ?? '')
   .split(',')
   .map((s) => s.trim())
   .filter(Boolean);
 
-const AUTH_MODE = JWT_SECRET ? 'jwt' : CLIENT_TOKENS.length > 0 ? 'token' : 'dev';
+let JWKS = null;
+try {
+  JWKS = process.env.LEZZET_JWKS ? JSON.parse(process.env.LEZZET_JWKS) : null;
+} catch {
+  console.warn('⚠️  LEZZET_JWKS geçersiz JSON — yok sayılıyor.');
+}
+
+// Öncelik: JWKS (RS256, çok anahtar) > RS256 (tek PEM) > HS256 > statik token > dev.
+const AUTH_MODE = JWKS
+  ? 'jwks'
+  : RS_PUBLIC
+    ? 'rs256'
+    : HS_SECRET
+      ? 'hs256'
+      : CLIENT_TOKENS.length > 0
+        ? 'token'
+        : 'dev';
 // Uç nokta allowlist'i varsayılan AÇIK; bilinçli kapatmak için LEZZET_ALLOWLIST=off.
 const ALLOWLIST_ON = (process.env.LEZZET_ALLOWLIST ?? 'on') !== 'off';
 // İstek gövdesi boyut limiti (DoS koruması). Ses/görsel için varsayılan 10 MB.
@@ -84,8 +102,13 @@ function authenticate(req) {
   const token = bearer(req);
   if (!token) return { ok: false, status: 401, reason: 'missing_bearer' };
 
-  if (AUTH_MODE === 'jwt') {
-    const result = verifyHS256(token, JWT_SECRET);
+  if (AUTH_MODE === 'jwks' || AUTH_MODE === 'rs256' || AUTH_MODE === 'hs256') {
+    const result =
+      AUTH_MODE === 'jwks'
+        ? verifyJwtWithJwks(token, JWKS)
+        : AUTH_MODE === 'rs256'
+          ? verifyRS256(token, RS_PUBLIC)
+          : verifyHS256(token, HS_SECRET);
     if (!result.valid) return { ok: false, status: 401, reason: `jwt_${result.reason}` };
     const sub = typeof result.payload.sub === 'string' ? result.payload.sub : 'jwt';
     return { ok: true, key: sub };
@@ -135,7 +158,8 @@ const server = http.createServer((req, res) => {
   }
   if (url === '/metrics') {
     finalize(res, reqId, '/metrics', 200);
-    return send(res, 200, metrics, reqId);
+    res.writeHead(200, { 'content-type': 'text/plain; version=0.0.4', 'x-request-id': reqId });
+    return res.end(toPrometheus(metrics));
   }
 
   // 1) Kimlik doğrulama

@@ -20,17 +20,22 @@ ANTHROPIC_API_KEY=... DEEPGRAM_API_KEY=... ELEVENLABS_API_KEY=... node server/pr
 | `/deepgram/*`  | `https://api.deepgram.com`   | `Authorization: Token`     |
 | `/elevenlabs/*`| `https://api.elevenlabs.io`  | `xi-api-key`               |
 
-## Kimlik doğrulama (öncelik: JWT > statik token > dev)
+## Kimlik doğrulama (öncelik: JWKS > RS256 > HS256 > statik token > dev)
 
 | Mod | Koşul | Davranış |
 | --- | --- | --- |
-| **JWT** (önerilir) | `LEZZET_JWT_SECRET` ayarlı | `Authorization: Bearer <jwt>` HS256 ile doğrulanır (imza + `exp`/`nbf`). Rate-limit anahtarı JWT `sub`'tur. Geçersizse `401` + `reason` (örn. `jwt_expired`, `jwt_bad_signature`). |
-| **Statik token** | `LEZZET_PROXY_TOKENS` ayarlı | İzinli Bearer token allowlist'i; geçersizse `401 invalid_token`. Basit kurulum/dev için. |
-| **Dev** | İkisi de boş | Auth KAPALI, anahtar = IP. Konsol uyarısı verir. Yalnızca geliştirme. |
+| **JWKS** (önerilir) | `LEZZET_JWKS` ayarlı | `{ keys: [JWK,...] }`; token `kid`'ine göre RS256 doğrular (anahtar rotasyonu). |
+| **RS256** | `LEZZET_JWT_PUBLIC_KEY` (PEM) | Tek açık anahtarla RS256 imza + `exp`/`nbf`. |
+| **HS256** | `LEZZET_JWT_SECRET` | Paylaşılan sırla HS256. |
+| **Statik token** | `LEZZET_PROXY_TOKENS` | İzinli Bearer token allowlist'i; geçersizse `401 invalid_token`. |
+| **Dev** | Hiçbiri | Auth KAPALI, anahtar = IP. Konsol uyarısı verir. Yalnızca geliştirme. |
 
-JWT doğrulayıcı saftır ve testlidir (`server/jwt.mjs`, `server/__tests__/jwt.test.mjs`).
-Gerçek üretimde JWT'yi kendi kimlik sağlayıcın (Auth0/Cognito/kendi backend'in)
-imzalamalı; `signHS256` yalnızca test/araç içindir.
+JWT modlarında `Authorization: Bearer <jwt>` doğrulanır; geçersizse `401` +
+`reason` (örn. `jwt_expired`, `jwt_bad_signature`, `jwt_unknown_kid`). Rate-limit
+anahtarı token `sub`'tur. Doğrulayıcılar saf ve testlidir (`server/jwt.mjs`,
+`server/__tests__/jwt.test.mjs`, `jwtRs256.test.mjs`). Üretimde JWT'yi kendi
+kimlik sağlayıcın (Auth0/Cognito/kendi backend'in) imzalamalı; `signHS256`/
+`signRS256` yalnızca test/araç içindir.
 
 - **Rate limit:** Anahtar başına (JWT `sub` / token / IP) dakikada `RATE_LIMIT_RPM`
   istek (varsayılan 60). Aşımda `429` + `Retry-After`. Sınırlayıcı saf ve
@@ -61,7 +66,9 @@ saf ve testlidir (`server/allowlist.mjs`, `server/__tests__/allowlist.test.mjs`)
 ## Gözlemlenebilirlik
 
 - **`/health`** → `200 {status, authMode}` (auth/rate-limit yok).
-- **`/metrics`** → toplam sayaçlar `{total, byStatus, byRoute}` (gizli içermez).
+- **`/metrics`** → **Prometheus metin formatı** (`lezzet_proxy_requests_total`,
+  `..._status_total{class}`, `..._route_requests_total{route}`); gizli içermez.
+  Üretici saf ve testlidir (`server/metrics.mjs`).
 - Her istek için `x-request-id` başlığı ve `stdout`'a **yapılandırılmış JSON log**
   (`reqId`, `method`, `path`, `status`, `durationMs`, `authMode`).
 - `/health` ve `/metrics` kimlik istemez; üretimde bunları **ağ düzeyinde**
@@ -82,8 +89,8 @@ useCookingStore.getState().setServices(
 
 ## Üretim için kalanlar
 
-JWT auth, hız sınırlama, uç nokta allowlist'i ve temel gözlem hazır. Tam üretim
-için ek olarak:
-- Kalıcı metrik/iz (Prometheus/OpenTelemetry) — şu an bellekte sayaç.
-- JWT için **RS256/JWKS** (anahtar döndürme) — `verifyHS256` aynı arayüzle genişletilebilir.
-- Maliyet koruması ve sağlayıcı bazlı kota; istek gövdesi boyut limiti.
+JWT (HS256/RS256/JWKS) auth, hız sınırlama, uç nokta allowlist'i, gövde boyut
+limiti ve Prometheus `/metrics` hazır. Tam üretim için ek olarak:
+- Uzak JWKS'i URL'den çekme + önbellek (şu an JWKS env'den inline JSON).
+- Dağıtık iz (OpenTelemetry) ve kalıcı metrik deposu.
+- Maliyet koruması ve sağlayıcı bazlı kota.
