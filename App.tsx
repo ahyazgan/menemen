@@ -13,13 +13,15 @@ import { PantryScreen } from './src/screens/PantryScreen';
 import { SubscriptionGate } from './src/components/SubscriptionGate';
 import { initLocaleFromDevice } from './src/i18n/deviceLocale';
 import { useCookingStore } from './src/state/cookingStore';
-import { useUiStore } from './src/state/uiStore';
+import { useUiStore, useThemeColors } from './src/state/uiStore';
 import { useFavoritesStore } from './src/state/favoritesStore';
 import { useShoppingStore } from './src/state/shoppingStore';
 import { useHistoryStore } from './src/state/historyStore';
 import { useNotesStore } from './src/state/notesStore';
 import { usePantryStore } from './src/state/pantryStore';
+import { useStepPhotosStore } from './src/state/stepPhotosStore';
 import { createExpoNotify } from './src/services/notify';
+import { createExpoPhoto } from './src/services/photo';
 import { createAsyncStorage } from './src/services/storage';
 import type { Recipe } from './src/engine/types';
 
@@ -29,8 +31,11 @@ export default function App() {
     const detected = initLocaleFromDevice();
     useUiStore.getState().setLocale(detected);
     useCookingStore.getState().setNotify(createExpoNotify());
-    // Kalıcı depoları (favori + alışveriş) bağla ve yükle.
+    // Kalıcı depoları (favori + alışveriş + tema) bağla ve yükle.
     const storage = createAsyncStorage();
+    const ui = useUiStore.getState();
+    ui.setThemeStore(storage);
+    void ui.loadTheme();
     const favorites = useFavoritesStore.getState();
     favorites.setStore(storage);
     void favorites.load();
@@ -46,6 +51,10 @@ export default function App() {
     const pantry = usePantryStore.getState();
     pantry.setStore(storage);
     void pantry.load();
+    const stepPhotos = useStepPhotosStore.getState();
+    stepPhotos.setStore(storage);
+    stepPhotos.setPhoto(createExpoPhoto());
+    void stepPhotos.load();
     return null;
   });
   const [recipe, setRecipe] = useState<Recipe | null>(null);
@@ -70,14 +79,16 @@ export default function App() {
     );
   }
 
+  const colors = useThemeColors();
+  const theme = useUiStore((s) => s.theme);
   return (
-    <SafeAreaView style={styles.root}>
-      <StatusBar barStyle="dark-content" />
+    <SafeAreaView style={[styles.root, { backgroundColor: colors.bg }]}>
+      <StatusBar barStyle={theme === 'dark' ? 'light-content' : 'dark-content'} />
       <SubscriptionGate>{content()}</SubscriptionGate>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#FFF8F0' },
+  root: { flex: 1 },
 });

@@ -49,8 +49,13 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   mesajları dahil); bir test her tarifin her metin alanında tr+en olmasını zorlar.
 - **`src/i18n/`, `src/config/`** — TR + EN metinler (`setLocale`/`getLocale`,
   anahtar paritesi tsc + testle zorlanıyor), **cihaz dili tespiti**
-  (`deviceLocale.ts` + saf/test edilebilir `pickSupportedLocale`) ve **uygulama
-  içi dil değiştirme** (reaktif `uiStore`; ekranlar anında güncellenir).
+  (`deviceLocale.ts` + saf/test edilebilir `pickSupportedLocale`), **uygulama
+  içi dil değiştirme** ve **karanlık mod** (açık/karanlık tema, `config/theme.ts`
+  palet, reaktif `uiStore`; ekranlar anında döner, seçim AsyncStorage'da kalıcı).
+- **Adım fotoğrafı** — pişirirken bir adıma kendi fotoğrafını ekleme
+  (`expo-image-picker` ile tek kare, frame-on-demand; sürekli akış yok). Saf
+  harita mantığı `recipes/stepPhotos.ts`'te ve testli; çekim `services/photo`
+  arayüzü arkasında (mock + expo), seçim `stepPhotosStore`'da kalıcı.
 
 ## Kurulum
 

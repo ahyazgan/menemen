@@ -5,7 +5,7 @@
     "version": "0.1.0",
     "orientation": "portrait",
     "scheme": "lezzet",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": false,
@@ -31,6 +31,12 @@
         "expo-audio",
         {
           "microphonePermission": "Yemek yaparken sizi sesle yönlendirmek için mikrofona ihtiyacımız var."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Yalnızca siz isteyince bir adımın fotoğrafını çekmek için kamerayı kullanırız."
         }
       ],
       "expo-notifications"

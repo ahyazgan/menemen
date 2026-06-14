@@ -2,20 +2,23 @@
  * CookingScreen — canlı pişirme ekranı (CLAUDE.md → screens: sadece UI, mantık
  * yok). Tüm iş cookingStore action'larından geçer; burada servis çağrısı YOK.
  */
-import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { useCookingStore } from '../state/cookingStore';
-import { useUiStore } from '../state/uiStore';
+import { useUiStore, useThemeColors } from '../state/uiStore';
 import { useShoppingStore } from '../state/shoppingStore';
 import { useHistoryStore } from '../state/historyStore';
 import { useNotesStore } from '../state/notesStore';
+import { useStepPhotosStore } from '../state/stepPhotosStore';
+import { getStepPhoto } from '../recipes/stepPhotos';
 import { VoiceButton } from '../components/VoiceButton';
 import { PotCheckButton } from '../components/PotCheckButton';
 import { ingredientLabel } from '../recipes/ingredients';
 import type { ShoppingItem } from '../recipes/shopping';
 import { t } from '../i18n';
 import { localize } from '../engine';
+import type { ThemeColors } from '../config/theme';
 import type { Recipe } from '../engine/types';
 
 interface Props {
@@ -39,10 +42,15 @@ export function CookingScreen({ recipe, onBack }: Props) {
     tick,
   } = useCookingStore();
   const locale = useUiStore((s) => s.locale);
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const addToShopping = useShoppingStore((s) => s.add);
   const recordHistory = useHistoryStore((s) => s.record);
   const note = useNotesStore((s) => s.notes[recipe.id] ?? '');
   const setNote = useNotesStore((s) => s.setNote);
+  const photoMap = useStepPhotosStore((s) => s.map);
+  const capturePhoto = useStepPhotosStore((s) => s.capture);
+  const removePhoto = useStepPhotosStore((s) => s.remove);
   const [servings, setServings] = useState(recipe.servings);
   const [added, setAdded] = useState(false);
   const complete = snapshot?.complete ?? false;
@@ -141,10 +149,49 @@ export function CookingScreen({ recipe, onBack }: Props) {
           )}
 
           <View style={styles.row}>
-            <Button label={t('cooking.complete')} onPress={() => void completeNode(current.id)} />
-            <Button label={t('cooking.skip')} subtle onPress={() => void skipNode(current.id)} />
-            <Button label={t('cooking.retry')} subtle onPress={() => retryNode(current.id)} />
+            <Button
+              label={t('cooking.complete')}
+              onPress={() => void completeNode(current.id)}
+              styles={styles}
+            />
+            <Button
+              label={t('cooking.skip')}
+              subtle
+              onPress={() => void skipNode(current.id)}
+              styles={styles}
+            />
+            <Button
+              label={t('cooking.retry')}
+              subtle
+              onPress={() => retryNode(current.id)}
+              styles={styles}
+            />
           </View>
+
+          {/* Adım fotoğrafı (frame-on-demand, isteğe bağlı) */}
+          {(() => {
+            const uri = getStepPhoto(photoMap, recipe.id, current.id);
+            return uri ? (
+              <View style={styles.photoBlock}>
+                <Image source={{ uri }} style={styles.photo} resizeMode="cover" />
+                <View style={styles.photoActions}>
+                  <Pressable onPress={() => void capturePhoto(recipe.id, current.id)}>
+                    <Text style={styles.photoLink}>{t('cooking.retakePhoto')}</Text>
+                  </Pressable>
+                  <Pressable onPress={() => void removePhoto(recipe.id, current.id)}>
+                    <Text style={styles.photoRemove}>{t('cooking.removePhoto')}</Text>
+                  </Pressable>
+                </View>
+              </View>
+            ) : (
+              <Pressable
+                style={styles.photoBtn}
+                onPress={() => void capturePhoto(recipe.id, current.id)}
+              >
+                <Text style={styles.photoBtnText}>{t('cooking.addPhoto')}</Text>
+              </Pressable>
+            );
+          })()}
         </View>
       ) : (
         <Text style={styles.muted}>{t('cooking.nothingReady')}</Text>
@@ -192,7 +239,7 @@ export function CookingScreen({ recipe, onBack }: Props) {
         <TextInput
           style={styles.notesInput}
           placeholder={t('cooking.notesPlaceholder')}
-          placeholderTextColor="#A8927F"
+          placeholderTextColor={colors.placeholder}
           value={note}
           onChangeText={(text) => void setNote(recipe.id, text)}
           multiline
@@ -206,10 +253,12 @@ function Button({
   label,
   onPress,
   subtle,
+  styles,
 }: {
   label: string;
   onPress: () => void;
   subtle?: boolean;
+  styles: ReturnType<typeof makeStyles>;
 }) {
   return (
     <Pressable style={[styles.btn, subtle && styles.btnSubtle]} onPress={onPress}>
@@ -218,100 +267,105 @@ function Button({
   );
 }
 
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#FFF8F0' },
-  content: { padding: 20, paddingBottom: 48 },
-  back: { marginBottom: 8 },
-  backText: { color: '#8A6D5B', fontSize: 16, fontWeight: '600' },
-  title: { fontSize: 28, fontWeight: '700', color: '#B5300F', marginBottom: 4 },
-  progress: { fontSize: 14, color: '#8A6D5B', marginBottom: 16 },
-  ingPanel: {
-    backgroundColor: '#FFFDF9',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#F0E2D6',
-    padding: 16,
-    marginBottom: 16,
-  },
-  ingHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 },
-  ingTitle: { fontSize: 16, fontWeight: '700', color: '#8A6D5B' },
-  stepper: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  stepBtn: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: '#F0E2D6',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  stepText: { fontSize: 18, color: '#B5300F', fontWeight: '700' },
-  servings: { fontSize: 14, color: '#2B2B2B', fontWeight: '600', minWidth: 64, textAlign: 'center' },
-  ingItem: { fontSize: 15, color: '#444', lineHeight: 24 },
-  addBtn: { marginTop: 12, backgroundColor: '#F0E2D6', borderRadius: 10, paddingVertical: 12, alignItems: 'center' },
-  addText: { color: '#8A6D5B', fontSize: 15, fontWeight: '700' },
-  finished: { fontSize: 22, fontWeight: '700', color: '#2E7D32', marginVertical: 24 },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  cardLabel: { fontSize: 12, color: '#C77B4E', fontWeight: '600', textTransform: 'uppercase' },
-  cardTitle: { fontSize: 22, fontWeight: '700', color: '#2B2B2B', marginTop: 4 },
-  instruction: { fontSize: 17, color: '#444', marginTop: 8, lineHeight: 24 },
-  timer: { fontSize: 16, color: '#B5300F', marginTop: 12, fontWeight: '600' },
-  safety: { fontSize: 14, color: '#9A6A00', marginTop: 12 },
-  row: { flexDirection: 'row', gap: 10, marginTop: 18, flexWrap: 'wrap' },
-  btn: { backgroundColor: '#B5300F', paddingVertical: 12, paddingHorizontal: 18, borderRadius: 12 },
-  btnSubtle: { backgroundColor: '#F0E2D6' },
-  btnText: { color: '#FFF', fontWeight: '600' },
-  btnTextSubtle: { color: '#8A6D5B' },
-  section: { marginTop: 24 },
-  sectionTitle: { fontSize: 13, fontWeight: '700', color: '#8A6D5B', marginBottom: 8 },
-  readyItem: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    padding: 14,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: '#F0E2D6',
-  },
-  readyText: { fontSize: 16, color: '#2B2B2B' },
-  doneItem: { fontSize: 15, color: '#6B8E5A', marginBottom: 4 },
-  muted: { fontSize: 16, color: '#8A6D5B', marginVertical: 16 },
-  safetyBanner: {
-    backgroundColor: '#FFF1D6',
-    borderRadius: 12,
-    padding: 14,
-    marginTop: 16,
-    borderWidth: 1,
-    borderColor: '#E8C77A',
-  },
-  safetyBannerText: { color: '#9A6A00', fontSize: 14, fontWeight: '600' },
-  mic: {
-    marginTop: 28,
-    backgroundColor: '#2B2B2B',
-    borderRadius: 30,
-    paddingVertical: 16,
-    alignItems: 'center',
-  },
-  micActive: { backgroundColor: '#B5300F' },
-  micText: { color: '#FFF', fontSize: 17, fontWeight: '600' },
-  spoken: { marginTop: 14, fontStyle: 'italic', color: '#8A6D5B', textAlign: 'center' },
-  notesBlock: { marginTop: 24 },
-  notesLabel: { fontSize: 13, fontWeight: '700', color: '#8A6D5B', marginBottom: 8 },
-  notesInput: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#F0E2D6',
-    padding: 14,
-    fontSize: 15,
-    color: '#2B2B2B',
-    minHeight: 70,
-    textAlignVertical: 'top',
-  },
-});
+const makeStyles = (c: ThemeColors) =>
+  StyleSheet.create({
+    screen: { flex: 1, backgroundColor: c.bg },
+    content: { padding: 20, paddingBottom: 48 },
+    back: { marginBottom: 8 },
+    backText: { color: c.textMuted, fontSize: 16, fontWeight: '600' },
+    title: { fontSize: 28, fontWeight: '700', color: c.primary, marginBottom: 4 },
+    progress: { fontSize: 14, color: c.textMuted, marginBottom: 16 },
+    ingPanel: {
+      backgroundColor: c.surfaceAlt,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: c.border,
+      padding: 16,
+      marginBottom: 16,
+    },
+    ingHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 },
+    ingTitle: { fontSize: 16, fontWeight: '700', color: c.textMuted },
+    stepper: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+    stepBtn: {
+      width: 30,
+      height: 30,
+      borderRadius: 15,
+      backgroundColor: c.fill,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    stepText: { fontSize: 18, color: c.primary, fontWeight: '700' },
+    servings: { fontSize: 14, color: c.text, fontWeight: '600', minWidth: 64, textAlign: 'center' },
+    ingItem: { fontSize: 15, color: c.textBody, lineHeight: 24 },
+    addBtn: { marginTop: 12, backgroundColor: c.fill, borderRadius: 10, paddingVertical: 12, alignItems: 'center' },
+    addText: { color: c.textMuted, fontSize: 15, fontWeight: '700' },
+    finished: { fontSize: 22, fontWeight: '700', color: c.success, marginVertical: 24 },
+    card: {
+      backgroundColor: c.surface,
+      borderRadius: 16,
+      padding: 20,
+      shadowColor: '#000',
+      shadowOpacity: 0.06,
+      shadowRadius: 8,
+      elevation: 2,
+    },
+    cardLabel: { fontSize: 12, color: c.label, fontWeight: '600', textTransform: 'uppercase' },
+    cardTitle: { fontSize: 22, fontWeight: '700', color: c.text, marginTop: 4 },
+    instruction: { fontSize: 17, color: c.textBody, marginTop: 8, lineHeight: 24 },
+    timer: { fontSize: 16, color: c.primary, marginTop: 12, fontWeight: '600' },
+    safety: { fontSize: 14, color: c.warning, marginTop: 12 },
+    row: { flexDirection: 'row', gap: 10, marginTop: 18, flexWrap: 'wrap' },
+    btn: { backgroundColor: c.primary, paddingVertical: 12, paddingHorizontal: 18, borderRadius: 12 },
+    btnSubtle: { backgroundColor: c.fill },
+    btnText: { color: c.onPrimary, fontWeight: '600' },
+    btnTextSubtle: { color: c.textMuted },
+    photoBtn: {
+      marginTop: 14,
+      backgroundColor: c.fill,
+      borderRadius: 10,
+      paddingVertical: 12,
+      alignItems: 'center',
+    },
+    photoBtnText: { color: c.textMuted, fontSize: 15, fontWeight: '700' },
+    photoBlock: { marginTop: 14 },
+    photo: { width: '100%', height: 180, borderRadius: 12, backgroundColor: c.fill },
+    photoActions: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 },
+    photoLink: { color: c.primary, fontSize: 14, fontWeight: '600' },
+    photoRemove: { color: c.textSubtle, fontSize: 14, fontWeight: '600' },
+    section: { marginTop: 24 },
+    sectionTitle: { fontSize: 13, fontWeight: '700', color: c.textMuted, marginBottom: 8 },
+    readyItem: {
+      backgroundColor: c.surface,
+      borderRadius: 10,
+      padding: 14,
+      marginBottom: 8,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    readyText: { fontSize: 16, color: c.text },
+    doneItem: { fontSize: 15, color: c.successSoft, marginBottom: 4 },
+    muted: { fontSize: 16, color: c.textMuted, marginVertical: 16 },
+    safetyBanner: {
+      backgroundColor: c.warningBg,
+      borderRadius: 12,
+      padding: 14,
+      marginTop: 16,
+      borderWidth: 1,
+      borderColor: c.warningBorder,
+    },
+    safetyBannerText: { color: c.warning, fontSize: 14, fontWeight: '600' },
+    spoken: { marginTop: 14, fontStyle: 'italic', color: c.textMuted, textAlign: 'center' },
+    notesBlock: { marginTop: 24 },
+    notesLabel: { fontSize: 13, fontWeight: '700', color: c.textMuted, marginBottom: 8 },
+    notesInput: {
+      backgroundColor: c.surface,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: c.border,
+      padding: 14,
+      fontSize: 15,
+      color: c.text,
+      minHeight: 70,
+      textAlignVertical: 'top',
+    },
+  });
