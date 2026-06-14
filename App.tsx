@@ -3,8 +3,8 @@
  * tarif seçimi (RecipeListScreen) → canlı pişirme (CookingScreen).
  * Henüz harici navigasyon kütüphanesi yok; tek state ile geçiş yeterli.
  */
-import { useState } from 'react';
-import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Linking, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 
 import { CookingScreen } from './src/screens/CookingScreen';
 import { RecipeListScreen } from './src/screens/RecipeListScreen';
@@ -30,6 +30,8 @@ import { createExpoNotify } from './src/services/notify';
 import { createExpoPhoto } from './src/services/photo';
 import { createRNShare } from './src/services/share';
 import { createAsyncStorage } from './src/services/storage';
+import { getRecipe } from './src/recipes';
+import { parseRecipeLink } from './src/recipes/share';
 import type { Recipe } from './src/engine/types';
 
 export default function App() {
@@ -84,6 +86,19 @@ export default function App() {
     setShowPlan(false);
     setRecipe(r);
   }
+
+  // Gelen derin bağlantı (lezzet://recipe/<id>) → paylaşılan tarifi aç.
+  useEffect(() => {
+    function handle(url: string | null): void {
+      const id = parseRecipeLink(url);
+      if (!id) return;
+      const r = getRecipe(id);
+      if (r) openRecipe(r);
+    }
+    void Linking.getInitialURL().then(handle);
+    const sub = Linking.addEventListener('url', (e) => handle(e.url));
+    return () => sub.remove();
+  }, []);
 
   function content() {
     if (recipe) return <CookingScreen recipe={recipe} onBack={() => setRecipe(null)} />;
