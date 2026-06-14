@@ -13,6 +13,7 @@ import { PantryScreen } from './src/screens/PantryScreen';
 import { ProfileScreen } from './src/screens/ProfileScreen';
 import { SuggestScreen } from './src/screens/SuggestScreen';
 import { WeeklyPlanScreen } from './src/screens/WeeklyPlanScreen';
+import { OnboardingScreen } from './src/screens/OnboardingScreen';
 import { SubscriptionGate } from './src/components/SubscriptionGate';
 import { initLocaleFromDevice } from './src/i18n/deviceLocale';
 import { useCookingStore } from './src/state/cookingStore';
@@ -26,6 +27,7 @@ import { useStepPhotosStore } from './src/state/stepPhotosStore';
 import { useProfileStore } from './src/state/profileStore';
 import { useMealPlanStore } from './src/state/mealPlanStore';
 import { useShareStore } from './src/state/shareStore';
+import { useOnboardingStore } from './src/state/onboardingStore';
 import { createExpoNotify } from './src/services/notify';
 import { createExpoPhoto } from './src/services/photo';
 import { createRNShare } from './src/services/share';
@@ -71,6 +73,9 @@ export default function App() {
     mealPlan.setStore(storage);
     void mealPlan.load();
     useShareStore.getState().setService(createRNShare());
+    const onboarding = useOnboardingStore.getState();
+    onboarding.setStore(storage);
+    void onboarding.load();
     return null;
   });
   const [recipe, setRecipe] = useState<Recipe | null>(null);
@@ -121,10 +126,20 @@ export default function App() {
 
   const colors = useThemeColors();
   const theme = useUiStore((s) => s.theme);
+  const onboardingLoaded = useOnboardingStore((s) => s.loaded);
+  const onboardingSeen = useOnboardingStore((s) => s.seen);
+
+  function gated() {
+    // Kalıcı değer okunana dek nötr (onboarding dönen kullanıcıya yanıp sönmesin).
+    if (!onboardingLoaded) return null;
+    if (!onboardingSeen) return <OnboardingScreen />;
+    return <SubscriptionGate>{content()}</SubscriptionGate>;
+  }
+
   return (
     <SafeAreaView style={[styles.root, { backgroundColor: colors.bg }]}>
       <StatusBar barStyle={theme === 'dark' ? 'light-content' : 'dark-content'} />
-      <SubscriptionGate>{content()}</SubscriptionGate>
+      {gated()}
     </SafeAreaView>
   );
 }

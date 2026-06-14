@@ -68,6 +68,10 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   testli) hem mock hem AI'nın çevrimdışı yedeği; gerçek öneri `services/recommend`
   arayüzü arkasında **Claude (tool use)** ile — AI yalnızca verilen adaylardan seçer,
   yeni tarif/adım uydurmaz (gıda güvenliği). Dönen id doğrulanır, geçersizse yerele düşer.
+- **İlk açılış (onboarding)** — ilk girişte 3 adım: değer önerisi → hızlı diyet
+  seçimi (profile yazılır) → izin gerekçeleri (mikrofon/kamera/bildirim, dürüst;
+  kamera sürekli açık değil). "Görüldü" bilgisi kalıcı (`onboardingStore`); kalıcı
+  değer okunana dek nötr ekran (dönen kullanıcıya onboarding görünmez).
 - **Beceri seviyesi gerçekten etkiler** (`recipes/skill.ts`, testli) — yeni
   başlayan kolay tarifleri, ileri seviye zorları yeğler: hem AI önerisi hem
   haftalık plan sıralaması beceriye göre kademelenir (orta seviye nötr). Pişirme
