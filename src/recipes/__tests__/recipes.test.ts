@@ -21,6 +21,19 @@ test('her tarifte başlangıçta en az bir hazır düğüm var', () => {
   }
 });
 
+test('kritik güvenlik adımları iç sıcaklık eşiği taşır (gıda güvenliği)', () => {
+  for (const recipe of recipeList) {
+    for (const node of recipe.nodes) {
+      if (node.safety?.critical) {
+        assert.ok(
+          node.safety.minInternalTempC,
+          `${recipe.id}/${node.id}: kritik adımda iç sıcaklık eşiği yok`,
+        );
+      }
+    }
+  }
+});
+
 test('her tarif baştan sona tamamlanabilir', () => {
   for (const recipe of recipeList) {
     const engine = new RecipeEngine(recipe);

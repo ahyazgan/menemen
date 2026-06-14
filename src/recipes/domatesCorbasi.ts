@@ -1,0 +1,65 @@
+/** Domates Çorbası — blender adımında kritik-olmayan sıcak sıvı uyarısı. */
+import type { Recipe } from '../engine/types';
+
+export const domatesCorbasi: Recipe = {
+  id: 'domates-corbasi',
+  title: 'Domates Çorbası',
+  servings: 4,
+  locale: 'tr',
+  summary: 'Kadifemsi, sıcacık ev usulü domates çorbası.',
+  totalMinutes: 25,
+  nodes: [
+    {
+      id: 'roux',
+      title: 'Unu kavur',
+      instruction: 'Tereyağında unu kokusu çıkana dek kavur.',
+      kind: 'action',
+      requires: [],
+      completion: 'timer',
+      durationSec: 120,
+      voice_on_enter: 'Tereyağında unu kavuralım, topaklanmasın.',
+      recovery_rules: { yaktim: 'Un karardıysa baştan başla; çok kısık ateşte kavur.' },
+    },
+    {
+      id: 'add_tomato',
+      title: 'Domates ve su ekle',
+      instruction: 'Rendelenmiş domates, salça ve sıcak suyu ekle, karıştır.',
+      kind: 'action',
+      requires: ['roux'],
+      completion: 'user',
+      voice_on_enter: 'Domatesi ve suyu ekleyip karıştır.',
+    },
+    {
+      id: 'simmer',
+      title: 'Pişir',
+      instruction: 'Kaynayınca kısık ateşte pişir.',
+      kind: 'action',
+      requires: ['add_tomato'],
+      completion: 'timer',
+      durationSec: 600,
+      voice_on_complete: 'Çorba kıvamını aldı.',
+    },
+    {
+      id: 'blend',
+      title: 'Blenderdan geçir',
+      instruction: 'El blenderıyla pürüzsüz et.',
+      kind: 'action',
+      requires: ['simmer'],
+      completion: 'user',
+      safety: {
+        critical: false,
+        message: 'Sıcak sıvıyı blenderlarken dikkatli ol — blenderı içine batırıp öyle çalıştır, sıçramasın.',
+      },
+      voice_on_enter: 'Pürüzsüz olması için blenderdan geçirelim; dikkat, sıcak.',
+    },
+    {
+      id: 'serve',
+      title: 'Servis et',
+      instruction: 'Üzerine rendelenmiş kaşar serpip servis et.',
+      kind: 'finish',
+      requires: ['blend'],
+      completion: 'user',
+      voice_on_enter: 'Kaşarla servis et, afiyet olsun!',
+    },
+  ],
+};

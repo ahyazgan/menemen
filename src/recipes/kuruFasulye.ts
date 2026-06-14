@@ -1,0 +1,67 @@
+/** Kuru Fasulye — uzun pişen klasik (haşlanmış fasulye ile). */
+import type { Recipe } from '../engine/types';
+
+export const kuruFasulye: Recipe = {
+  id: 'kuru-fasulye',
+  title: 'Kuru Fasulye',
+  servings: 4,
+  locale: 'tr',
+  summary: 'Salçalı, doyurucu Türk klasiği.',
+  totalMinutes: 50,
+  nodes: [
+    {
+      id: 'saute_onion',
+      title: 'Soğanı kavur',
+      instruction: 'Tencerede yağı ısıt, doğranmış soğanı pembeleştir.',
+      kind: 'action',
+      requires: [],
+      completion: 'timer',
+      durationSec: 300,
+      voice_on_enter: 'Soğanı yağda pembeleşene dek kavuralım.',
+      recovery_rules: { yaktim: 'Ateşi kıs; yanmadan, soğanı sık karıştır.' },
+    },
+    {
+      id: 'add_paste',
+      title: 'Salçayı ekle',
+      instruction: 'Salçayı ekle, kokusu çıkana dek kavur.',
+      kind: 'action',
+      requires: ['saute_onion'],
+      completion: 'timer',
+      durationSec: 120,
+      voice_on_enter: 'Salçayı ekle, kısa süre kavur.',
+    },
+    {
+      id: 'add_beans',
+      title: 'Fasulye ve su ekle',
+      instruction: 'Haşlanmış fasulye, sıcak su ve baharatı ekle.',
+      kind: 'action',
+      requires: ['add_paste'],
+      completion: 'user',
+      voice_on_enter: 'Fasulyeyi ve suyu ekle.',
+    },
+    {
+      id: 'simmer',
+      title: 'Pişir',
+      instruction: 'Kısık ateşte tadı oturana dek pişir.',
+      kind: 'action',
+      requires: ['add_beans'],
+      completion: 'timer',
+      durationSec: 1800,
+      voice_on_enter: 'Kısık ateşte yavaşça pişsin.',
+      voice_on_complete: 'Suyu kıvamını almış olmalı.',
+      recovery_rules: {
+        tuzlu: 'Tuzluysa bir patatesi doğrayıp ekle, birkaç dakika pişir, sonra çıkar.',
+        sulu: 'Çok suluysa kapağı açıp koyulaşana dek pişir.',
+      },
+    },
+    {
+      id: 'serve',
+      title: 'Servis et',
+      instruction: 'Pilav ve turşuyla servis et.',
+      kind: 'finish',
+      requires: ['simmer'],
+      completion: 'user',
+      voice_on_enter: 'Pilavın yanında afiyet olsun!',
+    },
+  ],
+};
