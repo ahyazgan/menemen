@@ -122,4 +122,17 @@ export const en: TranslationTree = {
     medium: 'Medium',
     hard: 'Hard',
   },
+  suggest: {
+    button: '✨ Suggest for me',
+    title: 'What are you in the mood for?',
+    subtitle: 'Tell me in a few words; I’ll pick the best recipe for your profile.',
+    placeholder: 'e.g. something light, a soup, can be spicy',
+    go: 'Suggest a recipe',
+    thinking: 'Thinking…',
+    reason: 'Why this?',
+    defaultReason: 'This fits your profile and what you’re craving.',
+    cook: 'Let’s cook it',
+    again: 'Suggest another',
+    none: 'I couldn’t find a fit; try loosening your profile a little.',
+  },
 };

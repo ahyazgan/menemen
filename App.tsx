@@ -11,6 +11,7 @@ import { RecipeListScreen } from './src/screens/RecipeListScreen';
 import { ShoppingListScreen } from './src/screens/ShoppingListScreen';
 import { PantryScreen } from './src/screens/PantryScreen';
 import { ProfileScreen } from './src/screens/ProfileScreen';
+import { SuggestScreen } from './src/screens/SuggestScreen';
 import { SubscriptionGate } from './src/components/SubscriptionGate';
 import { initLocaleFromDevice } from './src/i18n/deviceLocale';
 import { useCookingStore } from './src/state/cookingStore';
@@ -66,9 +67,11 @@ export default function App() {
   const [showShopping, setShowShopping] = useState(false);
   const [showPantry, setShowPantry] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [showSuggest, setShowSuggest] = useState(false);
 
   function openRecipe(r: Recipe) {
     setShowPantry(false);
+    setShowSuggest(false);
     setRecipe(r);
   }
 
@@ -77,12 +80,14 @@ export default function App() {
     if (showShopping) return <ShoppingListScreen onBack={() => setShowShopping(false)} />;
     if (showPantry) return <PantryScreen onSelect={openRecipe} onBack={() => setShowPantry(false)} />;
     if (showProfile) return <ProfileScreen onBack={() => setShowProfile(false)} />;
+    if (showSuggest) return <SuggestScreen onSelect={openRecipe} onBack={() => setShowSuggest(false)} />;
     return (
       <RecipeListScreen
         onSelect={setRecipe}
         onOpenShopping={() => setShowShopping(true)}
         onOpenPantry={() => setShowPantry(true)}
         onOpenProfile={() => setShowProfile(true)}
+        onOpenSuggest={() => setShowSuggest(true)}
       />
     );
   }

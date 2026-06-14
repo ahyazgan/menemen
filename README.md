@@ -52,6 +52,11 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   (`deviceLocale.ts` + saf/test edilebilir `pickSupportedLocale`), **uygulama
   içi dil değiştirme** ve **karanlık mod** (açık/karanlık tema, `config/theme.ts`
   palet, reaktif `uiStore`; ekranlar anında döner, seçim AsyncStorage'da kalıcı).
+- **Bana özel öner (AI)** — "canın ne çekiyor?" yazısı + profiline göre **onaylı**
+  tariflerden biri önerilir (`SuggestScreen`). Saf sıralayıcı (`recipes/recommend.ts`,
+  testli) hem mock hem AI'nın çevrimdışı yedeği; gerçek öneri `services/recommend`
+  arayüzü arkasında **Claude (tool use)** ile — AI yalnızca verilen adaylardan seçer,
+  yeni tarif/adım uydurmaz (gıda güvenliği). Dönen id doğrulanır, geçersizse yerele düşer.
 - **Kişisel profil ("AI seni tanısın")** — diyet (hepsi/vejetaryen/vegan),
   yemediğin/kaçındığın malzemeler ve beceri seviyesi (`ProfileScreen`,
   kalıcı). Tarif listesi profile göre süzülür: diyete uymayan ya da kaçınılan

@@ -120,6 +120,19 @@ export const tr = {
     medium: 'Orta',
     hard: 'Zor',
   },
+  suggest: {
+    button: '✨ Bana özel öner',
+    title: 'Bugün canın ne çekiyor?',
+    subtitle: 'Birkaç kelimeyle anlat; profiline göre en uygun tarifi seçeyim.',
+    placeholder: 'örn. hafif bir çorba, acılı olabilir',
+    go: 'Tarif öner',
+    thinking: 'Düşünüyorum…',
+    reason: 'Neden bu?',
+    defaultReason: 'Profiline ve canının çektiğine en uygun tarif bu.',
+    cook: 'Hadi yapalım',
+    again: 'Başka öner',
+    none: 'Sana uygun bir tarif bulamadım; profilini biraz gevşetmeyi dene.',
+  },
 };
 
 /**
