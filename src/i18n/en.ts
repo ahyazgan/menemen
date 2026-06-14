@@ -126,6 +126,21 @@ export const en: TranslationTree = {
     medium: 'Medium',
     hard: 'Hard',
   },
+  onboarding: {
+    next: 'Continue',
+    skip: 'Skip',
+    start: 'Let’s start',
+    welcomeTitle: 'A pro by your side in the kitchen',
+    welcomeBody:
+      'Lezzet isn’t a recipe app; it’s a live guide that walks you through cooking by voice, glances at your pot now and then, and rescues you when things go sideways.',
+    dietTitle: 'What do you prefer?',
+    dietBody: 'I ask so I can suggest recipes that fit you. You can change it anytime from My Profile.',
+    permsTitle: 'A few permissions, for clear reasons',
+    permMic: '🎤 Microphone — to guide you by voice while you cook.',
+    permCamera: '📷 Camera — to glance at your pot only when you ask (never always-on).',
+    permNotif: '🔔 Notifications — to alert you when a timer ends, even with the screen off.',
+    permsFooter: 'We’ll ask for each permission in context, at the relevant step.',
+  },
   plan: {
     button: '🗓️ Weekly menu',
     title: 'Weekly Menu',
