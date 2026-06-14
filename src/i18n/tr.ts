@@ -63,6 +63,8 @@ export const tr = {
   safety: {
     cannotSkip: 'Bu adım güvenlik açısından atlanamaz.',
     title: 'Güvenlik notu',
+    general:
+      'Lezzet kesin "pişti" hükmü vermez; gözlem ve öneri sunar. Et, tavuk, balık ve yumurtada iç sıcaklığı kontrol et; emin değilsen biraz daha pişir.',
   },
   intent: {
     unknown: 'Tam anlayamadım, tekrar söyler misin?',
@@ -164,6 +166,7 @@ export const tr = {
     cook: 'Hadi yapalım',
     again: 'Başka öner',
     none: 'Sana uygun bir tarif bulamadım; profilini biraz gevşetmeyi dene.',
+    error: 'Bir aksilik oldu, öneriyi getiremedim. Tekrar dener misin?',
   },
 };
 

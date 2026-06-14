@@ -65,6 +65,8 @@ export const en: TranslationTree = {
   safety: {
     cannotSkip: 'This step cannot be skipped for safety reasons.',
     title: 'Safety note',
+    general:
+      'Lezzet never gives a definitive “cooked” verdict; it offers observations and suggestions. For meat, chicken, fish and eggs, check the internal temperature; if unsure, cook a little more.',
   },
   intent: {
     unknown: "Sorry, I didn't catch that — say it again?",
@@ -166,5 +168,6 @@ export const en: TranslationTree = {
     cook: 'Let’s cook it',
     again: 'Suggest another',
     none: 'I couldn’t find a fit; try loosening your profile a little.',
+    error: 'Something went wrong and I couldn’t fetch a suggestion. Try again?',
   },
 };

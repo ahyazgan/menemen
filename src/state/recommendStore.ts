@@ -14,6 +14,8 @@ import {
 interface RecommendState {
   service: RecommendService;
   loading: boolean;
+  /** Servis hatası (ağ/AI) → "sonuç yok"tan ayrı; ekran tekrar dene gösterir. */
+  error: boolean;
   result: RecommendResult | null;
   setService: (service: RecommendService) => void;
   suggest: (input: RecommendInput) => Promise<void>;
@@ -23,19 +25,20 @@ interface RecommendState {
 export const useRecommendStore = create<RecommendState>((set, get) => ({
   service: createMockRecommend(),
   loading: false,
+  error: false,
   result: null,
 
   setService: (service) => set({ service }),
 
   suggest: async (input) => {
-    set({ loading: true });
+    set({ loading: true, error: false, result: null });
     try {
       const result = await get().service.suggest(input);
       set({ result, loading: false });
     } catch {
-      set({ result: { recipeId: null }, loading: false });
+      set({ error: true, result: null, loading: false });
     }
   },
 
-  reset: () => set({ result: null, loading: false }),
+  reset: () => set({ result: null, loading: false, error: false }),
 }));
