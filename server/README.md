@@ -35,6 +35,9 @@ imzalamalı; `signHS256` yalnızca test/araç içindir.
 - **Rate limit:** Anahtar başına (JWT `sub` / token / IP) dakikada `RATE_LIMIT_RPM`
   istek (varsayılan 60). Aşımda `429` + `Retry-After`. Sınırlayıcı saf ve
   testlidir (`server/__tests__/rateLimit.test.mjs`).
+- **Gövde boyut limiti:** `MAX_BODY_BYTES` (varsayılan 10 MB). Content-Length
+  ön kontrolü + chunked istekler için akış muhafızı; aşan istek `413
+  payload_too_large` (`server/bodyLimit.mjs`).
 
 Not: proxy istemciden gelen `Authorization` başlığını yalnızca doğrulama için
 okur; yukarı akışa **iletmez** — gerçek sağlayıcı anahtarını kendisi ekler, yani

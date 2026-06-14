@@ -25,6 +25,7 @@ import { randomUUID } from 'node:crypto';
 import { createRateLimiter } from './rateLimit.mjs';
 import { verifyHS256 } from './jwt.mjs';
 import { ALLOWLIST, isAllowed } from './allowlist.mjs';
+import { contentLengthExceeds } from './bodyLimit.mjs';
 
 const PORT = Number(process.env.PORT ?? 8787);
 const JWT_SECRET = process.env.LEZZET_JWT_SECRET ?? '';
@@ -36,6 +37,8 @@ const CLIENT_TOKENS = (process.env.LEZZET_PROXY_TOKENS ?? '')
 const AUTH_MODE = JWT_SECRET ? 'jwt' : CLIENT_TOKENS.length > 0 ? 'token' : 'dev';
 // Uç nokta allowlist'i varsayılan AÇIK; bilinçli kapatmak için LEZZET_ALLOWLIST=off.
 const ALLOWLIST_ON = (process.env.LEZZET_ALLOWLIST ?? 'on') !== 'off';
+// İstek gövdesi boyut limiti (DoS koruması). Ses/görsel için varsayılan 10 MB.
+const MAX_BODY = Number(process.env.MAX_BODY_BYTES ?? 10 * 1024 * 1024);
 
 const rateLimiter = createRateLimiter({
   limit: Number(process.env.RATE_LIMIT_RPM ?? 60),
@@ -176,6 +179,12 @@ const server = http.createServer((req, res) => {
     }
   }
 
+  // 5) İstek gövdesi boyut limiti — Content-Length ön kontrolü.
+  if (contentLengthExceeds(req.headers['content-length'], MAX_BODY)) {
+    finalize(res, reqId, prefix, 413);
+    return send(res, 413, { error: 'İstek çok büyük', reason: 'payload_too_large' }, reqId);
+  }
+
   let authHeaders;
   try {
     authHeaders = route.authHeaders();
@@ -206,6 +215,22 @@ const server = http.createServer((req, res) => {
   upstream.on('error', (err) => {
     finalize(res, reqId, prefix, 502);
     send(res, 502, { error: `Upstream hatası: ${err.message}` }, reqId);
+  });
+
+  // Content-Length yoksa (chunked) akış sırasında boyutu denetle.
+  let received = 0;
+  let aborted = false;
+  req.on('data', (chunk) => {
+    received += chunk.length;
+    if (received > MAX_BODY && !aborted) {
+      aborted = true;
+      upstream.destroy();
+      if (!res.headersSent) {
+        finalize(res, reqId, prefix, 413);
+        send(res, 413, { error: 'İstek çok büyük', reason: 'payload_too_large' }, reqId);
+      }
+      req.destroy();
+    }
   });
 
   req.pipe(upstream);
