@@ -20,18 +20,34 @@ ANTHROPIC_API_KEY=... DEEPGRAM_API_KEY=... ELEVENLABS_API_KEY=... node server/pr
 | `/deepgram/*`  | `https://api.deepgram.com`   | `Authorization: Token`     |
 | `/elevenlabs/*`| `https://api.elevenlabs.io`  | `xi-api-key`               |
 
-## Kimlik doğrulama & hız sınırlama
+## Kimlik doğrulama (öncelik: JWT > statik token > dev)
 
-- **Auth:** `LEZZET_PROXY_TOKENS` (virgülle ayrılmış) izinli istemci token'larını
-  tutar. İstek `Authorization: Bearer <token>` göndermeli; geçersizse `401`.
-  Değişken boşsa auth kapalıdır (yalnızca geliştirme; konsol uyarısı verir).
-- **Rate limit:** Anahtar başına (token, yoksa IP) dakikada `RATE_LIMIT_RPM`
+| Mod | Koşul | Davranış |
+| --- | --- | --- |
+| **JWT** (önerilir) | `LEZZET_JWT_SECRET` ayarlı | `Authorization: Bearer <jwt>` HS256 ile doğrulanır (imza + `exp`/`nbf`). Rate-limit anahtarı JWT `sub`'tur. Geçersizse `401` + `reason` (örn. `jwt_expired`, `jwt_bad_signature`). |
+| **Statik token** | `LEZZET_PROXY_TOKENS` ayarlı | İzinli Bearer token allowlist'i; geçersizse `401 invalid_token`. Basit kurulum/dev için. |
+| **Dev** | İkisi de boş | Auth KAPALI, anahtar = IP. Konsol uyarısı verir. Yalnızca geliştirme. |
+
+JWT doğrulayıcı saftır ve testlidir (`server/jwt.mjs`, `server/__tests__/jwt.test.mjs`).
+Gerçek üretimde JWT'yi kendi kimlik sağlayıcın (Auth0/Cognito/kendi backend'in)
+imzalamalı; `signHS256` yalnızca test/araç içindir.
+
+- **Rate limit:** Anahtar başına (JWT `sub` / token / IP) dakikada `RATE_LIMIT_RPM`
   istek (varsayılan 60). Aşımda `429` + `Retry-After`. Sınırlayıcı saf ve
   testlidir (`server/__tests__/rateLimit.test.mjs`).
 
 Not: proxy istemciden gelen `Authorization` başlığını yalnızca doğrulama için
 okur; yukarı akışa **iletmez** — gerçek sağlayıcı anahtarını kendisi ekler, yani
 istemci token'ı dışarı sızmaz.
+
+## Gözlemlenebilirlik
+
+- **`/health`** → `200 {status, authMode}` (auth/rate-limit yok).
+- **`/metrics`** → toplam sayaçlar `{total, byStatus, byRoute}` (gizli içermez).
+- Her istek için `x-request-id` başlığı ve `stdout`'a **yapılandırılmış JSON log**
+  (`reqId`, `method`, `path`, `status`, `durationMs`, `authMode`).
+- `/health` ve `/metrics` kimlik istemez; üretimde bunları **ağ düzeyinde**
+  (iç ağ/yük dengeleyici) kısıtla.
 
 ## Uygulamayı proxy'ye bağlama
 
@@ -46,8 +62,10 @@ useCookingStore.getState().setServices(
 );
 ```
 
-## Üretim uyarısı
+## Üretim için kalanlar
 
-Bu hâlâ bir **iskelet**tir. Üretimde statik token yerine kendi kullanıcı oturum
-doğrulaman (JWT vb.) ile değiştir; ayrıca uç nokta/parametre allowlist'i ve
-maliyet koruması ekle.
+JWT auth, hız sınırlama ve temel gözlem hazır. Tam üretim için ek olarak:
+- Uç nokta/parametre **allowlist'i** (yalnızca beklenen yolların geçmesi).
+- Kalıcı metrik/iz (Prometheus/OpenTelemetry) — şu an bellekte sayaç.
+- JWT için **RS256/JWKS** (anahtar döndürme) — `verifyHS256` aynı arayüzle genişletilebilir.
+- Maliyet koruması ve sağlayıcı bazlı kota.

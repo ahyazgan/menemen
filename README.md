@@ -91,12 +91,14 @@ tarafında ekler. Uygulamayı bağlamak:
 ```ts
 import { createRealServices, proxyRealConfig } from './src/services/real';
 useCookingStore.getState().setServices(
-  createRealServices(proxyRealConfig('https://api.lezzet.app')),
+  createRealServices(proxyRealConfig('https://api.lezzet.app', { clientToken: userJwt })),
 );
 ```
 
-Proxy bir iskelettir; üretimde kullanıcı oturum doğrulaması, hız sınırlama ve
-uç nokta allowlist'i eklenmeli (bkz. `server/README.md`).
+Proxy artık **JWT (HS256) doğrulaması**, anahtar başına **hız sınırlama** ve
+temel **gözlem** (`/health`, `/metrics`, `reqId`'li JSON log) içeriyor; hepsi
+testli. Kalan üretim işleri (uç nokta allowlist'i, kalıcı metrik, RS256/JWKS)
+`server/README.md`'de.
 
 ## Sıradaki gerçek işler (öncelik sırası)
 
@@ -118,3 +120,35 @@ uç nokta allowlist'i eklenmeli (bkz. `server/README.md`).
 > (Expo Go'da değil). `REQUIRE_SUBSCRIPTION` (config) dev'de `false`; üretimde
 > `true` yapıp `subscriptionStore.setBilling(createRevenueCatBilling({ iosApiKey,
 > androidApiKey }))` ile gerçek SDK'ya geç.
+
+## Derleme (EAS) & cihaz duman testi
+
+`eas.json` üç profil tanımlar: `development` (dev-client + iOS simülatör),
+`preview` (dahili dağıtım), `production`. Uygulama config'i yerelde doğrulandı
+(`npx expo config` temiz: bundle id'ler, arka plan ses `UIBackgroundModes:[audio]`,
+mikrofon/kamera izin metinleri, Android izinleri).
+
+> **Not:** Gerçek `eas build` bir Expo hesabı (`eas login`) ve bulut derleme
+> gerektirir; cihaz duman testi de fiziksel cihaz/simülatör ister. Bunlar bu
+> repoda çalıştırılamaz — aşağıdaki komutları kendi ortamında çalıştır.
+
+```bash
+npm i -g eas-cli           # bir kez
+eas login                  # Expo hesabı
+eas init                   # projectId üretir (app.json'a extra.eas.projectId)
+eas build --profile development --platform ios   # veya android / all
+# dev-client'i cihaza/simülatöre kur, ardından:
+npx expo start --dev-client
+```
+
+### Cihaz duman-testi kontrol listesi
+1. Uygulama açılır; cihaz dili TR/EN ise arayüz o dilde gelir (aksi halde TR).
+2. "Ne pişsem?" listesi 13 tarifi gösterir; bir tarif seç → adımlar görünür.
+3. **Mikrofon izni** istenir; bas-konuş kaydı `store.listen` tetikler (mock veya
+   proxy üzerinden gerçek STT).
+4. **Kamera izni** istenir; "tencereye bak" tek kare çeker (frame-on-demand),
+   Vision yanıtı **gözlem + öneri** verir (kritik adımda asla "tamam" demez).
+5. Zamanlayıcılı adımda geri sayım işler; süre dolunca otomatik tamamlanır.
+6. Kritik güvenlik adımı (örn. tavuk/balık) **atlanamaz** (uyarı gösterilir).
+7. Ekran kilitliyken/arka planda sesli yönlendirme devam eder (`UIBackgroundModes`).
+8. (Üretim) `REQUIRE_SUBSCRIPTION=true` ile paywall kapısı; satın alma sonrası geçiş.
