@@ -6,6 +6,7 @@
 import { create } from 'zustand';
 
 import { createMemoryStore, type KeyValueStore } from '../services/storage';
+import { track } from '../services/analytics';
 
 const KEY = 'lezzet.onboarded';
 
@@ -34,6 +35,7 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
 
   complete: async () => {
     set({ seen: true });
+    track({ name: 'onboarding_completed' });
     await get().store.setItem(KEY, 'true');
   },
 }));

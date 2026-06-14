@@ -14,6 +14,7 @@ import {
 } from '../recipes/mealPlan';
 import type { Profile } from '../recipes/profile';
 import { createMemoryStore, type KeyValueStore } from '../services/storage';
+import { track } from '../services/analytics';
 
 const KEY = 'lezzet.mealPlan';
 const DEFAULT_DAYS = 7;
@@ -42,6 +43,7 @@ export const useMealPlanStore = create<MealPlanState>((set, get) => ({
   generate: async (profile, days = DEFAULT_DAYS) => {
     const plan = generatePlan(recipeList, profile, days);
     set({ plan });
+    track({ name: 'plan_generated', days: plan.length });
     await get().store.setItem(KEY, serializePlan(plan));
   },
 

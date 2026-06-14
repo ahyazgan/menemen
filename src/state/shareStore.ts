@@ -5,6 +5,7 @@
 import { create } from 'zustand';
 
 import { createMockShare, type ShareService } from '../services/share';
+import { track } from '../services/analytics';
 
 interface ShareState {
   service: ShareService;
@@ -15,5 +16,8 @@ interface ShareState {
 export const useShareStore = create<ShareState>((set, get) => ({
   service: createMockShare(),
   setService: (service) => set({ service }),
-  share: (message) => get().service.share(message),
+  share: (message) => {
+    track({ name: 'shared' });
+    return get().service.share(message);
+  },
 }));

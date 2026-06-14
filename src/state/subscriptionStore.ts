@@ -6,6 +6,7 @@ import { create } from 'zustand';
 
 import type { BillingService, SubscriptionPlan } from '../services/billing';
 import { createMockBilling } from '../services/billing';
+import { track } from '../services/analytics';
 
 interface SubscriptionState {
   billing: BillingService;
@@ -62,6 +63,7 @@ export const useSubscriptionStore = create<SubscriptionState>((set, get) => ({
     try {
       const subscribed = await get().billing.purchase(planId);
       set({ subscribed });
+      if (subscribed) track({ name: 'subscribed' });
     } catch (err) {
       set({ error: toMessage(err) });
     } finally {

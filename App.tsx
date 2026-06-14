@@ -31,6 +31,7 @@ import { useOnboardingStore } from './src/state/onboardingStore';
 import { createExpoNotify } from './src/services/notify';
 import { createExpoPhoto } from './src/services/photo';
 import { createRNShare } from './src/services/share';
+import { setAnalytics, createMockAnalytics } from './src/services/analytics';
 import { createAsyncStorage } from './src/services/storage';
 import { getRecipe } from './src/recipes';
 import { parseRecipeLink } from './src/recipes/share';
@@ -73,6 +74,8 @@ export default function App() {
     mealPlan.setStore(storage);
     void mealPlan.load();
     useShareStore.getState().setService(createRNShare());
+    // Analitik: dev'de olayları logla. Üretimde createHttpAnalytics(proxy) ile değiştir.
+    setAnalytics(createMockAnalytics((event) => console.log('[analytics]', event.name)));
     const onboarding = useOnboardingStore.getState();
     onboarding.setStore(storage);
     void onboarding.load();
