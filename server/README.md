@@ -20,11 +20,12 @@ ANTHROPIC_API_KEY=... DEEPGRAM_API_KEY=... ELEVENLABS_API_KEY=... node server/pr
 | `/deepgram/*`  | `https://api.deepgram.com`   | `Authorization: Token`     |
 | `/elevenlabs/*`| `https://api.elevenlabs.io`  | `xi-api-key`               |
 
-## Kimlik doğrulama (öncelik: JWKS > RS256 > HS256 > statik token > dev)
+## Kimlik doğrulama (öncelik: JWKS_URL > JWKS > RS256 > HS256 > statik token > dev)
 
 | Mod | Koşul | Davranış |
 | --- | --- | --- |
-| **JWKS** (önerilir) | `LEZZET_JWKS` ayarlı | `{ keys: [JWK,...] }`; token `kid`'ine göre RS256 doğrular (anahtar rotasyonu). |
+| **Uzak JWKS** (önerilir) | `LEZZET_JWKS_URL` ayarlı | jwks.json'u URL'den **önbellekli** çeker (`LEZZET_JWKS_TTL_MS`, varsayılan 1 saat); token `kid`'ine göre RS256 doğrular. Eşzamanlı istekler tek fetch'e indirgenir. |
+| **Inline JWKS** | `LEZZET_JWKS` ayarlı | `{ keys: [JWK,...] }`; token `kid`'ine göre RS256 doğrular. |
 | **RS256** | `LEZZET_JWT_PUBLIC_KEY` (PEM) | Tek açık anahtarla RS256 imza + `exp`/`nbf`. |
 | **HS256** | `LEZZET_JWT_SECRET` | Paylaşılan sırla HS256. |
 | **Statik token** | `LEZZET_PROXY_TOKENS` | İzinli Bearer token allowlist'i; geçersizse `401 invalid_token`. |
@@ -89,8 +90,8 @@ useCookingStore.getState().setServices(
 
 ## Üretim için kalanlar
 
-JWT (HS256/RS256/JWKS) auth, hız sınırlama, uç nokta allowlist'i, gövde boyut
-limiti ve Prometheus `/metrics` hazır. Tam üretim için ek olarak:
-- Uzak JWKS'i URL'den çekme + önbellek (şu an JWKS env'den inline JSON).
+JWT (HS256/RS256/JWKS, uzak JWKS önbellekli), hız sınırlama, uç nokta
+allowlist'i, gövde boyut limiti ve Prometheus `/metrics` hazır. Tam üretim için
+ek olarak:
 - Dağıtık iz (OpenTelemetry) ve kalıcı metrik deposu.
 - Maliyet koruması ve sağlayıcı bazlı kota.

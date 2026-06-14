@@ -27,6 +27,7 @@ import { verifyHS256, verifyRS256, verifyJwtWithJwks } from './jwt.mjs';
 import { ALLOWLIST, isAllowed } from './allowlist.mjs';
 import { contentLengthExceeds } from './bodyLimit.mjs';
 import { toPrometheus } from './metrics.mjs';
+import { createJwksCache } from './jwksCache.mjs';
 
 const PORT = Number(process.env.PORT ?? 8787);
 const HS_SECRET = process.env.LEZZET_JWT_SECRET ?? '';
@@ -43,16 +44,27 @@ try {
   console.warn('⚠️  LEZZET_JWKS geçersiz JSON — yok sayılıyor.');
 }
 
-// Öncelik: JWKS (RS256, çok anahtar) > RS256 (tek PEM) > HS256 > statik token > dev.
-const AUTH_MODE = JWKS
-  ? 'jwks'
-  : RS_PUBLIC
-    ? 'rs256'
-    : HS_SECRET
-      ? 'hs256'
-      : CLIENT_TOKENS.length > 0
-        ? 'token'
-        : 'dev';
+// Uzaktan JWKS: kimlik sağlayıcının /.well-known/jwks.json adresi (önbellekli).
+const JWKS_URL = (process.env.LEZZET_JWKS_URL ?? '').trim();
+const jwksCache = JWKS_URL
+  ? createJwksCache({
+      fetcher: () => fetchJson(JWKS_URL),
+      ttlMs: Number(process.env.LEZZET_JWKS_TTL_MS ?? 3_600_000),
+    })
+  : null;
+
+// Öncelik: uzak JWKS > inline JWKS > RS256 (PEM) > HS256 > statik token > dev.
+const AUTH_MODE = JWKS_URL
+  ? 'jwks-url'
+  : JWKS
+    ? 'jwks'
+    : RS_PUBLIC
+      ? 'rs256'
+      : HS_SECRET
+        ? 'hs256'
+        : CLIENT_TOKENS.length > 0
+          ? 'token'
+          : 'dev';
 // Uç nokta allowlist'i varsayılan AÇIK; bilinçli kapatmak için LEZZET_ALLOWLIST=off.
 const ALLOWLIST_ON = (process.env.LEZZET_ALLOWLIST ?? 'on') !== 'off';
 // İstek gövdesi boyut limiti (DoS koruması). Ses/görsel için varsayılan 10 MB.
@@ -94,13 +106,48 @@ function bearer(req) {
   return match?.[1];
 }
 
-/** @returns {{ ok: true, key: string } | { ok: false, status: number, reason: string }} */
-function authenticate(req) {
+/** URL'den JSON çeker (http/https). JWKS fetcher'ı için. */
+function fetchJson(url) {
+  return new Promise((resolve, reject) => {
+    const lib = url.startsWith('https:') ? https : http;
+    const request = lib.get(url, (res) => {
+      let data = '';
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+      res.on('end', () => {
+        try {
+          resolve(JSON.parse(data));
+        } catch (err) {
+          reject(err);
+        }
+      });
+    });
+    request.on('error', reject);
+    request.setTimeout(5000, () => request.destroy(new Error('JWKS fetch timeout')));
+  });
+}
+
+/** @returns {Promise<{ ok: true, key: string } | { ok: false, status: number, reason: string }>} */
+async function authenticate(req) {
   const ip = req.socket.remoteAddress ?? 'unknown';
   if (AUTH_MODE === 'dev') return { ok: true, key: ip };
 
   const token = bearer(req);
   if (!token) return { ok: false, status: 401, reason: 'missing_bearer' };
+
+  if (AUTH_MODE === 'jwks-url') {
+    let jwks;
+    try {
+      jwks = await jwksCache.get();
+    } catch {
+      return { ok: false, status: 401, reason: 'jwks_fetch_error' };
+    }
+    const result = verifyJwtWithJwks(token, jwks);
+    if (!result.valid) return { ok: false, status: 401, reason: `jwt_${result.reason}` };
+    const sub = typeof result.payload.sub === 'string' ? result.payload.sub : 'jwt';
+    return { ok: true, key: sub };
+  }
 
   if (AUTH_MODE === 'jwks' || AUTH_MODE === 'rs256' || AUTH_MODE === 'hs256') {
     const result =
@@ -136,6 +183,10 @@ function send(res, status, body, reqId) {
 }
 
 const server = http.createServer((req, res) => {
+  void handleRequest(req, res);
+});
+
+async function handleRequest(req, res) {
   const reqId = randomUUID();
   const started = Date.now();
   const url = req.url ?? '/';
@@ -163,7 +214,7 @@ const server = http.createServer((req, res) => {
   }
 
   // 1) Kimlik doğrulama
-  const auth = authenticate(req);
+  const auth = await authenticate(req);
   if (!auth.ok) {
     finalize(res, reqId, 'auth', auth.status);
     return send(res, auth.status, { error: 'Yetkisiz', reason: auth.reason }, reqId);
@@ -258,7 +309,7 @@ const server = http.createServer((req, res) => {
   });
 
   req.pipe(upstream);
-});
+}
 
 server.listen(PORT, () => {
   log({ event: 'listen', port: PORT, authMode: AUTH_MODE });
