@@ -1,0 +1,23 @@
+{
+  "//": "Yalnızca saf motoru CommonJS'e derleyip node:test ile çalıştırmak için. Uygulama tsconfig'inden bağımsızdır; harici bağımlılık gerektirmez.",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node10",
+    "target": "es2021",
+    "lib": ["es2021"],
+    "rootDir": ".",
+    "outDir": ".test-build",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": [],
+    "noEmit": false
+  },
+  "include": [
+    "src/engine/**/*",
+    "src/recipes/**/*",
+    "src/i18n/**/*",
+    "scripts/node-test-shims.d.ts"
+  ],
+  "exclude": ["src/i18n/deviceLocale.ts"]
+}
