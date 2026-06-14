@@ -12,8 +12,11 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
 - **`src/engine/`** — saf TypeScript tarif motoru (React/Expo importu yok).
   Tarifi yürütülebilir bir grafa çevirir; bağımlılık, paralel iş, zamanlayıcı,
   kurtarma ve gıda güvenliği kuralını yönetir. **Test edildi ve çalışıyor.**
-- **`src/services/`** — `stt`/`tts`/`vision`/`intent` arayüzleri ve UI'ı
-  servissiz test etmek için `mock/` implementasyonları.
+- **`src/services/`** — `stt`/`tts`/`vision`/`intent` arayüzleri, UI'ı servissiz
+  test etmek için `mock/` implementasyonları ve **`real/`** gerçek entegrasyonlar:
+  Deepgram (STT), ElevenLabs (TTS), Claude Vision + Claude Intent (tool use).
+  Vision gıda güvenliği kuralına uyar (kesin hüküm yok). Store, `setServices` ile
+  mock'tan gerçeğe geçer.
 - **`src/state/cookingStore.ts`** — motoru Zustand'a saran durum makinesi;
   servisleri buraya bağlar. Ekranlar yalnızca buradaki action'ları çağırır.
 - **`src/screens/CookingScreen.tsx`** — canlı pişirme ekranı (sadece UI).
@@ -62,11 +65,19 @@ config/    → sabitler ve özellik bayrakları
 Akış: **screens → state → services**. Ekran asla servisi doğrudan çağırmaz.
 `engine` saf kalır ki test edilebilsin.
 
+## Güvenlik notu (gerçek servisler)
+
+`services/real/` API anahtarlarını **uygulamaya gömmemeli**. Üretimde her sağlayıcıyı
+kendi backend proxy'n üzerinden çağır (Anthropic için `baseURL`, STT/TTS için kendi uç
+noktaların); proxy anahtarı sunucuda tutsun. Mevcut fabrika geliştirme ve proxy
+entegrasyonu içindir.
+
 ## Sıradaki gerçek işler (öncelik sırası)
 
-1. `services/real/` — Deepgram (STT), ElevenLabs (TTS), Claude Vision/Intent
-2. `expo-audio` ile ses kaydı + `expo-camera` ile frame-on-demand bağla
-3. RevenueCat — abonelik (iOS IAP + Android Play Billing)
-4. "Ne pişsem" ekranı ve tarif seçimi
-5. Tarif kütüphanesini çoğalt (graf JSON'ları)
-6. EN dili (`src/i18n/en.ts`) ve global açılım
+1. ~~`services/real/` — Deepgram, ElevenLabs, Claude Vision/Intent~~ ✅
+2. `expo-audio` ile ses kaydı + `expo-camera` ile frame-on-demand bağla (store'a)
+3. Anahtarlar için backend proxy (anahtarları istemciden çıkar)
+4. RevenueCat — abonelik (iOS IAP + Android Play Billing)
+5. "Ne pişsem" ekranı ve tarif seçimi
+6. Tarif kütüphanesini çoğalt (graf JSON'ları)
+7. EN dili (`src/i18n/en.ts`) ve global açılım

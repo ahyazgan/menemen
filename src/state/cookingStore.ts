@@ -33,6 +33,8 @@ interface CookingState {
   safetyNotice: string | null;
 
   // --- action'lar ---
+  /** Servisleri değiştir (mock → gerçek geçişi; bkz. services/real). */
+  setServices: (services: Services) => void;
   loadRecipe: (recipe: Recipe) => void;
   startCooking: () => void;
   focus: (nodeId: string) => void;
@@ -62,6 +64,8 @@ export const useCookingStore = create<CookingState>((set, get) => ({
   lastSpoken: null,
   lastVision: null,
   safetyNotice: null,
+
+  setServices: (services) => set({ services }),
 
   loadRecipe: (recipe) => {
     const engine = new RecipeEngine(recipe);

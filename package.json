@@ -12,6 +12,7 @@
     "test": "npm run typecheck && npm run test:engine"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.70.1",
     "expo": "~51.0.0",
     "expo-audio": "~0.3.0",
     "expo-camera": "~15.0.0",
