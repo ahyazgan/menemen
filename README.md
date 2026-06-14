@@ -52,6 +52,11 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   (`deviceLocale.ts` + saf/test edilebilir `pickSupportedLocale`), **uygulama
   içi dil değiştirme** ve **karanlık mod** (açık/karanlık tema, `config/theme.ts`
   palet, reaktif `uiStore`; ekranlar anında döner, seçim AsyncStorage'da kalıcı).
+- **Kişisel profil ("AI seni tanısın")** — diyet (hepsi/vejetaryen/vegan),
+  yemediğin/kaçındığın malzemeler ve beceri seviyesi (`ProfileScreen`,
+  kalıcı). Tarif listesi profile göre süzülür: diyete uymayan ya da kaçınılan
+  malzeme içeren tarifler gizlenir; kartlarda **zorluk** rozeti. Diyet türetimi
+  ve süzme mantığı saf (`recipes/profile.ts`) ve testli.
 - **Adım fotoğrafı** — pişirirken bir adıma kendi fotoğrafını ekleme
   (`expo-image-picker` ile tek kare, frame-on-demand; sürekli akış yok). Saf
   harita mantığı `recipes/stepPhotos.ts`'te ve testli; çekim `services/photo`

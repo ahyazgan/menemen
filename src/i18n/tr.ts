@@ -95,6 +95,31 @@ export const tr = {
     none: 'Önce birkaç malzeme seç.',
     ofTotal: 'malzeme',
   },
+  profile: {
+    button: '👤 Profilim',
+    title: 'Profilim',
+    subtitle: 'Seni tanıyayım ki sana uygun tarifleri önereyim.',
+    diet: 'Beslenme',
+    skill: 'Mutfak becerin',
+    avoid: 'Yemediğin / kaçındığın malzemeler',
+    avoidHint: 'Seçtiklerini içeren tarifler listede gösterilmez.',
+    saved: 'Tercihlerin kayıtlı, ona göre öneriyorum.',
+    diets: {
+      all: 'Hepsi',
+      vegetarian: 'Vejetaryen',
+      vegan: 'Vegan',
+    },
+    skills: {
+      beginner: 'Yeni başlayan',
+      intermediate: 'Orta',
+      advanced: 'İleri',
+    },
+  },
+  difficulty: {
+    easy: 'Kolay',
+    medium: 'Orta',
+    hard: 'Zor',
+  },
 };
 
 /**
