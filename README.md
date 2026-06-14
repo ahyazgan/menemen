@@ -33,9 +33,9 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   fırın tavuk, ızgara balık, kuru fasulye) + `RecipeListScreen` ("Ne pişsem?",
   şansıma seç). Her graf testlerle doğrulanıyor: geçerli DAG, başlatılabilir,
   tamamlanabilir ve her **kritik** pişirme adımı iç sıcaklık eşiği taşıyor.
-  Metinler **çok dilli** (`LocalizedText` + saf `localize()`): tüm başlık/özetler
-  TR+EN; 9/13 tarif baştan sona TR+EN; kalan 4'ün (tavuk sote, köfte, fırın tavuk,
-  ızgara balık) adımları EN eklenene dek TR'ye düşer.
+  Metinler **çok dilli** (`LocalizedText` + saf `localize()`): **13/13 tarif
+  baştan sona TR+EN** (başlık, özet, yönerge, sesli metin, kurtarma ve güvenlik
+  mesajları dahil); bir test her tarifin her metin alanında tr+en olmasını zorlar.
 - **`src/i18n/`, `src/config/`** — TR + EN metinler (`setLocale`/`getLocale`,
   anahtar paritesi tsc + testle zorlanıyor), **cihaz dili tespiti**
   (`deviceLocale.ts` + saf/test edilebilir `pickSupportedLocale`) ve yapılandırma.
@@ -110,9 +110,9 @@ uç nokta allowlist'i eklenmeli (bkz. `server/README.md`).
 8. ~~EN dili (`src/i18n/en.ts`) + locale altyapısı~~ ✅
 
 > EN dili UI metinlerini kapsar; cihaz dili tespiti eklendi (App açılışta
-> `initLocaleFromDevice()`). Tarif içeriği de çok dilli: tüm başlık/özetler TR+EN,
-> 9/13 tarif tam TR+EN (adımlar dahil). Kalan iş: son 4 ana yemeğin (tavuk sote,
-> köfte, fırın tavuk, ızgara balık) adım metinlerine de EN eklemek.
+> `initLocaleFromDevice()`). Tarif içeriği de tamamen çok dilli: **13/13 tarif**
+> başlık/özet/adım metinleriyle TR+EN. Üçüncü bir dil eklemek artık yalnızca
+> `src/i18n/<dil>.ts` + tariflere o dil anahtarını eklemekten ibaret.
 
 > RevenueCat native modül ister: Expo'da `expo prebuild`/dev-client ile çalışır
 > (Expo Go'da değil). `REQUIRE_SUBSCRIPTION` (config) dev'de `false`; üretimde

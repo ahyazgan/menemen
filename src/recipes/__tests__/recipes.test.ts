@@ -31,19 +31,6 @@ function assertBilingual(value: unknown, where: string): void {
   assert.ok(map.tr && map.en, `${where}: tr/en eksik`);
 }
 
-/** Adım metinleri tamamen TR+EN çevrilmiş tarifler. Çevirdikçe genişler. */
-const FULLY_BILINGUAL = new Set([
-  'menemen',
-  'sahanda-yumurta',
-  'coban-salatasi',
-  'haslanmis-yumurta',
-  'sigara-boregi',
-  'mercimek-corbasi',
-  'domates-corbasi',
-  'pilav',
-  'kuru-fasulye',
-]);
-
 test('her tarifin başlığı ve özeti çift dilli (tr + en)', () => {
   for (const recipe of recipeList) {
     assertBilingual(recipe.title, `${recipe.id}.title`);
@@ -51,9 +38,8 @@ test('her tarifin başlığı ve özeti çift dilli (tr + en)', () => {
   }
 });
 
-test('tam çevrilmiş tarifler her metin alanında tr+en taşır', () => {
+test('TÜM tariflerin her metin alanı çift dilli (tr + en)', () => {
   for (const recipe of recipeList) {
-    if (!FULLY_BILINGUAL.has(recipe.id)) continue;
     for (const node of recipe.nodes) {
       assertBilingual(node.title, `${recipe.id}/${node.id}.title`);
       assertBilingual(node.instruction, `${recipe.id}/${node.id}.instruction`);

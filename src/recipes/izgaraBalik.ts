@@ -14,49 +14,72 @@ export const izgaraBalik: Recipe = {
   nodes: [
     {
       id: 'prep_fish',
-      title: 'Balığı hazırla',
-      instruction: 'Balığı temizle, kurula; tuz, limon ve zeytinyağı sür.',
+      title: { tr: 'Balığı hazırla', en: 'Prepare the fish' },
+      instruction: {
+        tr: 'Balığı temizle, kurula; tuz, limon ve zeytinyağı sür.',
+        en: 'Clean and pat the fish dry; rub with salt, lemon and olive oil.',
+      },
       kind: 'prep',
       requires: [],
       parallel_with: ['heat_grill'],
       completion: 'user',
-      voice_on_enter: 'Balığı kurulayıp tuz-limon-yağ sürelim; kuru balık ızgaraya yapışmaz.',
+      voice_on_enter: {
+        tr: 'Balığı kurulayıp tuz-limon-yağ sürelim; kuru balık ızgaraya yapışmaz.',
+        en: "Let's pat the fish dry and rub it with salt, lemon and oil; dry fish won't stick to the grill.",
+      },
     },
     {
       id: 'heat_grill',
-      title: 'Izgarayı kızdır',
-      instruction: 'Izgarayı/tavayı iyice kızdır.',
+      title: { tr: 'Izgarayı kızdır', en: 'Heat the grill' },
+      instruction: {
+        tr: 'Izgarayı/tavayı iyice kızdır.',
+        en: 'Heat the grill or pan thoroughly.',
+      },
       kind: 'action',
       requires: [],
       parallel_with: ['prep_fish'],
       completion: 'user',
-      voice_on_enter: 'Izgarayı iyice kızdıralım.',
+      voice_on_enter: { tr: 'Izgarayı iyice kızdıralım.', en: "Let's get the grill really hot." },
     },
     {
       id: 'grill',
-      title: 'Pişir',
-      instruction: 'Her iki yüzünü, eti pul pul ayrılana dek pişir.',
+      title: { tr: 'Pişir', en: 'Grill' },
+      instruction: {
+        tr: 'Her iki yüzünü, eti pul pul ayrılana dek pişir.',
+        en: 'Cook both sides until the flesh flakes apart.',
+      },
       kind: 'action',
       requires: ['prep_fish', 'heat_grill'],
       completion: 'user',
       durationSec: 600,
       safety: {
         critical: true,
-        message:
-          'Balık tam pişmeli: eti matlaşmalı ve çatalla kolayca pul pul ayrılmalı, iç sıcaklık 63°C olmalı. Cam gibi/şeffaf görünüyorsa biraz daha pişir.',
+        message: {
+          tr: 'Balık tam pişmeli: eti matlaşmalı ve çatalla kolayca pul pul ayrılmalı, iç sıcaklık 63°C olmalı. Cam gibi/şeffaf görünüyorsa biraz daha pişir.',
+          en: 'The fish must be fully cooked: the flesh should turn opaque and flake easily with a fork, internal temperature should reach 63°C. If it looks glassy or translucent, cook a little more.',
+        },
         minInternalTempC: 63,
       },
-      voice_on_enter: 'Acele çevirme; bir yüzü iyice kızarınca dön.',
-      voice_on_complete: 'Çatalla dene: et pul pul ayrılıyor mu?',
+      voice_on_enter: {
+        tr: 'Acele çevirme; bir yüzü iyice kızarınca dön.',
+        en: "Don't rush to flip it; turn once one side is well seared.",
+      },
+      voice_on_complete: {
+        tr: 'Çatalla dene: et pul pul ayrılıyor mu?',
+        en: 'Test with a fork: does the flesh flake apart?',
+      },
     },
     {
       id: 'serve',
-      title: 'Servis et',
-      instruction: 'Roka ve limonla servis et.',
+      title: { tr: 'Servis et', en: 'Serve' },
+      instruction: { tr: 'Roka ve limonla servis et.', en: 'Serve with arugula and lemon.' },
       kind: 'finish',
       requires: ['grill'],
       completion: 'user',
-      voice_on_enter: 'Roka ve limonla servis et, afiyet olsun!',
+      voice_on_enter: {
+        tr: 'Roka ve limonla servis et, afiyet olsun!',
+        en: 'Serve with arugula and lemon — enjoy!',
+      },
     },
   ],
 };
