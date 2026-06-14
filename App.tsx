@@ -10,6 +10,7 @@ import { CookingScreen } from './src/screens/CookingScreen';
 import { RecipeListScreen } from './src/screens/RecipeListScreen';
 import { ShoppingListScreen } from './src/screens/ShoppingListScreen';
 import { PantryScreen } from './src/screens/PantryScreen';
+import { ProfileScreen } from './src/screens/ProfileScreen';
 import { SubscriptionGate } from './src/components/SubscriptionGate';
 import { initLocaleFromDevice } from './src/i18n/deviceLocale';
 import { useCookingStore } from './src/state/cookingStore';
@@ -20,6 +21,7 @@ import { useHistoryStore } from './src/state/historyStore';
 import { useNotesStore } from './src/state/notesStore';
 import { usePantryStore } from './src/state/pantryStore';
 import { useStepPhotosStore } from './src/state/stepPhotosStore';
+import { useProfileStore } from './src/state/profileStore';
 import { createExpoNotify } from './src/services/notify';
 import { createExpoPhoto } from './src/services/photo';
 import { createAsyncStorage } from './src/services/storage';
@@ -55,11 +57,15 @@ export default function App() {
     stepPhotos.setStore(storage);
     stepPhotos.setPhoto(createExpoPhoto());
     void stepPhotos.load();
+    const profile = useProfileStore.getState();
+    profile.setStore(storage);
+    void profile.load();
     return null;
   });
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [showShopping, setShowShopping] = useState(false);
   const [showPantry, setShowPantry] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
 
   function openRecipe(r: Recipe) {
     setShowPantry(false);
@@ -70,11 +76,13 @@ export default function App() {
     if (recipe) return <CookingScreen recipe={recipe} onBack={() => setRecipe(null)} />;
     if (showShopping) return <ShoppingListScreen onBack={() => setShowShopping(false)} />;
     if (showPantry) return <PantryScreen onSelect={openRecipe} onBack={() => setShowPantry(false)} />;
+    if (showProfile) return <ProfileScreen onBack={() => setShowProfile(false)} />;
     return (
       <RecipeListScreen
         onSelect={setRecipe}
         onOpenShopping={() => setShowShopping(true)}
         onOpenPantry={() => setShowPantry(true)}
+        onOpenProfile={() => setShowProfile(true)}
       />
     );
   }

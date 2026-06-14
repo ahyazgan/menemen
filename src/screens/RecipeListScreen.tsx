@@ -8,10 +8,12 @@ import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-
 
 import { recipeList, randomRecipe, getRecipe } from '../recipes';
 import { CATEGORIES, filterRecipes } from '../recipes/filter';
+import { filterByProfile, recipeDifficulty } from '../recipes/profile';
 import { AVAILABLE_LOCALES, t } from '../i18n';
 import { useUiStore, useThemeColors } from '../state/uiStore';
 import { useFavoritesStore } from '../state/favoritesStore';
 import { useHistoryStore } from '../state/historyStore';
+import { useProfileStore } from '../state/profileStore';
 import { cookCounts } from '../recipes/history';
 import { localize } from '../engine';
 import type { ThemeColors } from '../config/theme';
@@ -21,9 +23,15 @@ interface Props {
   onSelect: (recipe: Recipe) => void;
   onOpenShopping: () => void;
   onOpenPantry: () => void;
+  onOpenProfile: () => void;
 }
 
-export function RecipeListScreen({ onSelect, onOpenShopping, onOpenPantry }: Props) {
+export function RecipeListScreen({
+  onSelect,
+  onOpenShopping,
+  onOpenPantry,
+  onOpenProfile,
+}: Props) {
   const locale = useUiStore((s) => s.locale);
   const setLocale = useUiStore((s) => s.setLocale);
   const theme = useUiStore((s) => s.theme);
@@ -33,6 +41,7 @@ export function RecipeListScreen({ onSelect, onOpenShopping, onOpenPantry }: Pro
   const favoriteIds = useFavoritesStore((s) => s.ids);
   const toggleFavorite = useFavoritesStore((s) => s.toggle);
   const historyEntries = useHistoryStore((s) => s.entries);
+  const profile = useProfileStore((s) => s.profile);
   const recent = useMemo(
     () =>
       historyEntries
@@ -47,9 +56,11 @@ export function RecipeListScreen({ onSelect, onOpenShopping, onOpenPantry }: Pro
   const [onlyFavorites, setOnlyFavorites] = useState(false);
 
   const shown = useMemo(() => {
-    const base = filterRecipes(recipeList, { query, category });
+    // Önce profil (diyet + kaçınılan malzeme), sonra arama/kategori/favori süzgeci.
+    const byProfile = filterByProfile(recipeList, profile);
+    const base = filterRecipes(byProfile, { query, category });
     return onlyFavorites ? base.filter((r) => favoriteIds.includes(r.id)) : base;
-  }, [query, category, onlyFavorites, favoriteIds]);
+  }, [query, category, onlyFavorites, favoriteIds, profile]);
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
@@ -133,6 +144,9 @@ export function RecipeListScreen({ onSelect, onOpenShopping, onOpenPantry }: Pro
           <Text style={styles.shoppingText}>{t('picker.pantry')}</Text>
         </Pressable>
       </View>
+      <Pressable style={styles.profile} onPress={onOpenProfile}>
+        <Text style={styles.shoppingText}>{t('profile.button')}</Text>
+      </Pressable>
 
       {shown.length === 0 ? (
         <Text style={styles.empty}>{t('picker.noResults')}</Text>
@@ -159,6 +173,7 @@ export function RecipeListScreen({ onSelect, onOpenShopping, onOpenPantry }: Pro
                   ? `${recipe.totalMinutes} ${t('picker.minutes')} · `
                   : ''}
                 {recipe.servings} {t('picker.servings')}
+                {` · ${t(`difficulty.${recipeDifficulty(recipe)}`)}`}
                 {(counts[recipe.id] ?? 0) > 0
                   ? ` · ${counts[recipe.id]} ${t('picker.times')}`
                   : ''}
@@ -251,7 +266,7 @@ const makeStyles = (c: ThemeColors) =>
       marginBottom: 20,
     },
     randomText: { color: c.onAccent, fontSize: 17, fontWeight: '700' },
-    actionsRow: { flexDirection: 'row', gap: 10, marginTop: 16, marginBottom: 20 },
+    actionsRow: { flexDirection: 'row', gap: 10, marginTop: 16, marginBottom: 10 },
     flex: { flex: 1, marginTop: 0, marginBottom: 0 },
     shopping: {
       backgroundColor: c.fill,
@@ -262,6 +277,14 @@ const makeStyles = (c: ThemeColors) =>
       justifyContent: 'center',
     },
     shoppingText: { color: c.textMuted, fontSize: 15, fontWeight: '700' },
+    profile: {
+      backgroundColor: c.fill,
+      borderRadius: 14,
+      paddingVertical: 14,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 20,
+    },
     empty: { fontSize: 16, color: c.textMuted, textAlign: 'center', marginTop: 24 },
     card: {
       backgroundColor: c.surface,

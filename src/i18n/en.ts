@@ -97,4 +97,29 @@ export const en: TranslationTree = {
     none: 'Pick a few ingredients first.',
     ofTotal: 'ingredients',
   },
+  profile: {
+    button: '👤 My profile',
+    title: 'My Profile',
+    subtitle: 'Let me get to know you so I can suggest recipes that fit.',
+    diet: 'Diet',
+    skill: 'Your cooking skill',
+    avoid: 'Ingredients you avoid / dislike',
+    avoidHint: 'Recipes containing these won’t show in the list.',
+    saved: 'Your preferences are saved — I’ll suggest accordingly.',
+    diets: {
+      all: 'All',
+      vegetarian: 'Vegetarian',
+      vegan: 'Vegan',
+    },
+    skills: {
+      beginner: 'Beginner',
+      intermediate: 'Intermediate',
+      advanced: 'Advanced',
+    },
+  },
+  difficulty: {
+    easy: 'Easy',
+    medium: 'Medium',
+    hard: 'Hard',
+  },
 };
