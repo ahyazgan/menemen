@@ -49,6 +49,11 @@ export const tr = {
     purchase: 'Başla',
     terms: 'Abonelik mağaza hesabından yenilenir; istediğin zaman iptal edebilirsin.',
   },
-} as const;
+};
 
+/**
+ * Çeviri ağacının şekli TR sözlüğünden türetilir (literal değil, string olarak
+ * genişletilir). Diğer diller bu tipe uymak zorundadır → eksik/fazla anahtar
+ * derleme hatası verir (tsc key paritesini zorlar).
+ */
 export type TranslationTree = typeof tr;

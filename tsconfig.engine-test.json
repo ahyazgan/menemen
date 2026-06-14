@@ -13,5 +13,10 @@
     "types": [],
     "noEmit": false
   },
-  "include": ["src/engine/**/*", "src/recipes/**/*", "scripts/node-test-shims.d.ts"]
+  "include": [
+    "src/engine/**/*",
+    "src/recipes/**/*",
+    "src/i18n/**/*",
+    "scripts/node-test-shims.d.ts"
+  ]
 }
