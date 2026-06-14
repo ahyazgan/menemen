@@ -35,6 +35,7 @@ export function SuggestScreen({ onSelect, onBack }: Props) {
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const profile = useProfileStore((s) => s.profile);
   const loading = useRecommendStore((s) => s.loading);
+  const error = useRecommendStore((s) => s.error);
   const result = useRecommendStore((s) => s.result);
   const suggest = useRecommendStore((s) => s.suggest);
   const reset = useRecommendStore((s) => s.reset);
@@ -73,7 +74,9 @@ export function SuggestScreen({ onSelect, onBack }: Props) {
 
       {loading && <Text style={styles.thinking}>{t('suggest.thinking')}</Text>}
 
-      {!loading && result && (
+      {!loading && error && <Text style={styles.none}>{t('suggest.error')}</Text>}
+
+      {!loading && !error && result && (
         suggested ? (
           <View style={styles.resultCard}>
             <Text style={styles.resultTitle}>{localize(suggested.title, locale)}</Text>

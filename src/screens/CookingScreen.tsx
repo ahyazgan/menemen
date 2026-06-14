@@ -272,6 +272,9 @@ export function CookingScreen({ recipe, onBack }: Props) {
           multiline
         />
       </View>
+
+      {/* Kalıcı gıda güvenliği hatırlatması (CLAUDE.md → kesin hüküm yok). */}
+      <Text style={styles.safetyFooter}>{t('safety.general')}</Text>
     </ScrollView>
   );
 }
@@ -403,5 +406,12 @@ const makeStyles = (c: ThemeColors) =>
       color: c.text,
       minHeight: 70,
       textAlignVertical: 'top',
+    },
+    safetyFooter: {
+      fontSize: 12,
+      color: c.textSubtle,
+      marginTop: 24,
+      lineHeight: 18,
+      textAlign: 'center',
     },
   });
