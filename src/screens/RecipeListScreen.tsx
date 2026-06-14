@@ -6,11 +6,12 @@
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { recipeList, randomRecipe } from '../recipes';
+import { recipeList, randomRecipe, getRecipe } from '../recipes';
 import { CATEGORIES, filterRecipes } from '../recipes/filter';
 import { AVAILABLE_LOCALES, t } from '../i18n';
 import { useUiStore } from '../state/uiStore';
 import { useFavoritesStore } from '../state/favoritesStore';
+import { useHistoryStore } from '../state/historyStore';
 import { localize } from '../engine';
 import type { Recipe, RecipeCategory } from '../engine/types';
 
@@ -24,6 +25,15 @@ export function RecipeListScreen({ onSelect, onOpenShopping }: Props) {
   const setLocale = useUiStore((s) => s.setLocale);
   const favoriteIds = useFavoritesStore((s) => s.ids);
   const toggleFavorite = useFavoritesStore((s) => s.toggle);
+  const historyEntries = useHistoryStore((s) => s.entries);
+  const recent = useMemo(
+    () =>
+      historyEntries
+        .map((e) => getRecipe(e.recipeId))
+        .filter((r): r is Recipe => r != null)
+        .slice(0, 6),
+    [historyEntries],
+  );
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<RecipeCategory | null>(null);
   const [onlyFavorites, setOnlyFavorites] = useState(false);
@@ -52,6 +62,19 @@ export function RecipeListScreen({ onSelect, onOpenShopping }: Props) {
         </View>
       </View>
       <Text style={styles.subtitle}>{t('picker.subtitle')}</Text>
+
+      {recent.length > 0 && (
+        <View style={styles.recentBlock}>
+          <Text style={styles.recentLabel}>{t('picker.recent')}</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {recent.map((r) => (
+              <Pressable key={r.id} style={styles.recentChip} onPress={() => onSelect(r)}>
+                <Text style={styles.recentText}>{localize(r.title, locale)}</Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
+      )}
 
       <TextInput
         style={styles.search}
@@ -149,6 +172,18 @@ const styles = StyleSheet.create({
   langTextActive: { color: '#FFF' },
   title: { fontSize: 32, fontWeight: '800', color: '#B5300F' },
   subtitle: { fontSize: 16, color: '#8A6D5B', marginTop: 6, marginBottom: 16 },
+  recentBlock: { marginBottom: 14 },
+  recentLabel: { fontSize: 13, fontWeight: '700', color: '#8A6D5B', marginBottom: 8 },
+  recentChip: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#F0E2D6',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    marginRight: 8,
+  },
+  recentText: { color: '#2B2B2B', fontSize: 14, fontWeight: '600' },
   search: {
     backgroundColor: '#FFFFFF',
     borderRadius: 12,

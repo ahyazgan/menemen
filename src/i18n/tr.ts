@@ -16,6 +16,7 @@ export const tr = {
     all: 'Hepsi',
     favorites: '★ Favoriler',
     shopping: '🛒 Alışveriş listesi',
+    recent: 'Son pişirdiklerin',
     noResults: 'Sonuç yok.',
     categories: {
       kahvalti: 'Kahvaltı',

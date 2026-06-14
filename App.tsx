@@ -15,6 +15,7 @@ import { useCookingStore } from './src/state/cookingStore';
 import { useUiStore } from './src/state/uiStore';
 import { useFavoritesStore } from './src/state/favoritesStore';
 import { useShoppingStore } from './src/state/shoppingStore';
+import { useHistoryStore } from './src/state/historyStore';
 import { createExpoNotify } from './src/services/notify';
 import { createAsyncStorage } from './src/services/storage';
 import type { Recipe } from './src/engine/types';
@@ -33,6 +34,9 @@ export default function App() {
     const shopping = useShoppingStore.getState();
     shopping.setStore(storage);
     void shopping.load();
+    const history = useHistoryStore.getState();
+    history.setStore(storage);
+    void history.load();
     return null;
   });
   const [recipe, setRecipe] = useState<Recipe | null>(null);

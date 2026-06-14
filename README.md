@@ -66,6 +66,9 @@ npm run ios      # iOS simülatör
 npm run android  # Android emülatör
 ```
 
+> 📱 **Telefonda denemek** için adım adım kılavuz: [`RUN.md`](./RUN.md)
+> (en hızlısı: `npx expo start` + telefonda Expo Go ile QR okutma).
+
 ## Test & tip kontrolü
 
 ```bash

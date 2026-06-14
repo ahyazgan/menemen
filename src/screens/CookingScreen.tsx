@@ -8,6 +8,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useCookingStore } from '../state/cookingStore';
 import { useUiStore } from '../state/uiStore';
 import { useShoppingStore } from '../state/shoppingStore';
+import { useHistoryStore } from '../state/historyStore';
 import { VoiceButton } from '../components/VoiceButton';
 import { PotCheckButton } from '../components/PotCheckButton';
 import { ingredientLabel } from '../recipes/ingredients';
@@ -38,8 +39,15 @@ export function CookingScreen({ recipe, onBack }: Props) {
   } = useCookingStore();
   const locale = useUiStore((s) => s.locale);
   const addToShopping = useShoppingStore((s) => s.add);
+  const recordHistory = useHistoryStore((s) => s.record);
   const [servings, setServings] = useState(recipe.servings);
   const [added, setAdded] = useState(false);
+  const complete = snapshot?.complete ?? false;
+
+  // Tarif tamamlanınca pişirme geçmişine kaydet (bir kez).
+  useEffect(() => {
+    if (complete) void recordHistory(recipe.id);
+  }, [complete, recipe.id, recordHistory]);
 
   function onAddToShopping(): void {
     if (!recipe.ingredients) return;
