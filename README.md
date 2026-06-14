@@ -52,6 +52,10 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   (`deviceLocale.ts` + saf/test edilebilir `pickSupportedLocale`), **uygulama
   içi dil değiştirme** ve **karanlık mod** (açık/karanlık tema, `config/theme.ts`
   palet, reaktif `uiStore`; ekranlar anında döner, seçim AsyncStorage'da kalıcı).
+- **Paylaş ("bunu yaptım, sen de dene")** — yemeği bitirince tek tuşla sistem
+  paylaşım sayfasından sıcak bir mesaj + tarife **derin bağlantı** (`lezzet://`)
+  paylaşılır (viral tohum). Mesaj üretimi saf (`recipes/share.ts`, testli);
+  paylaşım `services/share` arkasında (mock + RN yerleşik `Share`, ek bağımlılık yok).
 - **Haftalık menü planı** — profiline göre 7 günlük plan üretir; beğenmediğin
   günü tek tuşla değiştir; plandaki **tüm malzemeleri** (aynı malzeme+birim
   toplanarak) alışveriş listesine aktar (`WeeklyPlanScreen`, plan kalıcı). Plan

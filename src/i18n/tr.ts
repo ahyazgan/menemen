@@ -50,6 +50,8 @@ export const tr = {
     permissionNeeded: 'İzin gerekiyor.',
     progress: 'İlerleme',
     finished: 'Yemek hazır, afiyet olsun!',
+    share: '📣 Yaptım, paylaş',
+    shareText: 'Az önce "{title}" yaptım 🍳 Lezzet ile çok kolaydı, sen de dene: {link}',
     nothingReady: 'Şu an yapılacak hazır adım yok.',
     remaining: 'kalan',
     addPhoto: '📷 Adım fotoğrafı ekle',

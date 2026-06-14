@@ -25,8 +25,10 @@ import { usePantryStore } from './src/state/pantryStore';
 import { useStepPhotosStore } from './src/state/stepPhotosStore';
 import { useProfileStore } from './src/state/profileStore';
 import { useMealPlanStore } from './src/state/mealPlanStore';
+import { useShareStore } from './src/state/shareStore';
 import { createExpoNotify } from './src/services/notify';
 import { createExpoPhoto } from './src/services/photo';
+import { createRNShare } from './src/services/share';
 import { createAsyncStorage } from './src/services/storage';
 import type { Recipe } from './src/engine/types';
 
@@ -66,6 +68,7 @@ export default function App() {
     const mealPlan = useMealPlanStore.getState();
     mealPlan.setStore(storage);
     void mealPlan.load();
+    useShareStore.getState().setService(createRNShare());
     return null;
   });
   const [recipe, setRecipe] = useState<Recipe | null>(null);
