@@ -16,6 +16,7 @@ function searchableText(recipe: Recipe): string {
   };
   collect(recipe.title);
   collect(recipe.summary);
+  for (const ingredient of recipe.ingredients ?? []) collect(ingredient.name);
   return parts.join(' ').toLowerCase();
 }
 

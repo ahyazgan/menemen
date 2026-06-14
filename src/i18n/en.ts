@@ -18,7 +18,9 @@ export const en: TranslationTree = {
     all: 'All',
     favorites: '★ Favorites',
     shopping: '🛒 Shopping list',
+    pantry: '🧺 What can I make?',
     recent: 'Recently cooked',
+    times: '×',
     noResults: 'No results.',
     categories: {
       kahvalti: 'Breakfast',
@@ -33,6 +35,8 @@ export const en: TranslationTree = {
     ingredients: 'Ingredients',
     addToShopping: '🛒 Add to shopping list',
     added: 'Added to list ✓',
+    notes: 'Your notes',
+    notesPlaceholder: 'Add a note to this recipe… (e.g. less salt)',
     ready: 'Ready steps',
     active: 'Now',
     done: 'Done',
@@ -81,5 +85,13 @@ export const en: TranslationTree = {
     empty: 'List is empty. You can add a recipe’s ingredients.',
     clearChecked: 'Clear bought',
     clearAll: 'Clear list',
+  },
+  pantry: {
+    title: 'What Can I Make?',
+    subtitle: 'Tick what you have and I’ll tell you what you can cook.',
+    pickIngredients: 'Ingredients',
+    canMake: 'You can make',
+    none: 'Pick a few ingredients first.',
+    ofTotal: 'ingredients',
   },
 };

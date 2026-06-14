@@ -39,6 +39,9 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   filtre ve favori mantığı saf+testli). Her tarifte **malzeme listesi**,
   **porsiyon ayarı** (miktarlar kişi sayısına göre ölçeklenir) ve **alışveriş
   listesi** (kalıcı; işaretle/sil) — ölçekleme/etiketleme mantığı saf+testli.
+  Ayrıca **malzemeye göre arama**, tarife özel **kişisel not** (kalıcı),
+  kartlarda **"kaç kez pişirdin"** rozeti ve **"Elimde ne var?"** (elindeki
+  malzemeleri seç → yapabileceğin tarifler, eksiği en az olandan; mantık saf+testli).
   Her graf testlerle doğrulanıyor: geçerli DAG, başlatılabilir,
   tamamlanabilir ve her **kritik** pişirme adımı iç sıcaklık eşiği taşıyor.
   Metinler **çok dilli** (`LocalizedText` + saf `localize()`): **13/13 tarif

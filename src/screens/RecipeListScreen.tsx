@@ -12,15 +12,17 @@ import { AVAILABLE_LOCALES, t } from '../i18n';
 import { useUiStore } from '../state/uiStore';
 import { useFavoritesStore } from '../state/favoritesStore';
 import { useHistoryStore } from '../state/historyStore';
+import { cookCounts } from '../recipes/history';
 import { localize } from '../engine';
 import type { Recipe, RecipeCategory } from '../engine/types';
 
 interface Props {
   onSelect: (recipe: Recipe) => void;
   onOpenShopping: () => void;
+  onOpenPantry: () => void;
 }
 
-export function RecipeListScreen({ onSelect, onOpenShopping }: Props) {
+export function RecipeListScreen({ onSelect, onOpenShopping, onOpenPantry }: Props) {
   const locale = useUiStore((s) => s.locale);
   const setLocale = useUiStore((s) => s.setLocale);
   const favoriteIds = useFavoritesStore((s) => s.ids);
@@ -34,6 +36,7 @@ export function RecipeListScreen({ onSelect, onOpenShopping }: Props) {
         .slice(0, 6),
     [historyEntries],
   );
+  const counts = useMemo(() => cookCounts(historyEntries), [historyEntries]);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<RecipeCategory | null>(null);
   const [onlyFavorites, setOnlyFavorites] = useState(false);
@@ -104,12 +107,15 @@ export function RecipeListScreen({ onSelect, onOpenShopping }: Props) {
         />
       </ScrollView>
 
+      <Pressable style={styles.random} onPress={() => onSelect(randomRecipe())}>
+        <Text style={styles.randomText}>{t('picker.random')}</Text>
+      </Pressable>
       <View style={styles.actionsRow}>
-        <Pressable style={[styles.random, styles.flex]} onPress={() => onSelect(randomRecipe())}>
-          <Text style={styles.randomText}>{t('picker.random')}</Text>
-        </Pressable>
-        <Pressable style={styles.shopping} onPress={onOpenShopping}>
+        <Pressable style={[styles.shopping, styles.flex]} onPress={onOpenShopping}>
           <Text style={styles.shoppingText}>{t('picker.shopping')}</Text>
+        </Pressable>
+        <Pressable style={[styles.shopping, styles.flex]} onPress={onOpenPantry}>
+          <Text style={styles.shoppingText}>{t('picker.pantry')}</Text>
         </Pressable>
       </View>
 
@@ -138,6 +144,9 @@ export function RecipeListScreen({ onSelect, onOpenShopping }: Props) {
                   ? `${recipe.totalMinutes} ${t('picker.minutes')} · `
                   : ''}
                 {recipe.servings} {t('picker.servings')}
+                {(counts[recipe.id] ?? 0) > 0
+                  ? ` · ${counts[recipe.id]} ${t('picker.times')}`
+                  : ''}
               </Text>
             </Pressable>
           );
