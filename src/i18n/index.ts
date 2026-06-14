@@ -22,6 +22,27 @@ export function getLocale(): string {
   return activeLocale;
 }
 
+/**
+ * Cihaz dil adaylarından (örn. ["en-US","tr"]) desteklenen ilk dili seçer.
+ * Saf fonksiyon — cihaz tespitinden ayrı, test edilebilir. Eşleşme yoksa fallback.
+ */
+export function pickSupportedLocale(
+  candidates: string[],
+  supported: string[] = AVAILABLE_LOCALES,
+  fallback = 'tr',
+): string {
+  const supportedLower = supported.map((s) => s.toLowerCase());
+  for (const candidate of candidates) {
+    if (!candidate) continue;
+    const base = candidate.toLowerCase().split('-')[0];
+    if (base) {
+      const index = supportedLower.indexOf(base);
+      if (index >= 0) return supported[index] ?? fallback;
+    }
+  }
+  return fallback;
+}
+
 /** Nokta ayrımlı anahtarı aktif dile göre çözer; bulunamazsa anahtarı döndürür. */
 export function t(path: string): string {
   const parts = path.split('.');

@@ -34,7 +34,8 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   şansıma seç). Her graf testlerle doğrulanıyor: geçerli DAG, başlatılabilir,
   tamamlanabilir ve her **kritik** pişirme adımı iç sıcaklık eşiği taşıyor.
 - **`src/i18n/`, `src/config/`** — TR + EN metinler (`setLocale`/`getLocale`,
-  anahtar paritesi tsc + testle zorlanıyor) ve yapılandırma.
+  anahtar paritesi tsc + testle zorlanıyor), **cihaz dili tespiti**
+  (`deviceLocale.ts` + saf/test edilebilir `pickSupportedLocale`) ve yapılandırma.
 
 ## Kurulum
 
@@ -105,9 +106,9 @@ uç nokta allowlist'i eklenmeli (bkz. `server/README.md`).
 7. ~~Tarif kütüphanesini çoğalt~~ ✅ (13 tarif; istendikçe eklenir)
 8. ~~EN dili (`src/i18n/en.ts`) + locale altyapısı~~ ✅
 
-> EN dili UI metinlerini kapsar. Sıradaki global adımlar: cihaz dili tespiti
-> (expo-localization → `setLocale`) ve tarif içeriklerinin çok dilli hale
-> getirilmesi (tarif grafına dil katmanı).
+> EN dili UI metinlerini kapsar. Cihaz dili tespiti eklendi (App açılışta
+> `initLocaleFromDevice()` ile cihaz dilini uygular). Kalan global adım: tarif
+> içeriklerinin çok dilli hale getirilmesi (tarif grafına dil katmanı).
 
 > RevenueCat native modül ister: Expo'da `expo prebuild`/dev-client ile çalışır
 > (Expo Go'da değil). `REQUIRE_SUBSCRIPTION` (config) dev'de `false`; üretimde

@@ -5,7 +5,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { AVAILABLE_LOCALES, getLocale, setLocale, t } from '../index';
+import { AVAILABLE_LOCALES, getLocale, pickSupportedLocale, setLocale, t } from '../index';
 import { tr } from '../tr';
 import { en } from '../en';
 
@@ -50,4 +50,18 @@ test('bilinmeyen dil aktif dili değiştirmez', () => {
 
 test('en desteklenen diller arasında', () => {
   assert.ok(AVAILABLE_LOCALES.includes('en'));
+});
+
+test('pickSupportedLocale: cihaz dilini eşler (bölge eki yok sayılır)', () => {
+  assert.equal(pickSupportedLocale(['en-US'], ['tr', 'en'], 'tr'), 'en');
+  assert.equal(pickSupportedLocale(['TR-tr'], ['tr', 'en'], 'tr'), 'tr');
+});
+
+test('pickSupportedLocale: ilk eşleşeni seçer, desteklenmeyeni atlar', () => {
+  assert.equal(pickSupportedLocale(['fr', 'en'], ['tr', 'en'], 'tr'), 'en');
+});
+
+test('pickSupportedLocale: eşleşme yoksa fallback', () => {
+  assert.equal(pickSupportedLocale(['fr', 'de'], ['tr', 'en'], 'tr'), 'tr');
+  assert.equal(pickSupportedLocale([], ['tr', 'en'], 'tr'), 'tr');
 });

@@ -18,5 +18,6 @@
     "src/recipes/**/*",
     "src/i18n/**/*",
     "scripts/node-test-shims.d.ts"
-  ]
+  ],
+  "exclude": ["src/i18n/deviceLocale.ts"]
 }

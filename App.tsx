@@ -9,9 +9,12 @@ import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import { CookingScreen } from './src/screens/CookingScreen';
 import { RecipeListScreen } from './src/screens/RecipeListScreen';
 import { SubscriptionGate } from './src/components/SubscriptionGate';
+import { initLocaleFromDevice } from './src/i18n/deviceLocale';
 import type { Recipe } from './src/engine/types';
 
 export default function App() {
+  // İlk render'dan önce cihaz dilini uygula (lazy initializer senkron çalışır).
+  useState(() => initLocaleFromDevice());
   const [recipe, setRecipe] = useState<Recipe | null>(null);
 
   return (
