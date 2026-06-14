@@ -9,11 +9,12 @@ import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-
 import { recipeList, randomRecipe, getRecipe } from '../recipes';
 import { CATEGORIES, filterRecipes } from '../recipes/filter';
 import { AVAILABLE_LOCALES, t } from '../i18n';
-import { useUiStore } from '../state/uiStore';
+import { useUiStore, useThemeColors } from '../state/uiStore';
 import { useFavoritesStore } from '../state/favoritesStore';
 import { useHistoryStore } from '../state/historyStore';
 import { cookCounts } from '../recipes/history';
 import { localize } from '../engine';
+import type { ThemeColors } from '../config/theme';
 import type { Recipe, RecipeCategory } from '../engine/types';
 
 interface Props {
@@ -25,6 +26,10 @@ interface Props {
 export function RecipeListScreen({ onSelect, onOpenShopping, onOpenPantry }: Props) {
   const locale = useUiStore((s) => s.locale);
   const setLocale = useUiStore((s) => s.setLocale);
+  const theme = useUiStore((s) => s.theme);
+  const toggleTheme = useUiStore((s) => s.toggleTheme);
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const favoriteIds = useFavoritesStore((s) => s.ids);
   const toggleFavorite = useFavoritesStore((s) => s.toggle);
   const historyEntries = useHistoryStore((s) => s.entries);
@@ -62,6 +67,9 @@ export function RecipeListScreen({ onSelect, onOpenShopping, onOpenPantry }: Pro
               </Text>
             </Pressable>
           ))}
+          <Pressable style={styles.lang} onPress={() => void toggleTheme()}>
+            <Text style={styles.langText}>{theme === 'dark' ? '☀️' : '🌙'}</Text>
+          </Pressable>
         </View>
       </View>
       <Text style={styles.subtitle}>{t('picker.subtitle')}</Text>
@@ -82,7 +90,7 @@ export function RecipeListScreen({ onSelect, onOpenShopping, onOpenPantry }: Pro
       <TextInput
         style={styles.search}
         placeholder={t('picker.search')}
-        placeholderTextColor="#A8927F"
+        placeholderTextColor={colors.placeholder}
         value={query}
         onChangeText={setQuery}
         autoCorrect={false}
@@ -91,19 +99,26 @@ export function RecipeListScreen({ onSelect, onOpenShopping, onOpenPantry }: Pro
 
       {/* Kategori + favori sekmeleri */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chips}>
-        <Chip label={t('picker.all')} active={category === null} onPress={() => setCategory(null)} />
+        <Chip
+          label={t('picker.all')}
+          active={category === null}
+          onPress={() => setCategory(null)}
+          styles={styles}
+        />
         {CATEGORIES.map((c) => (
           <Chip
             key={c}
             label={t(`picker.categories.${c}`)}
             active={category === c}
             onPress={() => setCategory((prev) => (prev === c ? null : c))}
+            styles={styles}
           />
         ))}
         <Chip
           label={t('picker.favorites')}
           active={onlyFavorites}
           onPress={() => setOnlyFavorites((v) => !v)}
+          styles={styles}
         />
       </ScrollView>
 
@@ -156,7 +171,17 @@ export function RecipeListScreen({ onSelect, onOpenShopping, onOpenPantry }: Pro
   );
 }
 
-function Chip({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
+function Chip({
+  label,
+  active,
+  onPress,
+  styles,
+}: {
+  label: string;
+  active: boolean;
+  onPress: () => void;
+  styles: ReturnType<typeof makeStyles>;
+}) {
   return (
     <Pressable style={[styles.chip, active && styles.chipActive]} onPress={onPress}>
       <Text style={[styles.chipText, active && styles.chipTextActive]}>{label}</Text>
@@ -164,92 +189,93 @@ function Chip({ label, active, onPress }: { label: string; active: boolean; onPr
   );
 }
 
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#FFF8F0' },
-  content: { padding: 24, paddingTop: 56, paddingBottom: 40 },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  langRow: { flexDirection: 'row', gap: 6 },
-  lang: {
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#F0E2D6',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  langActive: { backgroundColor: '#B5300F', borderColor: '#B5300F' },
-  langText: { color: '#8A6D5B', fontSize: 13, fontWeight: '700' },
-  langTextActive: { color: '#FFF' },
-  title: { fontSize: 32, fontWeight: '800', color: '#B5300F' },
-  subtitle: { fontSize: 16, color: '#8A6D5B', marginTop: 6, marginBottom: 16 },
-  recentBlock: { marginBottom: 14 },
-  recentLabel: { fontSize: 13, fontWeight: '700', color: '#8A6D5B', marginBottom: 8 },
-  recentChip: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#F0E2D6',
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    marginRight: 8,
-  },
-  recentText: { color: '#2B2B2B', fontSize: 14, fontWeight: '600' },
-  search: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#F0E2D6',
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 16,
-    color: '#2B2B2B',
-  },
-  chips: { marginTop: 12, marginBottom: 4 },
-  chip: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#F0E2D6',
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    marginRight: 8,
-  },
-  chipActive: { backgroundColor: '#B5300F', borderColor: '#B5300F' },
-  chipText: { color: '#8A6D5B', fontSize: 14, fontWeight: '600' },
-  chipTextActive: { color: '#FFF' },
-  random: {
-    backgroundColor: '#2B2B2B',
-    borderRadius: 14,
-    paddingVertical: 16,
-    alignItems: 'center',
-    marginTop: 16,
-    marginBottom: 20,
-  },
-  randomText: { color: '#FFF', fontSize: 17, fontWeight: '700' },
-  actionsRow: { flexDirection: 'row', gap: 10, marginTop: 16, marginBottom: 20 },
-  flex: { flex: 1, marginTop: 0, marginBottom: 0 },
-  shopping: {
-    backgroundColor: '#F0E2D6',
-    borderRadius: 14,
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  shoppingText: { color: '#8A6D5B', fontSize: 15, fontWeight: '700' },
-  empty: { fontSize: 16, color: '#8A6D5B', textAlign: 'center', marginTop: 24 },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 18,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#F0E2D6',
-  },
-  cardHeader: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
-  cardTitle: { fontSize: 20, fontWeight: '700', color: '#2B2B2B', flex: 1, paddingRight: 8 },
-  star: { paddingHorizontal: 2 },
-  starText: { fontSize: 22, color: '#C9B7A6' },
-  starActive: { color: '#E0A100' },
-  cardSummary: { fontSize: 15, color: '#6B5648', marginTop: 4, lineHeight: 21 },
-  cardMeta: { fontSize: 13, color: '#A8927F', marginTop: 10 },
-});
+const makeStyles = (c: ThemeColors) =>
+  StyleSheet.create({
+    screen: { flex: 1, backgroundColor: c.bg },
+    content: { padding: 24, paddingTop: 56, paddingBottom: 40 },
+    header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+    langRow: { flexDirection: 'row', gap: 6 },
+    lang: {
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: c.border,
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+    },
+    langActive: { backgroundColor: c.primary, borderColor: c.primary },
+    langText: { color: c.textMuted, fontSize: 13, fontWeight: '700' },
+    langTextActive: { color: c.onPrimary },
+    title: { fontSize: 32, fontWeight: '800', color: c.primary },
+    subtitle: { fontSize: 16, color: c.textMuted, marginTop: 6, marginBottom: 16 },
+    recentBlock: { marginBottom: 14 },
+    recentLabel: { fontSize: 13, fontWeight: '700', color: c.textMuted, marginBottom: 8 },
+    recentChip: {
+      backgroundColor: c.surface,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: c.border,
+      paddingHorizontal: 14,
+      paddingVertical: 8,
+      marginRight: 8,
+    },
+    recentText: { color: c.text, fontSize: 14, fontWeight: '600' },
+    search: {
+      backgroundColor: c.surface,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: c.border,
+      paddingHorizontal: 14,
+      paddingVertical: 12,
+      fontSize: 16,
+      color: c.text,
+    },
+    chips: { marginTop: 12, marginBottom: 4 },
+    chip: {
+      backgroundColor: c.surface,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: c.border,
+      paddingHorizontal: 14,
+      paddingVertical: 8,
+      marginRight: 8,
+    },
+    chipActive: { backgroundColor: c.primary, borderColor: c.primary },
+    chipText: { color: c.textMuted, fontSize: 14, fontWeight: '600' },
+    chipTextActive: { color: c.onPrimary },
+    random: {
+      backgroundColor: c.accent,
+      borderRadius: 14,
+      paddingVertical: 16,
+      alignItems: 'center',
+      marginTop: 16,
+      marginBottom: 20,
+    },
+    randomText: { color: c.onAccent, fontSize: 17, fontWeight: '700' },
+    actionsRow: { flexDirection: 'row', gap: 10, marginTop: 16, marginBottom: 20 },
+    flex: { flex: 1, marginTop: 0, marginBottom: 0 },
+    shopping: {
+      backgroundColor: c.fill,
+      borderRadius: 14,
+      paddingVertical: 16,
+      paddingHorizontal: 16,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    shoppingText: { color: c.textMuted, fontSize: 15, fontWeight: '700' },
+    empty: { fontSize: 16, color: c.textMuted, textAlign: 'center', marginTop: 24 },
+    card: {
+      backgroundColor: c.surface,
+      borderRadius: 16,
+      padding: 18,
+      marginBottom: 12,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    cardHeader: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
+    cardTitle: { fontSize: 20, fontWeight: '700', color: c.text, flex: 1, paddingRight: 8 },
+    star: { paddingHorizontal: 2 },
+    starText: { fontSize: 22, color: c.starOff },
+    starActive: { color: c.star },
+    cardSummary: { fontSize: 15, color: c.textBody, marginTop: 4, lineHeight: 21 },
+    cardMeta: { fontSize: 13, color: c.textSubtle, marginTop: 10 },
+  });

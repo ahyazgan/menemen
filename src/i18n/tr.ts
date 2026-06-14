@@ -52,6 +52,9 @@ export const tr = {
     finished: 'Yemek hazır, afiyet olsun!',
     nothingReady: 'Şu an yapılacak hazır adım yok.',
     remaining: 'kalan',
+    addPhoto: '📷 Adım fotoğrafı ekle',
+    retakePhoto: '🔄 Yeniden çek',
+    removePhoto: 'Fotoğrafı sil',
   },
   safety: {
     cannotSkip: 'Bu adım güvenlik açısından atlanamaz.',

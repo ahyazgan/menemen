@@ -2,12 +2,17 @@
  * ShoppingListScreen — alışveriş listesi (kalıcı). Öğeleri işaretle (alındı),
  * sil; alınanları veya tümünü temizle. Sadece UI: shoppingStore action'ları.
  */
+import { useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { useShoppingStore } from '../state/shoppingStore';
+import { useThemeColors } from '../state/uiStore';
 import { t } from '../i18n';
+import type { ThemeColors } from '../config/theme';
 
 export function ShoppingListScreen({ onBack }: { onBack: () => void }) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const items = useShoppingStore((s) => s.items);
   const toggle = useShoppingStore((s) => s.toggle);
   const remove = useShoppingStore((s) => s.remove);
@@ -51,32 +56,33 @@ export function ShoppingListScreen({ onBack }: { onBack: () => void }) {
   );
 }
 
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#FFF8F0' },
-  content: { padding: 24, paddingTop: 56, paddingBottom: 40 },
-  back: { marginBottom: 8 },
-  backText: { color: '#8A6D5B', fontSize: 16, fontWeight: '600' },
-  title: { fontSize: 30, fontWeight: '800', color: '#B5300F', marginBottom: 16 },
-  empty: { fontSize: 16, color: '#8A6D5B', marginTop: 24, lineHeight: 22 },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: '#F0E2D6',
-  },
-  check: { flexDirection: 'row', alignItems: 'center', flex: 1 },
-  checkBox: { fontSize: 20, color: '#B5300F', marginRight: 10 },
-  label: { fontSize: 16, color: '#2B2B2B', flex: 1 },
-  labelChecked: { color: '#A8927F', textDecorationLine: 'line-through' },
-  remove: { fontSize: 18, color: '#C9B7A6', paddingLeft: 8 },
-  actions: { flexDirection: 'row', gap: 12, marginTop: 16 },
-  action: { flex: 1, backgroundColor: '#F0E2D6', borderRadius: 12, paddingVertical: 14, alignItems: 'center' },
-  actionText: { color: '#8A6D5B', fontWeight: '600' },
-  actionDanger: { backgroundColor: '#FBE3DC' },
-  actionDangerText: { color: '#B5300F', fontWeight: '700' },
-});
+const makeStyles = (c: ThemeColors) =>
+  StyleSheet.create({
+    screen: { flex: 1, backgroundColor: c.bg },
+    content: { padding: 24, paddingTop: 56, paddingBottom: 40 },
+    back: { marginBottom: 8 },
+    backText: { color: c.textMuted, fontSize: 16, fontWeight: '600' },
+    title: { fontSize: 30, fontWeight: '800', color: c.primary, marginBottom: 16 },
+    empty: { fontSize: 16, color: c.textMuted, marginTop: 24, lineHeight: 22 },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      backgroundColor: c.surface,
+      borderRadius: 12,
+      padding: 14,
+      marginBottom: 8,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    check: { flexDirection: 'row', alignItems: 'center', flex: 1 },
+    checkBox: { fontSize: 20, color: c.primary, marginRight: 10 },
+    label: { fontSize: 16, color: c.text, flex: 1 },
+    labelChecked: { color: c.textSubtle, textDecorationLine: 'line-through' },
+    remove: { fontSize: 18, color: c.starOff, paddingLeft: 8 },
+    actions: { flexDirection: 'row', gap: 12, marginTop: 16 },
+    action: { flex: 1, backgroundColor: c.fill, borderRadius: 12, paddingVertical: 14, alignItems: 'center' },
+    actionText: { color: c.textMuted, fontWeight: '600' },
+    actionDanger: { backgroundColor: c.warningBg },
+    actionDangerText: { color: c.primary, fontWeight: '700' },
+  });

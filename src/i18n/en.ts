@@ -54,6 +54,9 @@ export const en: TranslationTree = {
     finished: 'Your meal is ready — enjoy!',
     nothingReady: 'No ready step right now.',
     remaining: 'left',
+    addPhoto: '📷 Add step photo',
+    retakePhoto: '🔄 Retake',
+    removePhoto: 'Remove photo',
   },
   safety: {
     cannotSkip: 'This step cannot be skipped for safety reasons.',
