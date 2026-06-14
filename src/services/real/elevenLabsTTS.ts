@@ -14,13 +14,14 @@ export interface ElevenLabsConfig {
   voiceId?: string;
   /** Çok dilli model — Türkçe için eleven_multilingual_v2 önerilir. */
   modelId?: string;
+  /** Üretimde kendi proxy kökün (örn. https://api.lezzet.app/elevenlabs). */
+  baseUrl?: string;
 }
-
-const ENDPOINT = 'https://api.elevenlabs.io/v1/text-to-speech';
 
 export function createElevenLabsTTS(config: ElevenLabsConfig): TTSService {
   const voiceId = config.voiceId ?? 'EXAVITQu4vr4xnSDxMaL';
   const modelId = config.modelId ?? 'eleven_multilingual_v2';
+  const endpoint = `${config.baseUrl ?? 'https://api.elevenlabs.io'}/v1/text-to-speech`;
   let player: AudioPlayer | null = null;
 
   async function stop(): Promise<void> {
@@ -30,7 +31,7 @@ export function createElevenLabsTTS(config: ElevenLabsConfig): TTSService {
   return {
     async speak(text: string, opts?: { interrupt?: boolean }): Promise<void> {
       if (opts?.interrupt) await stop();
-      const res = await fetch(`${ENDPOINT}/${voiceId}`, {
+      const res = await fetch(`${endpoint}/${voiceId}`, {
         method: 'POST',
         headers: {
           'xi-api-key': config.apiKey,

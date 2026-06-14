@@ -6,6 +6,8 @@ import { useEffect } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { useCookingStore } from '../state/cookingStore';
+import { VoiceButton } from '../components/VoiceButton';
+import { PotCheckButton } from '../components/PotCheckButton';
 import { t } from '../i18n';
 import type { Recipe } from '../engine/types';
 
@@ -18,16 +20,13 @@ export function CookingScreen({ recipe }: Props) {
     engine,
     snapshot,
     currentNodeId,
-    listening,
     lastSpoken,
     safetyNotice,
     loadRecipe,
-    startCooking,
     completeNode,
     skipNode,
     retryNode,
     startNode,
-    listen,
     tick,
   } = useCookingStore();
 
@@ -112,15 +111,9 @@ export function CookingScreen({ recipe }: Props) {
         </View>
       )}
 
-      {/* Ses kontrolü — tek dokunuş, frame-on-demand değil ses-on-demand */}
-      <Pressable
-        style={[styles.mic, listening && styles.micActive]}
-        onPress={() => void listen('mock://audio')}
-      >
-        <Text style={styles.micText}>
-          🎙 {listening ? t('cooking.listening') : t('cooking.listen')}
-        </Text>
-      </Pressable>
+      {/* Ses (bas-konuş) ve frame-on-demand kamera kontrolleri */}
+      <VoiceButton />
+      <PotCheckButton />
 
       {lastSpoken && <Text style={styles.spoken}>“{lastSpoken}”</Text>}
     </ScrollView>

@@ -11,6 +11,8 @@ export interface DeepgramConfig {
   /** Deepgram modeli (örn. nova-2). */
   model?: string;
   language?: string;
+  /** Üretimde kendi proxy kökün (örn. https://api.lezzet.app/deepgram). */
+  baseUrl?: string;
 }
 
 interface DeepgramResponse {
@@ -24,7 +26,8 @@ interface DeepgramResponse {
 export function createDeepgramSTT(config: DeepgramConfig): STTService {
   const model = config.model ?? 'nova-2';
   const language = config.language ?? 'tr';
-  const url = `https://api.deepgram.com/v1/listen?model=${model}&language=${language}&smart_format=true`;
+  const base = config.baseUrl ?? 'https://api.deepgram.com';
+  const url = `${base}/v1/listen?model=${model}&language=${language}&smart_format=true`;
 
   return {
     async transcribe(audioUri: string): Promise<string> {

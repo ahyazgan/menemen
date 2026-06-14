@@ -25,6 +25,20 @@ export interface RealServiceConfig {
   elevenLabs: ElevenLabsConfig;
 }
 
+/**
+ * Tüm sağlayıcıları tek bir backend proxy'ye yönlendiren config üretir.
+ * Anahtarlar uygulamada DEĞİL, proxy'de tutulur (apiKey alanı yalnızca placeholder).
+ * Bkz. server/proxy.mjs.
+ */
+export function proxyRealConfig(proxyBaseUrl: string, model?: string): RealServiceConfig {
+  const base = proxyBaseUrl.replace(/\/$/, '');
+  return {
+    anthropic: { apiKey: 'via-proxy', baseURL: `${base}/anthropic`, model },
+    deepgram: { apiKey: 'via-proxy', baseUrl: `${base}/deepgram` },
+    elevenLabs: { apiKey: 'via-proxy', baseUrl: `${base}/elevenlabs` },
+  };
+}
+
 export function createRealServices(config: RealServiceConfig): Services {
   const claude = createAnthropicClient(config.anthropic);
   const model = config.anthropic.model;

@@ -20,6 +20,11 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
 - **`src/state/cookingStore.ts`** — motoru Zustand'a saran durum makinesi;
   servisleri buraya bağlar. Ekranlar yalnızca buradaki action'ları çağırır.
 - **`src/screens/CookingScreen.tsx`** — canlı pişirme ekranı (sadece UI).
+- **`src/components/`** — `VoiceButton` (expo-audio bas-konuş kaydı) ve
+  `PotCheckButton` (expo-camera frame-on-demand tek kare). İkisi de yalnızca
+  store action'larını (`listen`, `checkPot`) çağırır.
+- **`server/proxy.mjs`** — anahtarları istemciden çıkaran sıfır-bağımlılık
+  backend proxy iskeleti (`npm run proxy`).
 - **`src/recipes/menemen.ts`** — örnek tarif grafı (paralel prep + güvenlik).
 - **`src/i18n/`, `src/config/`** — TR metinler ve yapılandırma.
 
@@ -65,19 +70,29 @@ config/    → sabitler ve özellik bayrakları
 Akış: **screens → state → services**. Ekran asla servisi doğrudan çağırmaz.
 `engine` saf kalır ki test edilebilsin.
 
-## Güvenlik notu (gerçek servisler)
+## Güvenlik & proxy
 
-`services/real/` API anahtarlarını **uygulamaya gömmemeli**. Üretimde her sağlayıcıyı
-kendi backend proxy'n üzerinden çağır (Anthropic için `baseURL`, STT/TTS için kendi uç
-noktaların); proxy anahtarı sunucuda tutsun. Mevcut fabrika geliştirme ve proxy
-entegrasyonu içindir.
+API anahtarlarını **uygulamaya gömme**. `server/proxy.mjs` ince bir backend
+proxy'dir: uygulama ona konuşur, o gerçek sağlayıcıya iletir ve anahtarı sunucu
+tarafında ekler. Uygulamayı bağlamak:
+
+```ts
+import { createRealServices, proxyRealConfig } from './src/services/real';
+useCookingStore.getState().setServices(
+  createRealServices(proxyRealConfig('https://api.lezzet.app')),
+);
+```
+
+Proxy bir iskelettir; üretimde kullanıcı oturum doğrulaması, hız sınırlama ve
+uç nokta allowlist'i eklenmeli (bkz. `server/README.md`).
 
 ## Sıradaki gerçek işler (öncelik sırası)
 
 1. ~~`services/real/` — Deepgram, ElevenLabs, Claude Vision/Intent~~ ✅
-2. `expo-audio` ile ses kaydı + `expo-camera` ile frame-on-demand bağla (store'a)
-3. Anahtarlar için backend proxy (anahtarları istemciden çıkar)
-4. RevenueCat — abonelik (iOS IAP + Android Play Billing)
-5. "Ne pişsem" ekranı ve tarif seçimi
-6. Tarif kütüphanesini çoğalt (graf JSON'ları)
-7. EN dili (`src/i18n/en.ts`) ve global açılım
+2. ~~`expo-audio` ses kaydı + `expo-camera` frame-on-demand (store'a)~~ ✅
+3. ~~Anahtarlar için backend proxy iskeleti~~ ✅
+4. Proxy'ye kullanıcı oturum doğrulaması + hız sınırlama
+5. RevenueCat — abonelik (iOS IAP + Android Play Billing)
+6. "Ne pişsem" ekranı ve tarif seçimi
+7. Tarif kütüphanesini çoğalt (graf JSON'ları)
+8. EN dili (`src/i18n/en.ts`) ve global açılım
