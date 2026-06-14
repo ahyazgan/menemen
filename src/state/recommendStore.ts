@@ -10,6 +10,7 @@ import {
   type RecommendResult,
   type RecommendService,
 } from '../services/recommend';
+import { track } from '../services/analytics';
 
 interface RecommendState {
   service: RecommendService;
@@ -32,6 +33,7 @@ export const useRecommendStore = create<RecommendState>((set, get) => ({
 
   suggest: async (input) => {
     set({ loading: true, error: false, result: null });
+    track({ name: 'suggestion_requested', hasCraving: input.craving.trim().length > 0 });
     try {
       const result = await get().service.suggest(input);
       set({ result, loading: false });

@@ -22,6 +22,7 @@ import type { Services, VisionResult } from '../services/types';
 import { createMockServices } from '../services/mock';
 import { createMockNotify } from '../services/notify';
 import type { NotificationService } from '../services/notify';
+import { track } from '../services/analytics';
 import { INTENT_CONFIDENCE_THRESHOLD } from '../config';
 import { getLocale, t } from '../i18n';
 
@@ -81,6 +82,7 @@ export const useCookingStore = create<CookingState>((set, get) => ({
 
   loadRecipe: (recipe) => {
     const engine = new RecipeEngine(recipe);
+    track({ name: 'recipe_started', recipeId: recipe.id });
     set({ engine, recipe, snapshot: engine.snapshot(), currentNodeId: null, safetyNotice: null });
   },
 

@@ -11,6 +11,7 @@ import {
   type HistoryEntry,
 } from '../recipes/history';
 import { createMemoryStore, type KeyValueStore } from '../services/storage';
+import { track } from '../services/analytics';
 
 const KEY = 'lezzet.history';
 
@@ -37,6 +38,7 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
   record: async (recipeId) => {
     const entries = recordHistory(get().entries, recipeId, Date.now());
     set({ entries });
+    track({ name: 'recipe_completed', recipeId });
     await get().store.setItem(KEY, serializeHistory(entries));
   },
 }));
