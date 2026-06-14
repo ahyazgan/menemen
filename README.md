@@ -56,6 +56,8 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   paylaşım sayfasından sıcak bir mesaj + tarife **derin bağlantı** (`lezzet://`)
   paylaşılır (viral tohum). Mesaj üretimi saf (`recipes/share.ts`, testli);
   paylaşım `services/share` arkasında (mock + RN yerleşik `Share`, ek bağımlılık yok).
+  Gelen bağlantı da yönetilir: uygulama `lezzet://recipe/<id>` ile açılınca
+  paylaşılan tarif doğrudan açılır (`Linking` + saf/test edilebilir `parseRecipeLink`).
 - **Haftalık menü planı** — profiline göre 7 günlük plan üretir; beğenmediğin
   günü tek tuşla değiştir; plandaki **tüm malzemeleri** (aynı malzeme+birim
   toplanarak) alışveriş listesine aktar (`WeeklyPlanScreen`, plan kalıcı). Plan
