@@ -52,6 +52,11 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   (`deviceLocale.ts` + saf/test edilebilir `pickSupportedLocale`), **uygulama
   içi dil değiştirme** ve **karanlık mod** (açık/karanlık tema, `config/theme.ts`
   palet, reaktif `uiStore`; ekranlar anında döner, seçim AsyncStorage'da kalıcı).
+- **Haftalık menü planı** — profiline göre 7 günlük plan üretir; beğenmediğin
+  günü tek tuşla değiştir; plandaki **tüm malzemeleri** (aynı malzeme+birim
+  toplanarak) alışveriş listesine aktar (`WeeklyPlanScreen`, plan kalıcı). Plan
+  üretimi/değişimi ve malzeme toplama saf (`recipes/mealPlan.ts`, deterministik
+  tohumla testli).
 - **Bana özel öner (AI)** — "canın ne çekiyor?" yazısı + profiline göre **onaylı**
   tariflerden biri önerilir (`SuggestScreen`). Saf sıralayıcı (`recipes/recommend.ts`,
   testli) hem mock hem AI'nın çevrimdışı yedeği; gerçek öneri `services/recommend`

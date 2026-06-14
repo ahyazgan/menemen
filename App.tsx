@@ -12,6 +12,7 @@ import { ShoppingListScreen } from './src/screens/ShoppingListScreen';
 import { PantryScreen } from './src/screens/PantryScreen';
 import { ProfileScreen } from './src/screens/ProfileScreen';
 import { SuggestScreen } from './src/screens/SuggestScreen';
+import { WeeklyPlanScreen } from './src/screens/WeeklyPlanScreen';
 import { SubscriptionGate } from './src/components/SubscriptionGate';
 import { initLocaleFromDevice } from './src/i18n/deviceLocale';
 import { useCookingStore } from './src/state/cookingStore';
@@ -23,6 +24,7 @@ import { useNotesStore } from './src/state/notesStore';
 import { usePantryStore } from './src/state/pantryStore';
 import { useStepPhotosStore } from './src/state/stepPhotosStore';
 import { useProfileStore } from './src/state/profileStore';
+import { useMealPlanStore } from './src/state/mealPlanStore';
 import { createExpoNotify } from './src/services/notify';
 import { createExpoPhoto } from './src/services/photo';
 import { createAsyncStorage } from './src/services/storage';
@@ -61,6 +63,9 @@ export default function App() {
     const profile = useProfileStore.getState();
     profile.setStore(storage);
     void profile.load();
+    const mealPlan = useMealPlanStore.getState();
+    mealPlan.setStore(storage);
+    void mealPlan.load();
     return null;
   });
   const [recipe, setRecipe] = useState<Recipe | null>(null);
@@ -68,10 +73,12 @@ export default function App() {
   const [showPantry, setShowPantry] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showSuggest, setShowSuggest] = useState(false);
+  const [showPlan, setShowPlan] = useState(false);
 
   function openRecipe(r: Recipe) {
     setShowPantry(false);
     setShowSuggest(false);
+    setShowPlan(false);
     setRecipe(r);
   }
 
@@ -81,6 +88,7 @@ export default function App() {
     if (showPantry) return <PantryScreen onSelect={openRecipe} onBack={() => setShowPantry(false)} />;
     if (showProfile) return <ProfileScreen onBack={() => setShowProfile(false)} />;
     if (showSuggest) return <SuggestScreen onSelect={openRecipe} onBack={() => setShowSuggest(false)} />;
+    if (showPlan) return <WeeklyPlanScreen onSelect={openRecipe} onBack={() => setShowPlan(false)} />;
     return (
       <RecipeListScreen
         onSelect={setRecipe}
@@ -88,6 +96,7 @@ export default function App() {
         onOpenPantry={() => setShowPantry(true)}
         onOpenProfile={() => setShowProfile(true)}
         onOpenSuggest={() => setShowSuggest(true)}
+        onOpenPlan={() => setShowPlan(true)}
       />
     );
   }
