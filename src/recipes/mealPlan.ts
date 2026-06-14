@@ -8,6 +8,7 @@
 import type { Recipe } from '../engine/types';
 import { localize } from '../engine/localize';
 import { filterByProfile, type Profile } from './profile';
+import { skillFitScore } from './skill';
 import { formatQuantity } from './ingredients';
 import type { ShoppingItem } from './shopping';
 
@@ -38,6 +39,26 @@ function shuffle<T>(items: T[], rng: Rng): T[] {
 }
 
 /**
+ * Beceriye göre kademeli karıştırma: tarifleri uygunluk puanına göre gruplar
+ * (yeni başlayan → kolaylar önce), her grubu kendi içinde karıştırıp birleştirir.
+ * Orta seviyede tek grup oluşur → düz karıştırmaya eşittir.
+ */
+function shuffleBySkill(recipes: Recipe[], profile: Profile, rng: Rng): Recipe[] {
+  const tiers = new Map<number, Recipe[]>();
+  for (const r of recipes) {
+    const s = skillFitScore(r, profile.skill);
+    const bucket = tiers.get(s) ?? [];
+    bucket.push(r);
+    tiers.set(s, bucket);
+  }
+  const out: Recipe[] = [];
+  for (const score of [...tiers.keys()].sort((a, b) => a - b)) {
+    out.push(...shuffle(tiers.get(score)!, rng));
+  }
+  return out;
+}
+
+/**
  * `days` günlük plan üretir: önce profile uyan tarifleri karıştırıp benzersiz
  * seçer; yeterli benzersiz tarif yoksa baştan döngüyle tamamlar (tekrar olabilir).
  */
@@ -49,7 +70,7 @@ export function generatePlan(
 ): MealPlan {
   const eligible = filterByProfile(recipes, profile);
   if (eligible.length === 0 || days <= 0) return [];
-  const shuffled = shuffle(eligible, rng);
+  const shuffled = shuffleBySkill(eligible, profile, rng);
   const plan: MealPlan = [];
   for (let i = 0; i < days; i++) {
     plan.push(shuffled[i % shuffled.length]!.id);

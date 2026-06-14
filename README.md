@@ -62,6 +62,10 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   testli) hem mock hem AI'nın çevrimdışı yedeği; gerçek öneri `services/recommend`
   arayüzü arkasında **Claude (tool use)** ile — AI yalnızca verilen adaylardan seçer,
   yeni tarif/adım uydurmaz (gıda güvenliği). Dönen id doğrulanır, geçersizse yerele düşer.
+- **Beceri seviyesi gerçekten etkiler** (`recipes/skill.ts`, testli) — yeni
+  başlayan kolay tarifleri, ileri seviye zorları yeğler: hem AI önerisi hem
+  haftalık plan sıralaması beceriye göre kademelenir (orta seviye nötr). Pişirme
+  ekranında beceriye göre **adım sayacı** ve yeni başlayana **ipucu** gösterilir.
 - **Kişisel profil ("AI seni tanısın")** — diyet (hepsi/vejetaryen/vegan),
   yemediğin/kaçındığın malzemeler ve beceri seviyesi (`ProfileScreen`,
   kalıcı). Tarif listesi profile göre süzülür: diyete uymayan ya da kaçınılan

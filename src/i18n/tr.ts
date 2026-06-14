@@ -55,6 +55,8 @@ export const tr = {
     addPhoto: '📷 Adım fotoğrafı ekle',
     retakePhoto: '🔄 Yeniden çek',
     removePhoto: 'Fotoğrafı sil',
+    step: 'Adım',
+    beginnerHint: 'Acele yok, adım adım gidelim. Takılırsan bana sor.',
   },
   safety: {
     cannotSkip: 'Bu adım güvenlik açısından atlanamaz.',

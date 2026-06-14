@@ -10,6 +10,7 @@
 import type { Recipe } from '../engine/types';
 import { localize } from '../engine/localize';
 import { filterByProfile, type Profile } from './profile';
+import { skillFitScore } from './skill';
 
 export interface ScoredRecipe {
   recipe: Recipe;
@@ -55,8 +56,14 @@ export function rankByCraving(craving: string, recipes: Recipe[], profile: Profi
   const tokens = tokenize(craving);
   const eligible = filterByProfile(recipes, profile);
   return eligible
-    .map((recipe, index) => ({ recipe, score: scoreRecipe(tokens, recipe), index }))
-    .sort((a, b) => b.score - a.score || a.index - b.index)
+    .map((recipe, index) => ({
+      recipe,
+      score: scoreRecipe(tokens, recipe),
+      fit: skillFitScore(recipe, profile.skill),
+      index,
+    }))
+    // Önce uygunluk puanı, eşitlikte beceriye uygunluk (orta seviyede nötr), sonra sıra.
+    .sort((a, b) => b.score - a.score || a.fit - b.fit || a.index - b.index)
     .map(({ recipe, score }) => ({ recipe, score }));
 }
 
