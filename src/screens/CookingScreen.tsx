@@ -13,9 +13,11 @@ import type { Recipe } from '../engine/types';
 
 interface Props {
   recipe: Recipe;
+  /** Tarif listesine dönüş (opsiyonel). */
+  onBack?: () => void;
 }
 
-export function CookingScreen({ recipe }: Props) {
+export function CookingScreen({ recipe, onBack }: Props) {
   const {
     engine,
     snapshot,
@@ -48,6 +50,11 @@ export function CookingScreen({ recipe }: Props) {
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+      {onBack && (
+        <Pressable onPress={onBack} style={styles.back}>
+          <Text style={styles.backText}>{t('cooking.back')}</Text>
+        </Pressable>
+      )}
       <Text style={styles.title}>{recipe.title}</Text>
 
       {/* İlerleme */}
@@ -139,6 +146,8 @@ function Button({
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#FFF8F0' },
   content: { padding: 20, paddingBottom: 48 },
+  back: { marginBottom: 8 },
+  backText: { color: '#8A6D5B', fontSize: 16, fontWeight: '600' },
   title: { fontSize: 28, fontWeight: '700', color: '#B5300F', marginBottom: 4 },
   progress: { fontSize: 14, color: '#8A6D5B', marginBottom: 16 },
   finished: { fontSize: 22, fontWeight: '700', color: '#2E7D32', marginVertical: 24 },

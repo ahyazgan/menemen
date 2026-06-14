@@ -28,7 +28,9 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
 - **`src/services/billing/`** — abonelik (RevenueCat) interface'i + mock + gerçek
   sarmalayıcı; `subscriptionStore` ve `Paywall`/`SubscriptionGate`. iOS Apple IAP,
   Android Play Billing; uygulama içi IAP-dışı dijital ödeme YOK (CLAUDE.md).
-- **`src/recipes/menemen.ts`** — örnek tarif grafı (paralel prep + güvenlik).
+- **`src/recipes/`** — tarif grafları (menemen, mercimek çorbası, sahanda
+  yumurta) + `RecipeListScreen` ("Ne pişsem?", şansıma seç). Her graf testlerle
+  doğrulanıyor (geçerli DAG, başlatılabilir, tamamlanabilir).
 - **`src/i18n/`, `src/config/`** — TR metinler ve yapılandırma.
 
 ## Kurulum
@@ -96,8 +98,8 @@ uç nokta allowlist'i eklenmeli (bkz. `server/README.md`).
 3. ~~Anahtarlar için backend proxy iskeleti~~ ✅
 4. ~~Proxy'ye Bearer token doğrulaması + anahtar başına hız sınırlama~~ ✅
 5. ~~RevenueCat — abonelik iskeleti (iOS IAP + Android Play Billing)~~ ✅
-6. "Ne pişsem" ekranı ve tarif seçimi
-7. Tarif kütüphanesini çoğalt (graf JSON'ları)
+6. ~~"Ne pişsem" ekranı ve tarif seçimi~~ ✅
+7. Tarif kütüphanesini çoğalt (daha fazla graf)
 8. EN dili (`src/i18n/en.ts`) ve global açılım
 
 > RevenueCat native modül ister: Expo'da `expo prebuild`/dev-client ile çalışır

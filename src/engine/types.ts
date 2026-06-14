@@ -79,5 +79,9 @@ export interface Recipe {
   servings: number;
   /** Yazılı metnin BCP-47 yerel ayarı, örn. "tr". */
   locale: string;
+  /** Tarif seçim ekranında gösterilen kısa tanıtım (opsiyonel). */
+  summary?: string;
+  /** Tahmini süre (dakika), seçim ekranı için (opsiyonel). */
+  totalMinutes?: number;
   nodes: RecipeNode[];
 }

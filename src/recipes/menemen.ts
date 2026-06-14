@@ -12,6 +12,8 @@ export const menemen: Recipe = {
   title: 'Menemen',
   servings: 2,
   locale: 'tr',
+  summary: 'Biber, domates ve yumurtayla klasik Türk kahvaltısı.',
+  totalMinutes: 20,
   nodes: [
     {
       id: 'chop_pepper',

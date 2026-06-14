@@ -34,7 +34,7 @@ function findTests(dir) {
   return out;
 }
 
-const testFiles = findTests('.test-build/src/engine');
+const testFiles = findTests('.test-build/src');
 if (testFiles.length === 0) {
   console.error('Derlenmiş test bulunamadı.');
   process.exit(1);

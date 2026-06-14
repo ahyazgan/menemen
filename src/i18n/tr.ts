@@ -6,7 +6,15 @@ export const tr = {
   app: {
     name: 'Lezzet',
   },
+  picker: {
+    title: 'Ne pişsem?',
+    subtitle: 'Bugün canın ne çekiyor?',
+    random: '🎲 Şansıma seç',
+    minutes: 'dk',
+    servings: 'kişilik',
+  },
   cooking: {
+    back: '‹ Tarifler',
     ready: 'Hazır adımlar',
     active: 'Şu an',
     done: 'Bitti',

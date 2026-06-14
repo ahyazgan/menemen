@@ -1,19 +1,28 @@
 /**
- * Uygulama girişi. Abonelik kapısının (SubscriptionGate) ardında örnek tarifle
- * (menemen) CookingScreen'i açar. İleride tarif seçimi / "ne pişsem" ekranı.
+ * Uygulama girişi + basit yönlendirici. Abonelik kapısının ardında:
+ * tarif seçimi (RecipeListScreen) → canlı pişirme (CookingScreen).
+ * Henüz harici navigasyon kütüphanesi yok; tek state ile geçiş yeterli.
  */
+import { useState } from 'react';
 import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 
 import { CookingScreen } from './src/screens/CookingScreen';
+import { RecipeListScreen } from './src/screens/RecipeListScreen';
 import { SubscriptionGate } from './src/components/SubscriptionGate';
-import { menemen } from './src/recipes';
+import type { Recipe } from './src/engine/types';
 
 export default function App() {
+  const [recipe, setRecipe] = useState<Recipe | null>(null);
+
   return (
     <SafeAreaView style={styles.root}>
       <StatusBar barStyle="dark-content" />
       <SubscriptionGate>
-        <CookingScreen recipe={menemen} />
+        {recipe ? (
+          <CookingScreen recipe={recipe} onBack={() => setRecipe(null)} />
+        ) : (
+          <RecipeListScreen onSelect={setRecipe} />
+        )}
       </SubscriptionGate>
     </SafeAreaView>
   );
