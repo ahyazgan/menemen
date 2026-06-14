@@ -2,13 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import {
-  tokenize,
-  scoreRecipe,
-  rankByCraving,
-  bestRecipeId,
-  isValidRecipeId,
-} from '../recommend';
+import { tokenize, scoreRecipe, rankByCraving, bestRecipeId, isValidRecipeId } from '../recommend';
 import { DEFAULT_PROFILE } from '../profile';
 import { recipeList, getRecipe } from '../index';
 

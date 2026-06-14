@@ -15,10 +15,26 @@ export const bulgurPilavi: Recipe = {
   ingredients: [
     { name: { tr: 'bulgur', en: 'bulgur' }, quantity: 2, unit: { tr: 'su bardağı', en: 'cup' } },
     { name: { tr: 'soğan', en: 'onion' }, quantity: 1, unit: { tr: 'adet', en: 'pcs' } },
-    { name: { tr: 'sivri biber', en: 'green pepper' }, quantity: 1, unit: { tr: 'adet', en: 'pcs' } },
-    { name: { tr: 'salça', en: 'tomato paste' }, quantity: 1, unit: { tr: 'yemek kaşığı', en: 'tbsp' } },
-    { name: { tr: 'zeytinyağı', en: 'olive oil' }, quantity: 3, unit: { tr: 'yemek kaşığı', en: 'tbsp' } },
-    { name: { tr: 'sıcak su', en: 'hot water' }, quantity: 4, unit: { tr: 'su bardağı', en: 'cup' } },
+    {
+      name: { tr: 'sivri biber', en: 'green pepper' },
+      quantity: 1,
+      unit: { tr: 'adet', en: 'pcs' },
+    },
+    {
+      name: { tr: 'salça', en: 'tomato paste' },
+      quantity: 1,
+      unit: { tr: 'yemek kaşığı', en: 'tbsp' },
+    },
+    {
+      name: { tr: 'zeytinyağı', en: 'olive oil' },
+      quantity: 3,
+      unit: { tr: 'yemek kaşığı', en: 'tbsp' },
+    },
+    {
+      name: { tr: 'sıcak su', en: 'hot water' },
+      quantity: 4,
+      unit: { tr: 'su bardağı', en: 'cup' },
+    },
     { name: { tr: 'tuz', en: 'salt' } },
   ],
   nodes: [
@@ -59,7 +75,10 @@ export const bulgurPilavi: Recipe = {
       requires: ['add_bulgur'],
       completion: 'timer',
       durationSec: 720,
-      voice_on_enter: { tr: 'Suyu ekledik, şimdi suyunu çekmesini bekleyelim.', en: 'Water in — now wait for it to absorb.' },
+      voice_on_enter: {
+        tr: 'Suyu ekledik, şimdi suyunu çekmesini bekleyelim.',
+        en: 'Water in — now wait for it to absorb.',
+      },
       voice_on_complete: { tr: 'Suyunu çekti gibi.', en: 'Looks like the water is absorbed.' },
     },
     {

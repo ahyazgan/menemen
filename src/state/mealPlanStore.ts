@@ -5,7 +5,13 @@
 import { create } from 'zustand';
 
 import { recipeList } from '../recipes';
-import { generatePlan, swapDay, parsePlan, serializePlan, type MealPlan } from '../recipes/mealPlan';
+import {
+  generatePlan,
+  swapDay,
+  parsePlan,
+  serializePlan,
+  type MealPlan,
+} from '../recipes/mealPlan';
 import type { Profile } from '../recipes/profile';
 import { createMemoryStore, type KeyValueStore } from '../services/storage';
 

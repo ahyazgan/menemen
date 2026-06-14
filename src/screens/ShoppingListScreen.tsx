@@ -34,7 +34,9 @@ export function ShoppingListScreen({ onBack }: { onBack: () => void }) {
             <View key={item.id} style={styles.row}>
               <Pressable style={styles.check} onPress={() => void toggle(item.id)}>
                 <Text style={styles.checkBox}>{item.checked ? '☑' : '☐'}</Text>
-                <Text style={[styles.label, item.checked && styles.labelChecked]}>{item.label}</Text>
+                <Text style={[styles.label, item.checked && styles.labelChecked]}>
+                  {item.label}
+                </Text>
               </Pressable>
               <Pressable hitSlop={8} onPress={() => void remove(item.id)}>
                 <Text style={styles.remove}>✕</Text>
@@ -81,7 +83,13 @@ const makeStyles = (c: ThemeColors) =>
     labelChecked: { color: c.textSubtle, textDecorationLine: 'line-through' },
     remove: { fontSize: 18, color: c.starOff, paddingLeft: 8 },
     actions: { flexDirection: 'row', gap: 12, marginTop: 16 },
-    action: { flex: 1, backgroundColor: c.fill, borderRadius: 12, paddingVertical: 14, alignItems: 'center' },
+    action: {
+      flex: 1,
+      backgroundColor: c.fill,
+      borderRadius: 12,
+      paddingVertical: 14,
+      alignItems: 'center',
+    },
     actionText: { color: c.textMuted, fontWeight: '600' },
     actionDanger: { backgroundColor: c.warningBg },
     actionDangerText: { color: c.primary, fontWeight: '700' },

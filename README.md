@@ -111,16 +111,19 @@ npm run android  # Android emülatör
 ## Test & tip kontrolü
 
 ```bash
-npm run typecheck   # tsc --noEmit (CLAUDE.md gereği temiz olmalı)
-npm run test:engine # saf motor birim testleri (harici bağımlılık gerekmez)
-npm test            # ikisi birden
+npm run typecheck    # tsc --noEmit (CLAUDE.md gereği temiz olmalı)
+npm run lint         # ESLint (TypeScript + react-hooks)
+npm run format:check # Prettier biçim kontrolü (düzeltmek için: npm run format)
+npm run test:engine  # saf motor birim testleri (harici bağımlılık gerekmez)
+npm test             # tip kontrolü + motor + sunucu testleri
 ```
 
 `test:engine`, motoru CommonJS'e derleyip `node --test` ile koşar; bu yüzden
 Expo/jest kurulmadan da motor doğrulanabilir.
 
 Her `push` (main) ve her PR'da **GitHub Actions** (`.github/workflows/ci.yml`)
-`npm test`'i (tip kontrolü + motor + sunucu testleri) otomatik koşar.
+`npm run lint` + `npm run format:check` + `npm test`'i (tip kontrolü + motor +
+sunucu testleri) otomatik koşar.
 
 ## Mimari (katmanlı)
 
@@ -144,9 +147,11 @@ tarafında ekler. Uygulamayı bağlamak:
 
 ```ts
 import { createRealServices, proxyRealConfig } from './src/services/real';
-useCookingStore.getState().setServices(
-  createRealServices(proxyRealConfig('https://api.lezzet.app', { clientToken: userJwt })),
-);
+useCookingStore
+  .getState()
+  .setServices(
+    createRealServices(proxyRealConfig('https://api.lezzet.app', { clientToken: userJwt })),
+  );
 ```
 
 Proxy artık **JWT doğrulaması (HS256 / RS256 / JWKS)**, anahtar başına **hız
@@ -173,7 +178,7 @@ Kalan üretim işleri (uzak JWKS çekme, OpenTelemetry) `server/README.md`'de.
 > RevenueCat native modül ister: Expo'da `expo prebuild`/dev-client ile çalışır
 > (Expo Go'da değil). `REQUIRE_SUBSCRIPTION` (config) dev'de `false`; üretimde
 > `true` yapıp `subscriptionStore.setBilling(createRevenueCatBilling({ iosApiKey,
-> androidApiKey }))` ile gerçek SDK'ya geç.
+androidApiKey }))` ile gerçek SDK'ya geç.
 
 ## Derleme (EAS) & cihaz duman testi
 
@@ -196,6 +201,7 @@ npx expo start --dev-client
 ```
 
 ### Cihaz duman-testi kontrol listesi
+
 1. Uygulama açılır; cihaz dili TR/EN ise arayüz o dilde gelir (aksi halde TR).
 2. "Ne pişsem?" listesi 25 tarifi gösterir; bir tarif seç → adımlar görünür.
 3. **Mikrofon izni** istenir; bas-konuş kaydı `store.listen` tetikler (mock veya

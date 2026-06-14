@@ -13,10 +13,22 @@ export const tavukCorbasi: Recipe = {
   },
   totalMinutes: 35,
   ingredients: [
-    { name: { tr: 'tavuk göğsü', en: 'chicken breast' }, quantity: 1, unit: { tr: 'adet', en: 'pcs' } },
+    {
+      name: { tr: 'tavuk göğsü', en: 'chicken breast' },
+      quantity: 1,
+      unit: { tr: 'adet', en: 'pcs' },
+    },
     { name: { tr: 'havuç', en: 'carrot' }, quantity: 1, unit: { tr: 'adet', en: 'pcs' } },
-    { name: { tr: 'şehriye', en: 'vermicelli' }, quantity: 3, unit: { tr: 'yemek kaşığı', en: 'tbsp' } },
-    { name: { tr: 'tereyağı', en: 'butter' }, quantity: 1, unit: { tr: 'yemek kaşığı', en: 'tbsp' } },
+    {
+      name: { tr: 'şehriye', en: 'vermicelli' },
+      quantity: 3,
+      unit: { tr: 'yemek kaşığı', en: 'tbsp' },
+    },
+    {
+      name: { tr: 'tereyağı', en: 'butter' },
+      quantity: 1,
+      unit: { tr: 'yemek kaşığı', en: 'tbsp' },
+    },
     { name: { tr: 'su', en: 'water' }, quantity: 6, unit: { tr: 'su bardağı', en: 'cup' } },
     { name: { tr: 'tuz', en: 'salt' } },
   ],
@@ -68,7 +80,10 @@ export const tavukCorbasi: Recipe = {
     {
       id: 'serve',
       title: { tr: 'Servis et', en: 'Serve' },
-      instruction: { tr: 'Üzerine biraz tereyağı, sıcak servis et.', en: 'Finish with a knob of butter and serve hot.' },
+      instruction: {
+        tr: 'Üzerine biraz tereyağı, sıcak servis et.',
+        en: 'Finish with a knob of butter and serve hot.',
+      },
       kind: 'finish',
       requires: ['simmer'],
       completion: 'user',

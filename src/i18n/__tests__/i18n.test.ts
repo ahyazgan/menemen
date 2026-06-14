@@ -23,7 +23,10 @@ function flatKeys(obj: Record<string, unknown>, prefix = ''): string[] {
 }
 
 test('TR ve EN anahtarları birebir aynı', () => {
-  assert.deepEqual(flatKeys(en as Record<string, unknown>), flatKeys(tr as Record<string, unknown>));
+  assert.deepEqual(
+    flatKeys(en as Record<string, unknown>),
+    flatKeys(tr as Record<string, unknown>),
+  );
 });
 
 test('varsayılan dil tr', () => {

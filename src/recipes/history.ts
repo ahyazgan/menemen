@@ -22,7 +22,11 @@ export function parseHistory(raw: string | null): HistoryEntry[] {
           typeof (x as HistoryEntry).recipeId === 'string' &&
           typeof (x as HistoryEntry).at === 'number',
       )
-      .map((x) => ({ recipeId: x.recipeId, at: x.at, count: typeof x.count === 'number' ? x.count : 1 }));
+      .map((x) => ({
+        recipeId: x.recipeId,
+        at: x.at,
+        count: typeof x.count === 'number' ? x.count : 1,
+      }));
   } catch {
     return [];
   }

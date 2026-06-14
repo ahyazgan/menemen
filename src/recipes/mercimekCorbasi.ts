@@ -17,83 +17,83 @@ export const mercimekCorbasi: Recipe = {
   totalMinutes: 35,
   ingredients: [
     {
-      "name": {
-        "tr": "kırmızı mercimek",
-        "en": "red lentils"
+      name: {
+        tr: 'kırmızı mercimek',
+        en: 'red lentils',
       },
-      "quantity": 1,
-      "unit": {
-        "tr": "su bardağı",
-        "en": "cup"
-      }
-    },
-    {
-      "name": {
-        "tr": "soğan",
-        "en": "onion"
+      quantity: 1,
+      unit: {
+        tr: 'su bardağı',
+        en: 'cup',
       },
-      "quantity": 1,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
     },
     {
-      "name": {
-        "tr": "havuç",
-        "en": "carrot"
+      name: {
+        tr: 'soğan',
+        en: 'onion',
       },
-      "quantity": 1,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
-    },
-    {
-      "name": {
-        "tr": "su",
-        "en": "water"
+      quantity: 1,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
       },
-      "quantity": 6,
-      "unit": {
-        "tr": "su bardağı",
-        "en": "cup"
-      }
     },
     {
-      "name": {
-        "tr": "yağ",
-        "en": "oil"
+      name: {
+        tr: 'havuç',
+        en: 'carrot',
       },
-      "quantity": 2,
-      "unit": {
-        "tr": "yemek kaşığı",
-        "en": "tbsp"
-      }
-    },
-    {
-      "name": {
-        "tr": "tuz",
-        "en": "salt"
-      }
-    },
-    {
-      "name": {
-        "tr": "limon",
-        "en": "lemon"
+      quantity: 1,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
       },
-      "quantity": 1,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
     },
     {
-      "name": {
-        "tr": "pul biber",
-        "en": "chili flakes"
-      }
-    }
+      name: {
+        tr: 'su',
+        en: 'water',
+      },
+      quantity: 6,
+      unit: {
+        tr: 'su bardağı',
+        en: 'cup',
+      },
+    },
+    {
+      name: {
+        tr: 'yağ',
+        en: 'oil',
+      },
+      quantity: 2,
+      unit: {
+        tr: 'yemek kaşığı',
+        en: 'tbsp',
+      },
+    },
+    {
+      name: {
+        tr: 'tuz',
+        en: 'salt',
+      },
+    },
+    {
+      name: {
+        tr: 'limon',
+        en: 'lemon',
+      },
+      quantity: 1,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
+      },
+    },
+    {
+      name: {
+        tr: 'pul biber',
+        en: 'chili flakes',
+      },
+    },
   ],
   nodes: [
     {

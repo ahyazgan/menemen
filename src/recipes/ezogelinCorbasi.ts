@@ -13,13 +13,25 @@ export const ezogelinCorbasi: Recipe = {
   },
   totalMinutes: 35,
   ingredients: [
-    { name: { tr: 'kırmızı mercimek', en: 'red lentils' }, quantity: 1, unit: { tr: 'su bardağı', en: 'cup' } },
+    {
+      name: { tr: 'kırmızı mercimek', en: 'red lentils' },
+      quantity: 1,
+      unit: { tr: 'su bardağı', en: 'cup' },
+    },
     { name: { tr: 'pirinç', en: 'rice' }, quantity: 2, unit: { tr: 'yemek kaşığı', en: 'tbsp' } },
     { name: { tr: 'bulgur', en: 'bulgur' }, quantity: 2, unit: { tr: 'yemek kaşığı', en: 'tbsp' } },
     { name: { tr: 'soğan', en: 'onion' }, quantity: 1, unit: { tr: 'adet', en: 'pcs' } },
-    { name: { tr: 'salça', en: 'tomato paste' }, quantity: 1, unit: { tr: 'yemek kaşığı', en: 'tbsp' } },
+    {
+      name: { tr: 'salça', en: 'tomato paste' },
+      quantity: 1,
+      unit: { tr: 'yemek kaşığı', en: 'tbsp' },
+    },
     { name: { tr: 'nane', en: 'dried mint' } },
-    { name: { tr: 'sıcak su', en: 'hot water' }, quantity: 6, unit: { tr: 'su bardağı', en: 'cup' } },
+    {
+      name: { tr: 'sıcak su', en: 'hot water' },
+      quantity: 6,
+      unit: { tr: 'su bardağı', en: 'cup' },
+    },
     { name: { tr: 'tuz', en: 'salt' } },
   ],
   nodes: [
@@ -33,7 +45,10 @@ export const ezogelinCorbasi: Recipe = {
       kind: 'action',
       requires: [],
       completion: 'user',
-      voice_on_enter: { tr: 'Soğanı kavuralım, nane güzel kokacak.', en: "Let's sauté the onion; the mint will smell lovely." },
+      voice_on_enter: {
+        tr: 'Soğanı kavuralım, nane güzel kokacak.',
+        en: "Let's sauté the onion; the mint will smell lovely.",
+      },
     },
     {
       id: 'add_grains',
@@ -68,7 +83,10 @@ export const ezogelinCorbasi: Recipe = {
       requires: ['add_water'],
       completion: 'timer',
       durationSec: 1320,
-      voice_on_complete: { tr: 'Mercimekler dağılmış olmalı.', en: 'The lentils should have broken down.' },
+      voice_on_complete: {
+        tr: 'Mercimekler dağılmış olmalı.',
+        en: 'The lentils should have broken down.',
+      },
       recovery_rules: {
         sulu: {
           tr: 'Çok suluysa kapağı açıp birkaç dakika daha pişir.',

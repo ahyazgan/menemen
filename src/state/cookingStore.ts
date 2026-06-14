@@ -108,7 +108,12 @@ export const useCookingStore = create<CookingState>((set, get) => ({
       const body = node.voice_on_complete
         ? localize(node.voice_on_complete, locale)
         : t('notify.timerDone');
-      const notice = buildTimerNotification(node, locale, body, engine.remainingSec(nodeId) ?? undefined);
+      const notice = buildTimerNotification(
+        node,
+        locale,
+        body,
+        engine.remainingSec(nodeId) ?? undefined,
+      );
       void get().notify.schedule(notice);
     }
     if (node.voice_on_enter) await get().speak(localize(node.voice_on_enter, locale));

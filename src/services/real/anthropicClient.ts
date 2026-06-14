@@ -25,7 +25,9 @@ export function createAnthropicClient(config: AnthropicConfig): Anthropic {
     apiKey: config.apiKey,
     baseURL: config.baseURL,
     // Proxy kullanılıyorsa istemci token'ını Bearer olarak gönder.
-    defaultHeaders: config.clientToken ? { Authorization: `Bearer ${config.clientToken}` } : undefined,
+    defaultHeaders: config.clientToken
+      ? { Authorization: `Bearer ${config.clientToken}` }
+      : undefined,
     // RN/Hermes ortamında çalışır; üretimde anahtarı istemciye gömme — proxy kullan.
     dangerouslyAllowBrowser: true,
   });

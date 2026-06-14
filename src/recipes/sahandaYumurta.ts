@@ -17,39 +17,39 @@ export const sahandaYumurta: Recipe = {
   totalMinutes: 7,
   ingredients: [
     {
-      "name": {
-        "tr": "yumurta",
-        "en": "egg"
+      name: {
+        tr: 'yumurta',
+        en: 'egg',
       },
-      "quantity": 2,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
-    },
-    {
-      "name": {
-        "tr": "tereyağı",
-        "en": "butter"
+      quantity: 2,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
       },
-      "quantity": 1,
-      "unit": {
-        "tr": "yemek kaşığı",
-        "en": "tbsp"
-      }
     },
     {
-      "name": {
-        "tr": "tuz",
-        "en": "salt"
-      }
+      name: {
+        tr: 'tereyağı',
+        en: 'butter',
+      },
+      quantity: 1,
+      unit: {
+        tr: 'yemek kaşığı',
+        en: 'tbsp',
+      },
     },
     {
-      "name": {
-        "tr": "karabiber",
-        "en": "black pepper"
-      }
-    }
+      name: {
+        tr: 'tuz',
+        en: 'salt',
+      },
+    },
+    {
+      name: {
+        tr: 'karabiber',
+        en: 'black pepper',
+      },
+    },
   ],
   nodes: [
     {

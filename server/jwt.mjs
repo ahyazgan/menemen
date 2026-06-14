@@ -6,7 +6,13 @@
  * Not: yalnızca HS256 (paylaşılan sır). RS256 gerekiyorsa createVerify ile
  * genişletilebilir; arayüz aynı kalır.
  */
-import { createHmac, createPublicKey, createSign, timingSafeEqual, verify as cryptoVerify } from 'node:crypto';
+import {
+  createHmac,
+  createPublicKey,
+  createSign,
+  timingSafeEqual,
+  verify as cryptoVerify,
+} from 'node:crypto';
 
 function decodeJsonSegment(segment) {
   return JSON.parse(Buffer.from(segment, 'base64url').toString('utf8'));
@@ -84,7 +90,8 @@ export function verifyRS256(token, key, { now = () => Date.now() } = {}) {
 
   let keyObject;
   try {
-    keyObject = typeof key === 'string' ? createPublicKey(key) : createPublicKey({ key, format: 'jwk' });
+    keyObject =
+      typeof key === 'string' ? createPublicKey(key) : createPublicKey({ key, format: 'jwk' });
   } catch {
     return { valid: false, reason: 'bad_key' };
   }
@@ -103,8 +110,10 @@ export function verifyRS256(token, key, { now = () => Date.now() } = {}) {
   if (!ok) return { valid: false, reason: 'bad_signature' };
 
   const nowSec = Math.floor(now() / 1000);
-  if (typeof payload.exp === 'number' && nowSec >= payload.exp) return { valid: false, reason: 'expired' };
-  if (typeof payload.nbf === 'number' && nowSec < payload.nbf) return { valid: false, reason: 'not_yet_valid' };
+  if (typeof payload.exp === 'number' && nowSec >= payload.exp)
+    return { valid: false, reason: 'expired' };
+  if (typeof payload.nbf === 'number' && nowSec < payload.nbf)
+    return { valid: false, reason: 'not_yet_valid' };
 
   return { valid: true, payload };
 }
@@ -133,6 +142,10 @@ export function signRS256(payload, privateKey, header = { alg: 'RS256', typ: 'JW
   const enc = (obj) => Buffer.from(JSON.stringify(obj)).toString('base64url');
   const head = enc(header);
   const body = enc(payload);
-  const sig = createSign('RSA-SHA256').update(`${head}.${body}`).end().sign(privateKey).toString('base64url');
+  const sig = createSign('RSA-SHA256')
+    .update(`${head}.${body}`)
+    .end()
+    .sign(privateKey)
+    .toString('base64url');
   return `${head}.${body}.${sig}`;
 }

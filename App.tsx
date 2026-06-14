@@ -108,10 +108,13 @@ export default function App() {
   function content() {
     if (recipe) return <CookingScreen recipe={recipe} onBack={() => setRecipe(null)} />;
     if (showShopping) return <ShoppingListScreen onBack={() => setShowShopping(false)} />;
-    if (showPantry) return <PantryScreen onSelect={openRecipe} onBack={() => setShowPantry(false)} />;
+    if (showPantry)
+      return <PantryScreen onSelect={openRecipe} onBack={() => setShowPantry(false)} />;
     if (showProfile) return <ProfileScreen onBack={() => setShowProfile(false)} />;
-    if (showSuggest) return <SuggestScreen onSelect={openRecipe} onBack={() => setShowSuggest(false)} />;
-    if (showPlan) return <WeeklyPlanScreen onSelect={openRecipe} onBack={() => setShowPlan(false)} />;
+    if (showSuggest)
+      return <SuggestScreen onSelect={openRecipe} onBack={() => setShowSuggest(false)} />;
+    if (showPlan)
+      return <WeeklyPlanScreen onSelect={openRecipe} onBack={() => setShowPlan(false)} />;
     return (
       <RecipeListScreen
         onSelect={setRecipe}

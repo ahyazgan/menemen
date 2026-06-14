@@ -16,7 +16,11 @@ export const zeytinyagliFasulye: Recipe = {
     { name: { tr: 'taze fasulye', en: 'green beans' }, quantity: 500, unit: { tr: 'g', en: 'g' } },
     { name: { tr: 'soğan', en: 'onion' }, quantity: 1, unit: { tr: 'adet', en: 'pcs' } },
     { name: { tr: 'domates', en: 'tomato' }, quantity: 2, unit: { tr: 'adet', en: 'pcs' } },
-    { name: { tr: 'zeytinyağı', en: 'olive oil' }, quantity: 4, unit: { tr: 'yemek kaşığı', en: 'tbsp' } },
+    {
+      name: { tr: 'zeytinyağı', en: 'olive oil' },
+      quantity: 4,
+      unit: { tr: 'yemek kaşığı', en: 'tbsp' },
+    },
     { name: { tr: 'su', en: 'water' }, quantity: 1, unit: { tr: 'su bardağı', en: 'cup' } },
     { name: { tr: 'tuz', en: 'salt' } },
   ],
@@ -36,7 +40,10 @@ export const zeytinyagliFasulye: Recipe = {
     {
       id: 'saute_onion',
       title: { tr: 'Soğanı kavur', en: 'Sauté the onion' },
-      instruction: { tr: 'Soğanı zeytinyağında yumuşat, domatesi ekle.', en: 'Soften the onion in olive oil and add the tomato.' },
+      instruction: {
+        tr: 'Soğanı zeytinyağında yumuşat, domatesi ekle.',
+        en: 'Soften the onion in olive oil and add the tomato.',
+      },
       kind: 'action',
       requires: [],
       parallel_with: ['clean_beans'],
@@ -65,13 +72,19 @@ export const zeytinyagliFasulye: Recipe = {
       completion: 'timer',
       durationSec: 1500,
       recovery_rules: {
-        sulu: { tr: 'Suyu fazlaysa kapağı açıp biraz uçur.', en: 'If too watery, uncover and reduce a little.' },
+        sulu: {
+          tr: 'Suyu fazlaysa kapağı açıp biraz uçur.',
+          en: 'If too watery, uncover and reduce a little.',
+        },
       },
     },
     {
       id: 'serve',
       title: { tr: 'Soğut ve servis et', en: 'Cool and serve' },
-      instruction: { tr: 'Ilık ya da soğuk, zeytinyağıyla servis et.', en: 'Serve warm or cold, with a drizzle of olive oil.' },
+      instruction: {
+        tr: 'Ilık ya da soğuk, zeytinyağıyla servis et.',
+        en: 'Serve warm or cold, with a drizzle of olive oil.',
+      },
       kind: 'finish',
       requires: ['simmer'],
       completion: 'user',

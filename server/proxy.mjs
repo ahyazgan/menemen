@@ -314,6 +314,8 @@ async function handleRequest(req, res) {
 server.listen(PORT, () => {
   log({ event: 'listen', port: PORT, authMode: AUTH_MODE });
   if (AUTH_MODE === 'dev') {
-    console.warn('⚠️  Auth KAPALI (dev). Üretimde LEZZET_JWT_SECRET veya LEZZET_PROXY_TOKENS ayarla.');
+    console.warn(
+      '⚠️  Auth KAPALI (dev). Üretimde LEZZET_JWT_SECRET veya LEZZET_PROXY_TOKENS ayarla.',
+    );
   }
 });

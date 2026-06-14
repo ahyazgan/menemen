@@ -9,7 +9,11 @@ test('recipeDeepLink scheme + id', () => {
 });
 
 test('buildShareText tüm yer tutucuları doldurur', () => {
-  const out = buildShareText('"{title}" yaptım, dene: {link}', 'Menemen', 'lezzet://recipe/menemen');
+  const out = buildShareText(
+    '"{title}" yaptım, dene: {link}',
+    'Menemen',
+    'lezzet://recipe/menemen',
+  );
   assert.equal(out, '"Menemen" yaptım, dene: lezzet://recipe/menemen');
 });
 

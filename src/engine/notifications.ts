@@ -16,7 +16,9 @@ export interface TimerNotification {
 
 /** Düğüm süreli (timer) ve süresi pozitif mi? Yalnızca bunlar bildirim alır. */
 export function isTimerNode(node: RecipeNode): boolean {
-  return node.completion === 'timer' && typeof node.durationSec === 'number' && node.durationSec > 0;
+  return (
+    node.completion === 'timer' && typeof node.durationSec === 'number' && node.durationSec > 0
+  );
 }
 
 /** Düğüm için kararlı bildirim kimliği (planla/iptal eşleşmesi). */

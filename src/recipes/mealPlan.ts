@@ -106,11 +106,7 @@ export function swapDay(
  * Plandaki tüm tariflerin malzemelerini tek listede toplar. Aynı malzeme+birim
  * miktarları toplanır; miktarsız malzemeler (tuz, karabiber) bir kez listelenir.
  */
-export function planIngredients(
-  plan: MealPlan,
-  recipes: Recipe[],
-  locale: string,
-): ShoppingItem[] {
+export function planIngredients(plan: MealPlan, recipes: Recipe[], locale: string): ShoppingItem[] {
   const byId = new Map(recipes.map((r) => [r.id, r]));
   interface Agg {
     name: string;

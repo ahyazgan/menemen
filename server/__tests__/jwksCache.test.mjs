@@ -14,7 +14,11 @@ function fakeClock(start = 0) {
 
 test('ilk get fetcher çağırır ve değeri döndürür', async () => {
   let calls = 0;
-  const cache = createJwksCache({ fetcher: async () => ({ keys: [++calls] }), ttlMs: 1000, now: fakeClock() });
+  const cache = createJwksCache({
+    fetcher: async () => ({ keys: [++calls] }),
+    ttlMs: 1000,
+    now: fakeClock(),
+  });
   const v = await cache.get();
   assert.deepEqual(v, { keys: [1] });
   assert.equal(calls, 1);
@@ -23,7 +27,11 @@ test('ilk get fetcher çağırır ve değeri döndürür', async () => {
 test('TTL içinde önbellekten döner (fetcher tekrar çağrılmaz)', async () => {
   let calls = 0;
   const clock = fakeClock();
-  const cache = createJwksCache({ fetcher: async () => ({ keys: [++calls] }), ttlMs: 1000, now: clock });
+  const cache = createJwksCache({
+    fetcher: async () => ({ keys: [++calls] }),
+    ttlMs: 1000,
+    now: clock,
+  });
   await cache.get();
   clock.advance(500);
   await cache.get();
@@ -33,7 +41,11 @@ test('TTL içinde önbellekten döner (fetcher tekrar çağrılmaz)', async () =
 test('TTL sonrası yeniden çeker', async () => {
   let calls = 0;
   const clock = fakeClock();
-  const cache = createJwksCache({ fetcher: async () => ({ keys: [++calls] }), ttlMs: 1000, now: clock });
+  const cache = createJwksCache({
+    fetcher: async () => ({ keys: [++calls] }),
+    ttlMs: 1000,
+    now: clock,
+  });
   await cache.get();
   clock.advance(1000);
   await cache.get();

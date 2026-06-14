@@ -13,10 +13,22 @@ export const nohutYemegi: Recipe = {
   },
   totalMinutes: 35,
   ingredients: [
-    { name: { tr: 'haşlanmış nohut', en: 'cooked chickpeas' }, quantity: 2, unit: { tr: 'su bardağı', en: 'cup' } },
+    {
+      name: { tr: 'haşlanmış nohut', en: 'cooked chickpeas' },
+      quantity: 2,
+      unit: { tr: 'su bardağı', en: 'cup' },
+    },
     { name: { tr: 'soğan', en: 'onion' }, quantity: 1, unit: { tr: 'adet', en: 'pcs' } },
-    { name: { tr: 'salça', en: 'tomato paste' }, quantity: 1, unit: { tr: 'yemek kaşığı', en: 'tbsp' } },
-    { name: { tr: 'zeytinyağı', en: 'olive oil' }, quantity: 3, unit: { tr: 'yemek kaşığı', en: 'tbsp' } },
+    {
+      name: { tr: 'salça', en: 'tomato paste' },
+      quantity: 1,
+      unit: { tr: 'yemek kaşığı', en: 'tbsp' },
+    },
+    {
+      name: { tr: 'zeytinyağı', en: 'olive oil' },
+      quantity: 3,
+      unit: { tr: 'yemek kaşığı', en: 'tbsp' },
+    },
     { name: { tr: 'su', en: 'water' }, quantity: 2, unit: { tr: 'su bardağı', en: 'cup' } },
     { name: { tr: 'tuz', en: 'salt' } },
   ],
@@ -24,7 +36,10 @@ export const nohutYemegi: Recipe = {
     {
       id: 'saute_onion',
       title: { tr: 'Soğanı kavur', en: 'Sauté the onion' },
-      instruction: { tr: 'Soğanı zeytinyağında pembeleştir.', en: 'Soften the onion in olive oil.' },
+      instruction: {
+        tr: 'Soğanı zeytinyağında pembeleştir.',
+        en: 'Soften the onion in olive oil.',
+      },
       kind: 'action',
       requires: [],
       completion: 'user',
@@ -33,7 +48,10 @@ export const nohutYemegi: Recipe = {
     {
       id: 'add_paste',
       title: { tr: 'Salçayı ekle', en: 'Add the paste' },
-      instruction: { tr: 'Salçayı ekleyip kokusu çıkana dek kavur.', en: 'Add the paste and sauté until fragrant.' },
+      instruction: {
+        tr: 'Salçayı ekleyip kokusu çıkana dek kavur.',
+        en: 'Add the paste and sauté until fragrant.',
+      },
       kind: 'action',
       requires: ['saute_onion'],
       completion: 'user',
@@ -41,7 +59,10 @@ export const nohutYemegi: Recipe = {
     {
       id: 'add_chickpeas',
       title: { tr: 'Nohut ve suyu ekle', en: 'Add chickpeas and water' },
-      instruction: { tr: 'Haşlanmış nohut, su ve tuzu ekle.', en: 'Add the cooked chickpeas, water and salt.' },
+      instruction: {
+        tr: 'Haşlanmış nohut, su ve tuzu ekle.',
+        en: 'Add the cooked chickpeas, water and salt.',
+      },
       kind: 'action',
       requires: ['add_paste'],
       completion: 'user',
@@ -61,7 +82,10 @@ export const nohutYemegi: Recipe = {
     {
       id: 'serve',
       title: { tr: 'Servis et', en: 'Serve' },
-      instruction: { tr: 'Pilav ya da ekmekle sıcak servis et.', en: 'Serve hot with rice or bread.' },
+      instruction: {
+        tr: 'Pilav ya da ekmekle sıcak servis et.',
+        en: 'Serve hot with rice or bread.',
+      },
       kind: 'finish',
       requires: ['simmer'],
       completion: 'user',

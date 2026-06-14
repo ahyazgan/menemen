@@ -14,67 +14,67 @@ export const kofte: Recipe = {
   totalMinutes: 40,
   ingredients: [
     {
-      "name": {
-        "tr": "kıyma",
-        "en": "ground meat"
+      name: {
+        tr: 'kıyma',
+        en: 'ground meat',
       },
-      "quantity": 500,
-      "unit": {
-        "tr": "g",
-        "en": "g"
-      }
-    },
-    {
-      "name": {
-        "tr": "soğan",
-        "en": "onion"
+      quantity: 500,
+      unit: {
+        tr: 'g',
+        en: 'g',
       },
-      "quantity": 1,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
     },
     {
-      "name": {
-        "tr": "yumurta",
-        "en": "egg"
+      name: {
+        tr: 'soğan',
+        en: 'onion',
       },
-      "quantity": 1,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
-    },
-    {
-      "name": {
-        "tr": "ekmek içi",
-        "en": "breadcrumbs"
+      quantity: 1,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
       },
-      "quantity": 1,
-      "unit": {
-        "tr": "dilim",
-        "en": "slice"
-      }
     },
     {
-      "name": {
-        "tr": "tuz",
-        "en": "salt"
-      }
+      name: {
+        tr: 'yumurta',
+        en: 'egg',
+      },
+      quantity: 1,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
+      },
     },
     {
-      "name": {
-        "tr": "karabiber",
-        "en": "black pepper"
-      }
+      name: {
+        tr: 'ekmek içi',
+        en: 'breadcrumbs',
+      },
+      quantity: 1,
+      unit: {
+        tr: 'dilim',
+        en: 'slice',
+      },
     },
     {
-      "name": {
-        "tr": "kimyon",
-        "en": "cumin"
-      }
-    }
+      name: {
+        tr: 'tuz',
+        en: 'salt',
+      },
+    },
+    {
+      name: {
+        tr: 'karabiber',
+        en: 'black pepper',
+      },
+    },
+    {
+      name: {
+        tr: 'kimyon',
+        en: 'cumin',
+      },
+    },
   ],
   nodes: [
     {

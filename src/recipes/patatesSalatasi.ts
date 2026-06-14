@@ -16,7 +16,11 @@ export const patatesSalatasi: Recipe = {
     { name: { tr: 'patates', en: 'potato' }, quantity: 4, unit: { tr: 'adet', en: 'pcs' } },
     { name: { tr: 'soğan', en: 'onion' }, quantity: 1, unit: { tr: 'adet', en: 'pcs' } },
     { name: { tr: 'maydanoz', en: 'parsley' } },
-    { name: { tr: 'zeytinyağı', en: 'olive oil' }, quantity: 4, unit: { tr: 'yemek kaşığı', en: 'tbsp' } },
+    {
+      name: { tr: 'zeytinyağı', en: 'olive oil' },
+      quantity: 4,
+      unit: { tr: 'yemek kaşığı', en: 'tbsp' },
+    },
     { name: { tr: 'limon', en: 'lemon' }, quantity: 1, unit: { tr: 'adet', en: 'pcs' } },
     { name: { tr: 'tuz', en: 'salt' } },
   ],
@@ -32,8 +36,14 @@ export const patatesSalatasi: Recipe = {
       requires: [],
       completion: 'timer',
       durationSec: 1200,
-      voice_on_enter: { tr: 'Patatesleri haşlamaya koyalım.', en: "Let's get the potatoes boiling." },
-      voice_on_complete: { tr: 'Patatesler yumuşamış olmalı.', en: 'The potatoes should be tender.' },
+      voice_on_enter: {
+        tr: 'Patatesleri haşlamaya koyalım.',
+        en: "Let's get the potatoes boiling.",
+      },
+      voice_on_complete: {
+        tr: 'Patatesler yumuşamış olmalı.',
+        en: 'The potatoes should be tender.',
+      },
     },
     {
       id: 'chop',
@@ -57,7 +67,10 @@ export const patatesSalatasi: Recipe = {
       kind: 'finish',
       requires: ['boil_potato', 'chop'],
       completion: 'user',
-      voice_on_enter: { tr: 'Ilıkken harmanla, daha iyi emer. Afiyet olsun!', en: 'Toss while warm so it soaks up the dressing — enjoy!' },
+      voice_on_enter: {
+        tr: 'Ilıkken harmanla, daha iyi emer. Afiyet olsun!',
+        en: 'Toss while warm so it soaks up the dressing — enjoy!',
+      },
     },
   ],
 };

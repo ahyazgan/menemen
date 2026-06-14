@@ -14,22 +14,22 @@ export const haslanmisYumurta: Recipe = {
   totalMinutes: 12,
   ingredients: [
     {
-      "name": {
-        "tr": "yumurta",
-        "en": "egg"
+      name: {
+        tr: 'yumurta',
+        en: 'egg',
       },
-      "quantity": 4,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
+      quantity: 4,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
+      },
     },
     {
-      "name": {
-        "tr": "tuz",
-        "en": "salt"
-      }
-    }
+      name: {
+        tr: 'tuz',
+        en: 'salt',
+      },
+    },
   ],
   nodes: [
     {

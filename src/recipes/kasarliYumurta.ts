@@ -14,7 +14,11 @@ export const kasarliYumurta: Recipe = {
   totalMinutes: 8,
   ingredients: [
     { name: { tr: 'yumurta', en: 'egg' }, quantity: 2, unit: { tr: 'adet', en: 'pcs' } },
-    { name: { tr: 'rendelenmiş kaşar', en: 'grated kashar' }, quantity: 1, unit: { tr: 'avuç', en: 'handful' } },
+    {
+      name: { tr: 'rendelenmiş kaşar', en: 'grated kashar' },
+      quantity: 1,
+      unit: { tr: 'avuç', en: 'handful' },
+    },
     { name: { tr: 'tereyağı', en: 'butter' }, quantity: 1, unit: { tr: 'çay kaşığı', en: 'tsp' } },
     { name: { tr: 'tuz', en: 'salt' } },
   ],
@@ -31,7 +35,10 @@ export const kasarliYumurta: Recipe = {
     {
       id: 'add_eggs',
       title: { tr: 'Yumurtaları kır', en: 'Crack the eggs' },
-      instruction: { tr: 'Yumurtaları tavaya kır, üzerine tuz serp.', en: 'Crack the eggs into the pan and season with salt.' },
+      instruction: {
+        tr: 'Yumurtaları tavaya kır, üzerine tuz serp.',
+        en: 'Crack the eggs into the pan and season with salt.',
+      },
       kind: 'action',
       requires: ['heat_pan'],
       completion: 'user',
@@ -54,12 +61,18 @@ export const kasarliYumurta: Recipe = {
         },
         minInternalTempC: 71,
       },
-      voice_on_complete: { tr: 'Kaşar erimiş, beyazı pişmiş olmalı.', en: 'The cheese should be melted and the white set.' },
+      voice_on_complete: {
+        tr: 'Kaşar erimiş, beyazı pişmiş olmalı.',
+        en: 'The cheese should be melted and the white set.',
+      },
     },
     {
       id: 'serve',
       title: { tr: 'Servis et', en: 'Serve' },
-      instruction: { tr: 'Sıcak servis et, ekmekle güzel gider.', en: 'Serve hot; great with bread.' },
+      instruction: {
+        tr: 'Sıcak servis et, ekmekle güzel gider.',
+        en: 'Serve hot; great with bread.',
+      },
       kind: 'finish',
       requires: ['add_cheese_cook'],
       completion: 'user',

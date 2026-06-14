@@ -14,72 +14,72 @@ export const kuruFasulye: Recipe = {
   totalMinutes: 50,
   ingredients: [
     {
-      "name": {
-        "tr": "haşlanmış kuru fasulye",
-        "en": "cooked white beans"
+      name: {
+        tr: 'haşlanmış kuru fasulye',
+        en: 'cooked white beans',
       },
-      "quantity": 2,
-      "unit": {
-        "tr": "su bardağı",
-        "en": "cup"
-      }
-    },
-    {
-      "name": {
-        "tr": "soğan",
-        "en": "onion"
+      quantity: 2,
+      unit: {
+        tr: 'su bardağı',
+        en: 'cup',
       },
-      "quantity": 1,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
     },
     {
-      "name": {
-        "tr": "salça",
-        "en": "tomato paste"
+      name: {
+        tr: 'soğan',
+        en: 'onion',
       },
-      "quantity": 1,
-      "unit": {
-        "tr": "yemek kaşığı",
-        "en": "tbsp"
-      }
-    },
-    {
-      "name": {
-        "tr": "sıcak su",
-        "en": "hot water"
+      quantity: 1,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
       },
-      "quantity": 4,
-      "unit": {
-        "tr": "su bardağı",
-        "en": "cup"
-      }
     },
     {
-      "name": {
-        "tr": "yağ",
-        "en": "oil"
+      name: {
+        tr: 'salça',
+        en: 'tomato paste',
       },
-      "quantity": 2,
-      "unit": {
-        "tr": "yemek kaşığı",
-        "en": "tbsp"
-      }
+      quantity: 1,
+      unit: {
+        tr: 'yemek kaşığı',
+        en: 'tbsp',
+      },
     },
     {
-      "name": {
-        "tr": "tuz",
-        "en": "salt"
-      }
+      name: {
+        tr: 'sıcak su',
+        en: 'hot water',
+      },
+      quantity: 4,
+      unit: {
+        tr: 'su bardağı',
+        en: 'cup',
+      },
     },
     {
-      "name": {
-        "tr": "pul biber",
-        "en": "chili flakes"
-      }
-    }
+      name: {
+        tr: 'yağ',
+        en: 'oil',
+      },
+      quantity: 2,
+      unit: {
+        tr: 'yemek kaşığı',
+        en: 'tbsp',
+      },
+    },
+    {
+      name: {
+        tr: 'tuz',
+        en: 'salt',
+      },
+    },
+    {
+      name: {
+        tr: 'pul biber',
+        en: 'chili flakes',
+      },
+    },
   ],
   nodes: [
     {
@@ -115,7 +115,10 @@ export const kuruFasulye: Recipe = {
       requires: ['saute_onion'],
       completion: 'timer',
       durationSec: 120,
-      voice_on_enter: { tr: 'Salçayı ekle, kısa süre kavur.', en: 'Add the paste and cook briefly.' },
+      voice_on_enter: {
+        tr: 'Salçayı ekle, kısa süre kavur.',
+        en: 'Add the paste and cook briefly.',
+      },
     },
     {
       id: 'add_beans',
@@ -144,7 +147,10 @@ export const kuruFasulye: Recipe = {
         tr: 'Kısık ateşte yavaşça pişsin.',
         en: 'Let it simmer gently over low heat.',
       },
-      voice_on_complete: { tr: 'Suyu kıvamını almış olmalı.', en: 'The sauce should have thickened.' },
+      voice_on_complete: {
+        tr: 'Suyu kıvamını almış olmalı.',
+        en: 'The sauce should have thickened.',
+      },
       recovery_rules: {
         tuzlu: {
           tr: 'Tuzluysa bir patatesi doğrayıp ekle, birkaç dakika pişir, sonra çıkar.',

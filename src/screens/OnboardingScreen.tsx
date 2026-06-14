@@ -115,7 +115,13 @@ const makeStyles = (c: ThemeColors) =>
     pillText: { color: c.textBody, fontSize: 15, fontWeight: '700' },
     pillTextOn: { color: c.onPrimary },
     perm: { fontSize: 16, color: c.textBody, lineHeight: 24, marginBottom: 14 },
-    permFooter: { fontSize: 14, color: c.textSubtle, marginTop: 6, lineHeight: 20, fontStyle: 'italic' },
+    permFooter: {
+      fontSize: 14,
+      color: c.textSubtle,
+      marginTop: 6,
+      lineHeight: 20,
+      fontStyle: 'italic',
+    },
     primary: {
       backgroundColor: c.primary,
       borderRadius: 16,
