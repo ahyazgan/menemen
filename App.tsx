@@ -1,17 +1,20 @@
 /**
- * Uygulama girişi. Şimdilik doğrudan örnek tarifle (menemen) CookingScreen'i
- * açar; ileride tarif seçimi / "ne pişsem" ekranı eklenecek.
+ * Uygulama girişi. Abonelik kapısının (SubscriptionGate) ardında örnek tarifle
+ * (menemen) CookingScreen'i açar. İleride tarif seçimi / "ne pişsem" ekranı.
  */
 import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 
 import { CookingScreen } from './src/screens/CookingScreen';
+import { SubscriptionGate } from './src/components/SubscriptionGate';
 import { menemen } from './src/recipes';
 
 export default function App() {
   return (
     <SafeAreaView style={styles.root}>
       <StatusBar barStyle="dark-content" />
-      <CookingScreen recipe={menemen} />
+      <SubscriptionGate>
+        <CookingScreen recipe={menemen} />
+      </SubscriptionGate>
     </SafeAreaView>
   );
 }

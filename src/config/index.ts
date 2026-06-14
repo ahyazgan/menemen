@@ -11,3 +11,9 @@ export const INTENT_CONFIDENCE_THRESHOLD = 0.5;
 
 /** Varsayılan başlangıç tarifi. */
 export const DEFAULT_RECIPE_ID = 'menemen';
+
+/** true ise uygulama paywall ile kapılanır (üretim). Dev'de false. */
+export const REQUIRE_SUBSCRIPTION = false;
+
+/** RevenueCat premium yetki kimliği. */
+export const ENTITLEMENT_ID = 'premium';

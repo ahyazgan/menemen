@@ -25,6 +25,9 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   store action'larını (`listen`, `checkPot`) çağırır.
 - **`server/proxy.mjs`** — anahtarları istemciden çıkaran sıfır-bağımlılık
   backend proxy iskeleti (`npm run proxy`).
+- **`src/services/billing/`** — abonelik (RevenueCat) interface'i + mock + gerçek
+  sarmalayıcı; `subscriptionStore` ve `Paywall`/`SubscriptionGate`. iOS Apple IAP,
+  Android Play Billing; uygulama içi IAP-dışı dijital ödeme YOK (CLAUDE.md).
 - **`src/recipes/menemen.ts`** — örnek tarif grafı (paralel prep + güvenlik).
 - **`src/i18n/`, `src/config/`** — TR metinler ve yapılandırma.
 
@@ -92,7 +95,12 @@ uç nokta allowlist'i eklenmeli (bkz. `server/README.md`).
 2. ~~`expo-audio` ses kaydı + `expo-camera` frame-on-demand (store'a)~~ ✅
 3. ~~Anahtarlar için backend proxy iskeleti~~ ✅
 4. ~~Proxy'ye Bearer token doğrulaması + anahtar başına hız sınırlama~~ ✅
-5. RevenueCat — abonelik (iOS IAP + Android Play Billing)
+5. ~~RevenueCat — abonelik iskeleti (iOS IAP + Android Play Billing)~~ ✅
 6. "Ne pişsem" ekranı ve tarif seçimi
 7. Tarif kütüphanesini çoğalt (graf JSON'ları)
 8. EN dili (`src/i18n/en.ts`) ve global açılım
+
+> RevenueCat native modül ister: Expo'da `expo prebuild`/dev-client ile çalışır
+> (Expo Go'da değil). `REQUIRE_SUBSCRIPTION` (config) dev'de `false`; üretimde
+> `true` yapıp `subscriptionStore.setBilling(createRevenueCatBilling({ iosApiKey,
+> androidApiKey }))` ile gerçek SDK'ya geç.

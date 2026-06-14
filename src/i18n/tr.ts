@@ -32,6 +32,15 @@ export const tr = {
   intent: {
     unknown: 'Tam anlayamadım, tekrar söyler misin?',
   },
+  subscription: {
+    title: 'Lezzet Pro',
+    subtitle: 'Mutfakta yanında bir usta. İlk hafta ücretsiz.',
+    restore: 'Satın alımları geri yükle',
+    subscribed: 'Aboneliğin aktif. Afiyet olsun!',
+    loading: 'Yükleniyor…',
+    purchase: 'Başla',
+    terms: 'Abonelik mağaza hesabından yenilenir; istediğin zaman iptal edebilirsin.',
+  },
 } as const;
 
 export type TranslationTree = typeof tr;
