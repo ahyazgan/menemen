@@ -26,12 +26,44 @@ function asMap(value: unknown): Record<string, string> {
   return value as Record<string, string>;
 }
 
+function assertBilingual(value: unknown, where: string): void {
+  const map = asMap(value);
+  assert.ok(map.tr && map.en, `${where}: tr/en eksik`);
+}
+
+/** Adım metinleri tamamen TR+EN çevrilmiş tarifler. Çevirdikçe genişler. */
+const FULLY_BILINGUAL = new Set([
+  'menemen',
+  'sahanda-yumurta',
+  'coban-salatasi',
+  'haslanmis-yumurta',
+  'sigara-boregi',
+]);
+
 test('her tarifin başlığı ve özeti çift dilli (tr + en)', () => {
   for (const recipe of recipeList) {
-    const title = asMap(recipe.title);
-    assert.ok(title.tr && title.en, `${recipe.id}: başlıkta tr/en eksik`);
-    const summary = asMap(recipe.summary);
-    assert.ok(summary.tr && summary.en, `${recipe.id}: özette tr/en eksik`);
+    assertBilingual(recipe.title, `${recipe.id}.title`);
+    if (recipe.summary !== undefined) assertBilingual(recipe.summary, `${recipe.id}.summary`);
+  }
+});
+
+test('tam çevrilmiş tarifler her metin alanında tr+en taşır', () => {
+  for (const recipe of recipeList) {
+    if (!FULLY_BILINGUAL.has(recipe.id)) continue;
+    for (const node of recipe.nodes) {
+      assertBilingual(node.title, `${recipe.id}/${node.id}.title`);
+      assertBilingual(node.instruction, `${recipe.id}/${node.id}.instruction`);
+      if (node.voice_on_enter !== undefined) {
+        assertBilingual(node.voice_on_enter, `${recipe.id}/${node.id}.voice_on_enter`);
+      }
+      if (node.voice_on_complete !== undefined) {
+        assertBilingual(node.voice_on_complete, `${recipe.id}/${node.id}.voice_on_complete`);
+      }
+      if (node.safety) assertBilingual(node.safety.message, `${recipe.id}/${node.id}.safety`);
+      for (const [key, value] of Object.entries(node.recovery_rules ?? {})) {
+        assertBilingual(value, `${recipe.id}/${node.id}.recovery.${key}`);
+      }
+    }
   }
 });
 

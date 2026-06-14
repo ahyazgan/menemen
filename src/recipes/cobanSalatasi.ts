@@ -14,18 +14,18 @@ export const cobanSalatasi: Recipe = {
   nodes: [
     {
       id: 'chop_tomato',
-      title: 'Domatesleri doğra',
-      instruction: 'Domatesleri küçük küp doğra.',
+      title: { tr: 'Domatesleri doğra', en: 'Chop the tomatoes' },
+      instruction: { tr: 'Domatesleri küçük küp doğra.', en: 'Dice the tomatoes small.' },
       kind: 'prep',
       requires: [],
       parallel_with: ['chop_cucumber', 'chop_onion'],
       completion: 'user',
-      voice_on_enter: 'Domatesleri küp küp doğrayalım.',
+      voice_on_enter: { tr: 'Domatesleri küp küp doğrayalım.', en: "Let's dice the tomatoes." },
     },
     {
       id: 'chop_cucumber',
-      title: 'Salatalığı doğra',
-      instruction: 'Salatalığı küp doğra.',
+      title: { tr: 'Salatalığı doğra', en: 'Chop the cucumber' },
+      instruction: { tr: 'Salatalığı küp doğra.', en: 'Dice the cucumber.' },
       kind: 'prep',
       requires: [],
       parallel_with: ['chop_tomato', 'chop_onion'],
@@ -33,8 +33,11 @@ export const cobanSalatasi: Recipe = {
     },
     {
       id: 'chop_onion',
-      title: 'Soğan ve yeşillik',
-      instruction: 'Soğanı ince, maydanozu kıyarak doğra.',
+      title: { tr: 'Soğan ve yeşillik', en: 'Onion and herbs' },
+      instruction: {
+        tr: 'Soğanı ince, maydanozu kıyarak doğra.',
+        en: 'Slice the onion thinly and finely chop the parsley.',
+      },
       kind: 'prep',
       requires: [],
       parallel_with: ['chop_tomato', 'chop_cucumber'],
@@ -42,12 +45,18 @@ export const cobanSalatasi: Recipe = {
     },
     {
       id: 'dress',
-      title: 'Sosla ve karıştır',
-      instruction: 'Zeytinyağı, limon ve tuz ekleyip harmanla.',
+      title: { tr: 'Sosla ve karıştır', en: 'Dress and toss' },
+      instruction: {
+        tr: 'Zeytinyağı, limon ve tuz ekleyip harmanla.',
+        en: 'Add olive oil, lemon and salt, then toss.',
+      },
       kind: 'finish',
       requires: ['chop_tomato', 'chop_cucumber', 'chop_onion'],
       completion: 'user',
-      voice_on_enter: 'Zeytinyağı ve limonla harmanla, afiyet olsun!',
+      voice_on_enter: {
+        tr: 'Zeytinyağı ve limonla harmanla, afiyet olsun!',
+        en: 'Toss with olive oil and lemon — enjoy!',
+      },
     },
   ],
 };
