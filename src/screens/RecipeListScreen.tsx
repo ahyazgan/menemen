@@ -24,6 +24,7 @@ interface Props {
   onOpenShopping: () => void;
   onOpenPantry: () => void;
   onOpenProfile: () => void;
+  onOpenSuggest: () => void;
 }
 
 export function RecipeListScreen({
@@ -31,6 +32,7 @@ export function RecipeListScreen({
   onOpenShopping,
   onOpenPantry,
   onOpenProfile,
+  onOpenSuggest,
 }: Props) {
   const locale = useUiStore((s) => s.locale);
   const setLocale = useUiStore((s) => s.setLocale);
@@ -84,6 +86,10 @@ export function RecipeListScreen({
         </View>
       </View>
       <Text style={styles.subtitle}>{t('picker.subtitle')}</Text>
+
+      <Pressable style={styles.suggest} onPress={onOpenSuggest}>
+        <Text style={styles.suggestText}>{t('suggest.button')}</Text>
+      </Pressable>
 
       {recent.length > 0 && (
         <View style={styles.recentBlock}>
@@ -221,7 +227,15 @@ const makeStyles = (c: ThemeColors) =>
     langText: { color: c.textMuted, fontSize: 13, fontWeight: '700' },
     langTextActive: { color: c.onPrimary },
     title: { fontSize: 32, fontWeight: '800', color: c.primary },
-    subtitle: { fontSize: 16, color: c.textMuted, marginTop: 6, marginBottom: 16 },
+    subtitle: { fontSize: 16, color: c.textMuted, marginTop: 6, marginBottom: 14 },
+    suggest: {
+      backgroundColor: c.primary,
+      borderRadius: 14,
+      paddingVertical: 15,
+      alignItems: 'center',
+      marginBottom: 16,
+    },
+    suggestText: { color: c.onPrimary, fontSize: 16, fontWeight: '800' },
     recentBlock: { marginBottom: 14 },
     recentLabel: { fontSize: 13, fontWeight: '700', color: c.textMuted, marginBottom: 8 },
     recentChip: {
