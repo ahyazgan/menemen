@@ -10,6 +10,7 @@ import { recipeList, randomRecipe } from '../recipes';
 import { CATEGORIES, filterRecipes } from '../recipes/filter';
 import { AVAILABLE_LOCALES, t } from '../i18n';
 import { useUiStore } from '../state/uiStore';
+import { useFavoritesStore } from '../state/favoritesStore';
 import { localize } from '../engine';
 import type { Recipe, RecipeCategory } from '../engine/types';
 
@@ -20,10 +21,16 @@ interface Props {
 export function RecipeListScreen({ onSelect }: Props) {
   const locale = useUiStore((s) => s.locale);
   const setLocale = useUiStore((s) => s.setLocale);
+  const favoriteIds = useFavoritesStore((s) => s.ids);
+  const toggleFavorite = useFavoritesStore((s) => s.toggle);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<RecipeCategory | null>(null);
+  const [onlyFavorites, setOnlyFavorites] = useState(false);
 
-  const shown = useMemo(() => filterRecipes(recipeList, { query, category }), [query, category]);
+  const shown = useMemo(() => {
+    const base = filterRecipes(recipeList, { query, category });
+    return onlyFavorites ? base.filter((r) => favoriteIds.includes(r.id)) : base;
+  }, [query, category, onlyFavorites, favoriteIds]);
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
@@ -55,7 +62,7 @@ export function RecipeListScreen({ onSelect }: Props) {
         clearButtonMode="while-editing"
       />
 
-      {/* Kategori sekmeleri */}
+      {/* Kategori + favori sekmeleri */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chips}>
         <Chip label={t('picker.all')} active={category === null} onPress={() => setCategory(null)} />
         {CATEGORIES.map((c) => (
@@ -66,6 +73,11 @@ export function RecipeListScreen({ onSelect }: Props) {
             onPress={() => setCategory((prev) => (prev === c ? null : c))}
           />
         ))}
+        <Chip
+          label={t('picker.favorites')}
+          active={onlyFavorites}
+          onPress={() => setOnlyFavorites((v) => !v)}
+        />
       </ScrollView>
 
       <Pressable style={styles.random} onPress={() => onSelect(randomRecipe())}>
@@ -75,18 +87,32 @@ export function RecipeListScreen({ onSelect }: Props) {
       {shown.length === 0 ? (
         <Text style={styles.empty}>{t('picker.noResults')}</Text>
       ) : (
-        shown.map((recipe) => (
-          <Pressable key={recipe.id} style={styles.card} onPress={() => onSelect(recipe)}>
-            <Text style={styles.cardTitle}>{localize(recipe.title, locale)}</Text>
-            {recipe.summary && (
-              <Text style={styles.cardSummary}>{localize(recipe.summary, locale)}</Text>
-            )}
-            <Text style={styles.cardMeta}>
-              {recipe.totalMinutes != null ? `${recipe.totalMinutes} ${t('picker.minutes')} · ` : ''}
-              {recipe.servings} {t('picker.servings')}
-            </Text>
-          </Pressable>
-        ))
+        shown.map((recipe) => {
+          const fav = favoriteIds.includes(recipe.id);
+          return (
+            <Pressable key={recipe.id} style={styles.card} onPress={() => onSelect(recipe)}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.cardTitle}>{localize(recipe.title, locale)}</Text>
+                <Pressable
+                  hitSlop={10}
+                  onPress={() => void toggleFavorite(recipe.id)}
+                  style={styles.star}
+                >
+                  <Text style={[styles.starText, fav && styles.starActive]}>{fav ? '★' : '☆'}</Text>
+                </Pressable>
+              </View>
+              {recipe.summary && (
+                <Text style={styles.cardSummary}>{localize(recipe.summary, locale)}</Text>
+              )}
+              <Text style={styles.cardMeta}>
+                {recipe.totalMinutes != null
+                  ? `${recipe.totalMinutes} ${t('picker.minutes')} · `
+                  : ''}
+                {recipe.servings} {t('picker.servings')}
+              </Text>
+            </Pressable>
+          );
+        })
       )}
     </ScrollView>
   );
@@ -158,7 +184,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#F0E2D6',
   },
-  cardTitle: { fontSize: 20, fontWeight: '700', color: '#2B2B2B' },
+  cardHeader: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
+  cardTitle: { fontSize: 20, fontWeight: '700', color: '#2B2B2B', flex: 1, paddingRight: 8 },
+  star: { paddingHorizontal: 2 },
+  starText: { fontSize: 22, color: '#C9B7A6' },
+  starActive: { color: '#E0A100' },
   cardSummary: { fontSize: 15, color: '#6B5648', marginTop: 4, lineHeight: 21 },
   cardMeta: { fontSize: 13, color: '#A8927F', marginTop: 10 },
 });

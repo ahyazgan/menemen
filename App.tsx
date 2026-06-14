@@ -12,7 +12,9 @@ import { SubscriptionGate } from './src/components/SubscriptionGate';
 import { initLocaleFromDevice } from './src/i18n/deviceLocale';
 import { useCookingStore } from './src/state/cookingStore';
 import { useUiStore } from './src/state/uiStore';
+import { useFavoritesStore } from './src/state/favoritesStore';
 import { createExpoNotify } from './src/services/notify';
+import { createAsyncStorage } from './src/services/storage';
 import type { Recipe } from './src/engine/types';
 
 export default function App() {
@@ -21,6 +23,10 @@ export default function App() {
     const detected = initLocaleFromDevice();
     useUiStore.getState().setLocale(detected);
     useCookingStore.getState().setNotify(createExpoNotify());
+    // Kalıcı favori deposunu bağla ve yükle.
+    const favorites = useFavoritesStore.getState();
+    favorites.setStore(createAsyncStorage());
+    void favorites.load();
     return null;
   });
   const [recipe, setRecipe] = useState<Recipe | null>(null);

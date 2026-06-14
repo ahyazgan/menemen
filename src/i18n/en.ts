@@ -16,6 +16,7 @@ export const en: TranslationTree = {
     servings: 'servings',
     search: 'Search recipes…',
     all: 'All',
+    favorites: '★ Favorites',
     noResults: 'No results.',
     categories: {
       kahvalti: 'Breakfast',

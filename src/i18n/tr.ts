@@ -14,6 +14,7 @@ export const tr = {
     servings: 'kişilik',
     search: 'Tarif ara…',
     all: 'Hepsi',
+    favorites: '★ Favoriler',
     noResults: 'Sonuç yok.',
     categories: {
       kahvalti: 'Kahvaltı',
