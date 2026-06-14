@@ -9,6 +9,7 @@ import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import { CookingScreen } from './src/screens/CookingScreen';
 import { RecipeListScreen } from './src/screens/RecipeListScreen';
 import { ShoppingListScreen } from './src/screens/ShoppingListScreen';
+import { PantryScreen } from './src/screens/PantryScreen';
 import { SubscriptionGate } from './src/components/SubscriptionGate';
 import { initLocaleFromDevice } from './src/i18n/deviceLocale';
 import { useCookingStore } from './src/state/cookingStore';
@@ -17,6 +18,7 @@ import { useFavoritesStore } from './src/state/favoritesStore';
 import { useShoppingStore } from './src/state/shoppingStore';
 import { useHistoryStore } from './src/state/historyStore';
 import { useNotesStore } from './src/state/notesStore';
+import { usePantryStore } from './src/state/pantryStore';
 import { createExpoNotify } from './src/services/notify';
 import { createAsyncStorage } from './src/services/storage';
 import type { Recipe } from './src/engine/types';
@@ -41,15 +43,31 @@ export default function App() {
     const notes = useNotesStore.getState();
     notes.setStore(storage);
     void notes.load();
+    const pantry = usePantryStore.getState();
+    pantry.setStore(storage);
+    void pantry.load();
     return null;
   });
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [showShopping, setShowShopping] = useState(false);
+  const [showPantry, setShowPantry] = useState(false);
+
+  function openRecipe(r: Recipe) {
+    setShowPantry(false);
+    setRecipe(r);
+  }
 
   function content() {
-    if (showShopping) return <ShoppingListScreen onBack={() => setShowShopping(false)} />;
     if (recipe) return <CookingScreen recipe={recipe} onBack={() => setRecipe(null)} />;
-    return <RecipeListScreen onSelect={setRecipe} onOpenShopping={() => setShowShopping(true)} />;
+    if (showShopping) return <ShoppingListScreen onBack={() => setShowShopping(false)} />;
+    if (showPantry) return <PantryScreen onSelect={openRecipe} onBack={() => setShowPantry(false)} />;
+    return (
+      <RecipeListScreen
+        onSelect={setRecipe}
+        onOpenShopping={() => setShowShopping(true)}
+        onOpenPantry={() => setShowPantry(true)}
+      />
+    );
   }
 
   return (

@@ -18,6 +18,7 @@ export const en: TranslationTree = {
     all: 'All',
     favorites: '★ Favorites',
     shopping: '🛒 Shopping list',
+    pantry: '🧺 What can I make?',
     recent: 'Recently cooked',
     times: '×',
     noResults: 'No results.',
@@ -84,5 +85,13 @@ export const en: TranslationTree = {
     empty: 'List is empty. You can add a recipe’s ingredients.',
     clearChecked: 'Clear bought',
     clearAll: 'Clear list',
+  },
+  pantry: {
+    title: 'What Can I Make?',
+    subtitle: 'Tick what you have and I’ll tell you what you can cook.',
+    pickIngredients: 'Ingredients',
+    canMake: 'You can make',
+    none: 'Pick a few ingredients first.',
+    ofTotal: 'ingredients',
   },
 };
