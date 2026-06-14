@@ -113,6 +113,9 @@ npm test            # ikisi birden
 `test:engine`, motoru CommonJS'e derleyip `node --test` ile koşar; bu yüzden
 Expo/jest kurulmadan da motor doğrulanabilir.
 
+Her `push` (main) ve her PR'da **GitHub Actions** (`.github/workflows/ci.yml`)
+`npm test`'i (tip kontrolü + motor + sunucu testleri) otomatik koşar.
+
 ## Mimari (katmanlı)
 
 ```
