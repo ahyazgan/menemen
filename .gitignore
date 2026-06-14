@@ -1,0 +1,23 @@
+# dependencies
+node_modules/
+
+# expo
+.expo/
+dist/
+web-build/
+*.orig.*
+
+# native
+ios/
+android/
+
+# test build output
+.test-build/
+
+# env & secrets
+.env*.local
+.env
+
+# misc
+.DS_Store
+npm-debug.*

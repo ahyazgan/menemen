@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "Lezzet",
+    "slug": "lezzet",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "lezzet",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.lezzet.app",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "Yemek yaparken sizi sesle yönlendirmek için mikrofona ihtiyacımız var.",
+        "NSCameraUsageDescription": "Yalnızca siz isteyince tencerenizi kontrol etmek için kamerayı tek kare olarak kullanırız.",
+        "UIBackgroundModes": ["audio"]
+      }
+    },
+    "android": {
+      "package": "com.lezzet.app",
+      "permissions": ["RECORD_AUDIO", "CAMERA"]
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Yalnızca siz isteyince tencerenizi kontrol etmek için kamerayı tek kare olarak kullanırız."
+        }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Yemek yaparken sizi sesle yönlendirmek için mikrofona ihtiyacımız var."
+        }
+      ]
+    ]
+  }
+}
