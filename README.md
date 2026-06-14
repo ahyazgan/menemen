@@ -34,8 +34,8 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   şansıma seç). Her graf testlerle doğrulanıyor: geçerli DAG, başlatılabilir,
   tamamlanabilir ve her **kritik** pişirme adımı iç sıcaklık eşiği taşıyor.
   Metinler **çok dilli** (`LocalizedText` + saf `localize()`): tüm başlık/özetler
-  TR+EN; 5 tarif (menemen, sahanda/haşlanmış yumurta, çoban salatası, sigara
-  böreği) baştan sona TR+EN; kalan 8'in adımları EN eklenene dek TR'ye düşer.
+  TR+EN; 9/13 tarif baştan sona TR+EN; kalan 4'ün (tavuk sote, köfte, fırın tavuk,
+  ızgara balık) adımları EN eklenene dek TR'ye düşer.
 - **`src/i18n/`, `src/config/`** — TR + EN metinler (`setLocale`/`getLocale`,
   anahtar paritesi tsc + testle zorlanıyor), **cihaz dili tespiti**
   (`deviceLocale.ts` + saf/test edilebilir `pickSupportedLocale`) ve yapılandırma.
@@ -111,8 +111,8 @@ uç nokta allowlist'i eklenmeli (bkz. `server/README.md`).
 
 > EN dili UI metinlerini kapsar; cihaz dili tespiti eklendi (App açılışta
 > `initLocaleFromDevice()`). Tarif içeriği de çok dilli: tüm başlık/özetler TR+EN,
-> 5 tarif tam TR+EN (adımlar dahil). Kalan iş: diğer 8 tarifin adım metinlerine
-> de EN eklemek (aynı `LocalizedText` şekliyle, gruplar hâlinde sürüyor).
+> 9/13 tarif tam TR+EN (adımlar dahil). Kalan iş: son 4 ana yemeğin (tavuk sote,
+> köfte, fırın tavuk, ızgara balık) adım metinlerine de EN eklemek.
 
 > RevenueCat native modül ister: Expo'da `expo prebuild`/dev-client ile çalışır
 > (Expo Go'da değil). `REQUIRE_SUBSCRIPTION` (config) dev'de `false`; üretimde

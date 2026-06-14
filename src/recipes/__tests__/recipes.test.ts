@@ -38,6 +38,10 @@ const FULLY_BILINGUAL = new Set([
   'coban-salatasi',
   'haslanmis-yumurta',
   'sigara-boregi',
+  'mercimek-corbasi',
+  'domates-corbasi',
+  'pilav',
+  'kuru-fasulye',
 ]);
 
 test('her tarifin başlığı ve özeti çift dilli (tr + en)', () => {
