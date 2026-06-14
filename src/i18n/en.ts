@@ -57,6 +57,8 @@ export const en: TranslationTree = {
     addPhoto: '📷 Add step photo',
     retakePhoto: '🔄 Retake',
     removePhoto: 'Remove photo',
+    step: 'Step',
+    beginnerHint: 'No rush — we’ll go step by step. Ask me if you get stuck.',
   },
   safety: {
     cannotSkip: 'This step cannot be skipped for safety reasons.',

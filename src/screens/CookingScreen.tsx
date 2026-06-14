@@ -11,7 +11,9 @@ import { useShoppingStore } from '../state/shoppingStore';
 import { useHistoryStore } from '../state/historyStore';
 import { useNotesStore } from '../state/notesStore';
 import { useStepPhotosStore } from '../state/stepPhotosStore';
+import { useProfileStore } from '../state/profileStore';
 import { getStepPhoto } from '../recipes/stepPhotos';
+import { guidance } from '../recipes/skill';
 import { VoiceButton } from '../components/VoiceButton';
 import { PotCheckButton } from '../components/PotCheckButton';
 import { ingredientLabel } from '../recipes/ingredients';
@@ -51,6 +53,8 @@ export function CookingScreen({ recipe, onBack }: Props) {
   const photoMap = useStepPhotosStore((s) => s.map);
   const capturePhoto = useStepPhotosStore((s) => s.capture);
   const removePhoto = useStepPhotosStore((s) => s.remove);
+  const skill = useProfileStore((s) => s.profile.skill);
+  const guide = guidance(skill);
   const [servings, setServings] = useState(recipe.servings);
   const [added, setAdded] = useState(false);
   const complete = snapshot?.complete ?? false;
@@ -97,10 +101,16 @@ export function CookingScreen({ recipe, onBack }: Props) {
       )}
       <Text style={styles.title}>{localize(recipe.title, locale)}</Text>
 
-      {/* İlerleme */}
+      {/* İlerleme (beceriye göre adım sayacı) */}
       <Text style={styles.progress}>
         {t('cooking.progress')}: %{Math.round(snapshot.progress * 100)}
+        {guide.stepNumbers
+          ? ` · ${t('cooking.step')} ${snapshot.done.length}/${recipe.nodes.length}`
+          : ''}
       </Text>
+      {guide.verbose && !snapshot.complete && (
+        <Text style={styles.beginnerHint}>{t('cooking.beginnerHint')}</Text>
+      )}
 
       {/* Malzemeler + porsiyon ayarı */}
       {recipe.ingredients && recipe.ingredients.length > 0 && (
@@ -275,6 +285,7 @@ const makeStyles = (c: ThemeColors) =>
     backText: { color: c.textMuted, fontSize: 16, fontWeight: '600' },
     title: { fontSize: 28, fontWeight: '700', color: c.primary, marginBottom: 4 },
     progress: { fontSize: 14, color: c.textMuted, marginBottom: 16 },
+    beginnerHint: { fontSize: 14, color: c.label, marginTop: -8, marginBottom: 16, fontStyle: 'italic', lineHeight: 20 },
     ingPanel: {
       backgroundColor: c.surfaceAlt,
       borderRadius: 14,
