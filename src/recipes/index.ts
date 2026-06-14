@@ -1,4 +1,4 @@
-/** Tarif kütüphanesi. İleride graf JSON'ları buraya çoğaltılır. */
+/** Tarif kütüphanesi. Graf JSON'ları buraya çoğaltılır. */
 import type { Recipe } from '../engine/types';
 import { menemen } from './menemen';
 import { mercimekCorbasi } from './mercimekCorbasi';
@@ -25,26 +25,72 @@ import { cacik } from './cacik';
 import { kasarliYumurta } from './kasarliYumurta';
 import { tavukluPilav } from './tavukluPilav';
 import { tavukCorbasi } from './tavukCorbasi';
+import { sucukluYumurta } from './sucukluYumurta';
+import { gozleme } from './gozleme';
+import { pankek } from './pankek';
+import { yumurtaliEkmek } from './yumurtaliEkmek';
+import { yaylaCorbasi } from './yaylaCorbasi';
+import { brokoliCorbasi } from './brokoliCorbasi';
+import { mantarCorbasi } from './mantarCorbasi';
+import { ispanakCorbasi } from './ispanakCorbasi';
+import { balikCorbasi } from './balikCorbasi';
+import { firindaSebze } from './firindaSebze';
+import { karniyarik } from './karniyarik';
+import { imamBayildi } from './imamBayildi';
+import { mercimekKoftesi } from './mercimekKoftesi';
+import { biberDolmasi } from './biberDolmasi';
+import { lahanaSarma } from './lahanaSarma';
+import { tavukSis } from './tavukSis';
+import { kuzuPirzola } from './kuzuPirzola';
+import { patlicanMusakka } from './patlicanMusakka';
+import { icPilav } from './icPilav';
+import { nohutluPilav } from './nohutluPilav';
+import { sehriyeliPilav } from './sehriyeliPilav';
+import { mevsimSalatasi } from './mevsimSalatasi';
+import { rokaSalatasi } from './rokaSalatasi';
+import { piyaz } from './piyaz';
+import { kisir } from './kisir';
 
 /** Seçim ekranı için sıralı liste. */
 export const recipeList: Recipe[] = [
+  // Kahvaltı
   menemen,
   sahandaYumurta,
   omlet,
   kasarliYumurta,
+  sucukluYumurta,
+  yumurtaliEkmek,
   peynirliTost,
+  gozleme,
+  pankek,
   haslanmisYumurta,
-  cobanSalatasi,
-  patatesSalatasi,
-  cacik,
+  // Çorba
   mercimekCorbasi,
   domatesCorbasi,
   ezogelinCorbasi,
   sebzeCorbasi,
+  yaylaCorbasi,
+  brokoliCorbasi,
+  mantarCorbasi,
+  ispanakCorbasi,
   tavukCorbasi,
+  balikCorbasi,
+  // Salata
+  cobanSalatasi,
+  patatesSalatasi,
+  cacik,
+  mevsimSalatasi,
+  rokaSalatasi,
+  piyaz,
+  kisir,
+  // Pilav
   pilav,
   bulgurPilavi,
   tavukluPilav,
+  icPilav,
+  nohutluPilav,
+  sehriyeliPilav,
+  // Ana yemek
   sigaraBoregi,
   tavukSote,
   kofte,
@@ -53,37 +99,18 @@ export const recipeList: Recipe[] = [
   kuruFasulye,
   zeytinyagliFasulye,
   nohutYemegi,
+  firindaSebze,
+  karniyarik,
+  imamBayildi,
+  mercimekKoftesi,
+  biberDolmasi,
+  lahanaSarma,
+  tavukSis,
+  kuzuPirzola,
+  patlicanMusakka,
 ];
 
 export const recipes: Record<string, Recipe> = Object.fromEntries(recipeList.map((r) => [r.id, r]));
-
-export {
-  menemen,
-  mercimekCorbasi,
-  sahandaYumurta,
-  tavukSote,
-  kofte,
-  pilav,
-  kuruFasulye,
-  domatesCorbasi,
-  sigaraBoregi,
-  cobanSalatasi,
-  haslanmisYumurta,
-  firinTavuk,
-  izgaraBalik,
-  bulgurPilavi,
-  ezogelinCorbasi,
-  sebzeCorbasi,
-  patatesSalatasi,
-  zeytinyagliFasulye,
-  nohutYemegi,
-  omlet,
-  peynirliTost,
-  cacik,
-  kasarliYumurta,
-  tavukluPilav,
-  tavukCorbasi,
-};
 
 export function getRecipe(id: string): Recipe | undefined {
   return recipes[id];

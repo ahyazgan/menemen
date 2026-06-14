@@ -26,7 +26,14 @@ const DIETS: readonly DietPref[] = ['all', 'vegetarian', 'vegan'];
 const SKILLS: readonly SkillLevel[] = ['beginner', 'intermediate', 'advanced'];
 
 /** Et/tavuk/balık içeren malzemeler → vejetaryen DEĞİL. */
-const MEAT_KEYS = new Set(['balık', 'kıyma', 'tavuk baget', 'tavuk göğsü']);
+const MEAT_KEYS = new Set([
+  'balık',
+  'kıyma',
+  'tavuk baget',
+  'tavuk göğsü',
+  'sucuk',
+  'kuzu pirzola',
+]);
 /** Hayvansal ürünler → vegan DEĞİL (et anahtarlarına ek olarak). */
 const ANIMAL_PRODUCT_KEYS = new Set([
   'yumurta',
@@ -35,6 +42,7 @@ const ANIMAL_PRODUCT_KEYS = new Set([
   'rendelenmiş kaşar',
   'kaşar peyniri',
   'yoğurt',
+  'süt',
 ]);
 
 export interface RecipeDiet {

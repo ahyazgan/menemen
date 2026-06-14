@@ -32,11 +32,15 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   sarmalayıcı. Süreli adım başlayınca store bir bildirim planlar; ekran
   kapalıyken/arka planda süre dolunca uyarır (erken bitiş/atla/yeniden dene'de
   iptal). Saf zamanlama mantığı `engine/notifications.ts`'te ve testli.
-- **`src/recipes/`** — 25 tarif grafı (kahvaltı: menemen, omlet, kaşarlı/sahanda/
-  haşlanmış yumurta, peynirli tost; çorba: mercimek/domates/ezogelin/sebze/tavuk;
-  salata: çoban/patates salatası, cacık; ana yemek/pilav: pilav, bulgur pilavı,
-  tavuklu pilav, sigara böreği, tavuk sote, köfte, fırın tavuk, ızgara balık, kuru
-  fasulye, zeytinyağlı fasulye, nohut) + `RecipeListScreen` ("Ne pişsem?",
+- **`src/recipes/`** — 50 tarif grafı (kahvaltı: menemen, omlet, kaşarlı/sahanda/
+  haşlanmış yumurta, sucuklu yumurta, yumurtalı ekmek, peynirli tost, gözleme,
+  pankek; çorba: mercimek/domates/ezogelin/sebze/yayla/brokoli/mantar/ıspanak/
+  tavuk/balık; salata: çoban/patates/mevsim/roka salatası, cacık, piyaz, kısır;
+  pilav: pilav, bulgur/tavuklu/iç/nohutlu/şehriyeli pilav; ana yemek: sigara
+  böreği, tavuk sote, köfte, fırın tavuk, ızgara balık, kuru/zeytinyağlı fasulye,
+  nohut yemeği, fırında sebze, karnıyarık, imam bayıldı, mercimek köftesi, biber
+  dolması, lahana sarma, tavuk şiş, kuzu pirzola, patlıcan musakka) +
+  `RecipeListScreen` ("Ne pişsem?",
   **arama + kategori filtresi + favoriler** (AsyncStorage'da kalıcı), şansıma seç;
   filtre ve favori mantığı saf+testli). Her tarifte **malzeme listesi**,
   **porsiyon ayarı** (miktarlar kişi sayısına göre ölçeklenir) ve **alışveriş
@@ -46,7 +50,7 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   malzemeleri seç → yapabileceğin tarifler, eksiği en az olandan; mantık saf+testli).
   Her graf testlerle doğrulanıyor: geçerli DAG, başlatılabilir,
   tamamlanabilir ve her **kritik** pişirme adımı iç sıcaklık eşiği taşıyor.
-  Metinler **çok dilli** (`LocalizedText` + saf `localize()`): **25/25 tarif
+  Metinler **çok dilli** (`LocalizedText` + saf `localize()`): **50/50 tarif
   baştan sona TR+EN** (başlık, özet, yönerge, sesli metin, kurtarma ve güvenlik
   mesajları dahil); bir test her tarifin her metin alanında tr+en olmasını zorlar.
 - **`src/i18n/`, `src/config/`** — TR + EN metinler (`setLocale`/`getLocale`,
@@ -167,11 +171,11 @@ Kalan üretim işleri (uzak JWKS çekme, OpenTelemetry) `server/README.md`'de.
 4. ~~Proxy'ye Bearer token doğrulaması + anahtar başına hız sınırlama~~ ✅
 5. ~~RevenueCat — abonelik iskeleti (iOS IAP + Android Play Billing)~~ ✅
 6. ~~"Ne pişsem" ekranı ve tarif seçimi~~ ✅
-7. ~~Tarif kütüphanesini çoğalt~~ ✅ (25 tarif; istendikçe eklenir)
+7. ~~Tarif kütüphanesini çoğalt~~ ✅ (50 tarif; istendikçe eklenir)
 8. ~~EN dili (`src/i18n/en.ts`) + locale altyapısı~~ ✅
 
 > EN dili UI metinlerini kapsar; cihaz dili tespiti eklendi (App açılışta
-> `initLocaleFromDevice()`). Tarif içeriği de tamamen çok dilli: **25/25 tarif**
+> `initLocaleFromDevice()`). Tarif içeriği de tamamen çok dilli: **50/50 tarif**
 > başlık/özet/adım metinleriyle TR+EN. Üçüncü bir dil eklemek artık yalnızca
 > `src/i18n/<dil>.ts` + tariflere o dil anahtarını eklemekten ibaret.
 
@@ -203,7 +207,7 @@ npx expo start --dev-client
 ### Cihaz duman-testi kontrol listesi
 
 1. Uygulama açılır; cihaz dili TR/EN ise arayüz o dilde gelir (aksi halde TR).
-2. "Ne pişsem?" listesi 25 tarifi gösterir; bir tarif seç → adımlar görünür.
+2. "Ne pişsem?" listesi 50 tarifi gösterir; bir tarif seç → adımlar görünür.
 3. **Mikrofon izni** istenir; bas-konuş kaydı `store.listen` tetikler (mock veya
    proxy üzerinden gerçek STT).
 4. **Kamera izni** istenir; "tencereye bak" tek kare çeker (frame-on-demand),
