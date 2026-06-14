@@ -13,22 +13,46 @@ import { cobanSalatasi } from './cobanSalatasi';
 import { haslanmisYumurta } from './haslanmisYumurta';
 import { firinTavuk } from './firinTavuk';
 import { izgaraBalik } from './izgaraBalik';
+import { bulgurPilavi } from './bulgurPilavi';
+import { ezogelinCorbasi } from './ezogelinCorbasi';
+import { sebzeCorbasi } from './sebzeCorbasi';
+import { patatesSalatasi } from './patatesSalatasi';
+import { zeytinyagliFasulye } from './zeytinyagliFasulye';
+import { nohutYemegi } from './nohutYemegi';
+import { omlet } from './omlet';
+import { peynirliTost } from './peynirliTost';
+import { cacik } from './cacik';
+import { kasarliYumurta } from './kasarliYumurta';
+import { tavukluPilav } from './tavukluPilav';
+import { tavukCorbasi } from './tavukCorbasi';
 
 /** Seçim ekranı için sıralı liste. */
 export const recipeList: Recipe[] = [
   menemen,
   sahandaYumurta,
-  cobanSalatasi,
+  omlet,
+  kasarliYumurta,
+  peynirliTost,
   haslanmisYumurta,
+  cobanSalatasi,
+  patatesSalatasi,
+  cacik,
   mercimekCorbasi,
   domatesCorbasi,
+  ezogelinCorbasi,
+  sebzeCorbasi,
+  tavukCorbasi,
   pilav,
+  bulgurPilavi,
+  tavukluPilav,
   sigaraBoregi,
   tavukSote,
   kofte,
   firinTavuk,
   izgaraBalik,
   kuruFasulye,
+  zeytinyagliFasulye,
+  nohutYemegi,
 ];
 
 export const recipes: Record<string, Recipe> = Object.fromEntries(
@@ -49,6 +73,18 @@ export {
   haslanmisYumurta,
   firinTavuk,
   izgaraBalik,
+  bulgurPilavi,
+  ezogelinCorbasi,
+  sebzeCorbasi,
+  patatesSalatasi,
+  zeytinyagliFasulye,
+  nohutYemegi,
+  omlet,
+  peynirliTost,
+  cacik,
+  kasarliYumurta,
+  tavukluPilav,
+  tavukCorbasi,
 };
 
 export function getRecipe(id: string): Recipe | undefined {

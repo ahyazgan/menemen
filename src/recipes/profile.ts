@@ -33,6 +33,8 @@ const ANIMAL_PRODUCT_KEYS = new Set([
   'tereyağı',
   'beyaz peynir',
   'rendelenmiş kaşar',
+  'kaşar peyniri',
+  'yoğurt',
 ]);
 
 export interface RecipeDiet {
