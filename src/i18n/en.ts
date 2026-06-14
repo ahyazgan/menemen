@@ -17,6 +17,7 @@ export const en: TranslationTree = {
     search: 'Search recipes…',
     all: 'All',
     favorites: '★ Favorites',
+    shopping: '🛒 Shopping list',
     noResults: 'No results.',
     categories: {
       kahvalti: 'Breakfast',
@@ -28,6 +29,9 @@ export const en: TranslationTree = {
   },
   cooking: {
     back: '‹ Recipes',
+    ingredients: 'Ingredients',
+    addToShopping: '🛒 Add to shopping list',
+    added: 'Added to list ✓',
     ready: 'Ready steps',
     active: 'Now',
     done: 'Done',
@@ -70,5 +74,11 @@ export const en: TranslationTree = {
     loading: 'Loading…',
     purchase: 'Start',
     terms: 'Subscription renews via your store account; cancel anytime.',
+  },
+  shopping: {
+    title: 'Shopping List',
+    empty: 'List is empty. You can add a recipe’s ingredients.',
+    clearChecked: 'Clear bought',
+    clearAll: 'Clear list',
   },
 };

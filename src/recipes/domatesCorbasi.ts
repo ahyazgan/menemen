@@ -12,6 +12,80 @@ export const domatesCorbasi: Recipe = {
     en: 'A velvety, warming homemade tomato soup.',
   },
   totalMinutes: 25,
+  ingredients: [
+    {
+      "name": {
+        "tr": "domates",
+        "en": "tomato"
+      },
+      "quantity": 4,
+      "unit": {
+        "tr": "adet",
+        "en": "pcs"
+      }
+    },
+    {
+      "name": {
+        "tr": "salça",
+        "en": "tomato paste"
+      },
+      "quantity": 1,
+      "unit": {
+        "tr": "yemek kaşığı",
+        "en": "tbsp"
+      }
+    },
+    {
+      "name": {
+        "tr": "un",
+        "en": "flour"
+      },
+      "quantity": 2,
+      "unit": {
+        "tr": "yemek kaşığı",
+        "en": "tbsp"
+      }
+    },
+    {
+      "name": {
+        "tr": "tereyağı",
+        "en": "butter"
+      },
+      "quantity": 2,
+      "unit": {
+        "tr": "yemek kaşığı",
+        "en": "tbsp"
+      }
+    },
+    {
+      "name": {
+        "tr": "su",
+        "en": "water"
+      },
+      "quantity": 5,
+      "unit": {
+        "tr": "su bardağı",
+        "en": "cup"
+      }
+    },
+    {
+      "name": {
+        "tr": "rendelenmiş kaşar",
+        "en": "grated cheese"
+      },
+      "quantity": 1,
+      "unit": {
+        "tr": "su bardağı",
+        "en": "cup"
+      }
+    },
+    {
+      "name": {
+        "tr": "tuz",
+        "en": "salt"
+      }
+    }
+  ],
   nodes: [
     {
       id: 'roux',

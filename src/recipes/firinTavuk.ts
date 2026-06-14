@@ -12,6 +12,70 @@ export const firinTavuk: Recipe = {
     en: 'Spiced, crispy-skinned baked chicken.',
   },
   totalMinutes: 55,
+  ingredients: [
+    {
+      "name": {
+        "tr": "tavuk baget",
+        "en": "chicken drumstick"
+      },
+      "quantity": 8,
+      "unit": {
+        "tr": "adet",
+        "en": "pcs"
+      }
+    },
+    {
+      "name": {
+        "tr": "zeytinyağı",
+        "en": "olive oil"
+      },
+      "quantity": 3,
+      "unit": {
+        "tr": "yemek kaşığı",
+        "en": "tbsp"
+      }
+    },
+    {
+      "name": {
+        "tr": "salça",
+        "en": "tomato paste"
+      },
+      "quantity": 1,
+      "unit": {
+        "tr": "yemek kaşığı",
+        "en": "tbsp"
+      }
+    },
+    {
+      "name": {
+        "tr": "sarımsak",
+        "en": "garlic"
+      },
+      "quantity": 3,
+      "unit": {
+        "tr": "diş",
+        "en": "clove"
+      }
+    },
+    {
+      "name": {
+        "tr": "tuz",
+        "en": "salt"
+      }
+    },
+    {
+      "name": {
+        "tr": "karabiber",
+        "en": "black pepper"
+      }
+    },
+    {
+      "name": {
+        "tr": "kekik",
+        "en": "thyme"
+      }
+    }
+  ],
   nodes: [
     {
       id: 'marinate',

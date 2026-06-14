@@ -15,6 +15,64 @@ export const menemen: Recipe = {
     en: 'A classic Turkish breakfast with peppers, tomatoes and eggs.',
   },
   totalMinutes: 20,
+  ingredients: [
+    {
+      "name": {
+        "tr": "sivri biber",
+        "en": "green pepper"
+      },
+      "quantity": 4,
+      "unit": {
+        "tr": "adet",
+        "en": "pcs"
+      }
+    },
+    {
+      "name": {
+        "tr": "domates",
+        "en": "tomato"
+      },
+      "quantity": 3,
+      "unit": {
+        "tr": "adet",
+        "en": "pcs"
+      }
+    },
+    {
+      "name": {
+        "tr": "yumurta",
+        "en": "egg"
+      },
+      "quantity": 4,
+      "unit": {
+        "tr": "adet",
+        "en": "pcs"
+      }
+    },
+    {
+      "name": {
+        "tr": "tereyağı",
+        "en": "butter"
+      },
+      "quantity": 2,
+      "unit": {
+        "tr": "yemek kaşığı",
+        "en": "tbsp"
+      }
+    },
+    {
+      "name": {
+        "tr": "tuz",
+        "en": "salt"
+      }
+    },
+    {
+      "name": {
+        "tr": "karabiber",
+        "en": "black pepper"
+      }
+    }
+  ],
   nodes: [
     {
       id: 'chop_pepper',

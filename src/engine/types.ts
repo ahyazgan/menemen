@@ -30,6 +30,16 @@ export type LocalizedText = string | Record<string, string>;
 /** Tarif seçim ekranında filtreleme kategorisi. */
 export type RecipeCategory = 'kahvalti' | 'corba' | 'ana-yemek' | 'salata' | 'pilav';
 
+/** Bir malzeme: ad + (porsiyona göre ölçeklenen) miktar + birim. */
+export interface Ingredient {
+  /** Çok dilli malzeme adı. */
+  name: LocalizedText;
+  /** Miktar (porsiyona göre ölçeklenir). Yoksa "tadına göre" gibi. */
+  quantity?: number;
+  /** Birim (çok dilli), örn. "adet" / "pcs", "g", "su bardağı" / "cup". */
+  unit?: LocalizedText;
+}
+
 /**
  * Tamamlanma türü — bir düğümün nasıl "done" olacağını belirler.
  * - user:   sesli onay (kullanıcı "tamam/bitti" der)
@@ -96,5 +106,7 @@ export interface Recipe {
   summary?: LocalizedText;
   /** Tahmini süre (dakika), seçim ekranı için (opsiyonel). */
   totalMinutes?: number;
+  /** Malzeme listesi (porsiyon ölçekleme ve alışveriş listesi için). */
+  ingredients?: Ingredient[];
   nodes: RecipeNode[];
 }

@@ -36,7 +36,9 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   salatası, mercimek/domates çorbası, pilav, sigara böreği, tavuk sote, köfte,
   fırın tavuk, ızgara balık, kuru fasulye) + `RecipeListScreen` ("Ne pişsem?",
   **arama + kategori filtresi + favoriler** (AsyncStorage'da kalıcı), şansıma seç;
-  filtre ve favori mantığı saf+testli).
+  filtre ve favori mantığı saf+testli). Her tarifte **malzeme listesi**,
+  **porsiyon ayarı** (miktarlar kişi sayısına göre ölçeklenir) ve **alışveriş
+  listesi** (kalıcı; işaretle/sil) — ölçekleme/etiketleme mantığı saf+testli.
   Her graf testlerle doğrulanıyor: geçerli DAG, başlatılabilir,
   tamamlanabilir ve her **kritik** pişirme adımı iç sıcaklık eşiği taşıyor.
   Metinler **çok dilli** (`LocalizedText` + saf `localize()`): **13/13 tarif

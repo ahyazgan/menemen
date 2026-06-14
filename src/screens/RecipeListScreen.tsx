@@ -16,9 +16,10 @@ import type { Recipe, RecipeCategory } from '../engine/types';
 
 interface Props {
   onSelect: (recipe: Recipe) => void;
+  onOpenShopping: () => void;
 }
 
-export function RecipeListScreen({ onSelect }: Props) {
+export function RecipeListScreen({ onSelect, onOpenShopping }: Props) {
   const locale = useUiStore((s) => s.locale);
   const setLocale = useUiStore((s) => s.setLocale);
   const favoriteIds = useFavoritesStore((s) => s.ids);
@@ -80,9 +81,14 @@ export function RecipeListScreen({ onSelect }: Props) {
         />
       </ScrollView>
 
-      <Pressable style={styles.random} onPress={() => onSelect(randomRecipe())}>
-        <Text style={styles.randomText}>{t('picker.random')}</Text>
-      </Pressable>
+      <View style={styles.actionsRow}>
+        <Pressable style={[styles.random, styles.flex]} onPress={() => onSelect(randomRecipe())}>
+          <Text style={styles.randomText}>{t('picker.random')}</Text>
+        </Pressable>
+        <Pressable style={styles.shopping} onPress={onOpenShopping}>
+          <Text style={styles.shoppingText}>{t('picker.shopping')}</Text>
+        </Pressable>
+      </View>
 
       {shown.length === 0 ? (
         <Text style={styles.empty}>{t('picker.noResults')}</Text>
@@ -175,6 +181,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   randomText: { color: '#FFF', fontSize: 17, fontWeight: '700' },
+  actionsRow: { flexDirection: 'row', gap: 10, marginTop: 16, marginBottom: 20 },
+  flex: { flex: 1, marginTop: 0, marginBottom: 0 },
+  shopping: {
+    backgroundColor: '#F0E2D6',
+    borderRadius: 14,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  shoppingText: { color: '#8A6D5B', fontSize: 15, fontWeight: '700' },
   empty: { fontSize: 16, color: '#8A6D5B', textAlign: 'center', marginTop: 24 },
   card: {
     backgroundColor: '#FFFFFF',

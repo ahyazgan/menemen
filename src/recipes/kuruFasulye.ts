@@ -12,6 +12,75 @@ export const kuruFasulye: Recipe = {
     en: 'A hearty Turkish classic in a tomato-paste sauce.',
   },
   totalMinutes: 50,
+  ingredients: [
+    {
+      "name": {
+        "tr": "haşlanmış kuru fasulye",
+        "en": "cooked white beans"
+      },
+      "quantity": 2,
+      "unit": {
+        "tr": "su bardağı",
+        "en": "cup"
+      }
+    },
+    {
+      "name": {
+        "tr": "soğan",
+        "en": "onion"
+      },
+      "quantity": 1,
+      "unit": {
+        "tr": "adet",
+        "en": "pcs"
+      }
+    },
+    {
+      "name": {
+        "tr": "salça",
+        "en": "tomato paste"
+      },
+      "quantity": 1,
+      "unit": {
+        "tr": "yemek kaşığı",
+        "en": "tbsp"
+      }
+    },
+    {
+      "name": {
+        "tr": "sıcak su",
+        "en": "hot water"
+      },
+      "quantity": 4,
+      "unit": {
+        "tr": "su bardağı",
+        "en": "cup"
+      }
+    },
+    {
+      "name": {
+        "tr": "yağ",
+        "en": "oil"
+      },
+      "quantity": 2,
+      "unit": {
+        "tr": "yemek kaşığı",
+        "en": "tbsp"
+      }
+    },
+    {
+      "name": {
+        "tr": "tuz",
+        "en": "salt"
+      }
+    },
+    {
+      "name": {
+        "tr": "pul biber",
+        "en": "chili flakes"
+      }
+    }
+  ],
   nodes: [
     {
       id: 'saute_onion',

@@ -12,6 +12,75 @@ export const cobanSalatasi: Recipe = {
     en: 'A fresh, no-cook salad ready in minutes.',
   },
   totalMinutes: 10,
+  ingredients: [
+    {
+      "name": {
+        "tr": "domates",
+        "en": "tomato"
+      },
+      "quantity": 3,
+      "unit": {
+        "tr": "adet",
+        "en": "pcs"
+      }
+    },
+    {
+      "name": {
+        "tr": "salatalık",
+        "en": "cucumber"
+      },
+      "quantity": 2,
+      "unit": {
+        "tr": "adet",
+        "en": "pcs"
+      }
+    },
+    {
+      "name": {
+        "tr": "soğan",
+        "en": "onion"
+      },
+      "quantity": 1,
+      "unit": {
+        "tr": "adet",
+        "en": "pcs"
+      }
+    },
+    {
+      "name": {
+        "tr": "maydanoz",
+        "en": "parsley"
+      }
+    },
+    {
+      "name": {
+        "tr": "zeytinyağı",
+        "en": "olive oil"
+      },
+      "quantity": 3,
+      "unit": {
+        "tr": "yemek kaşığı",
+        "en": "tbsp"
+      }
+    },
+    {
+      "name": {
+        "tr": "limon",
+        "en": "lemon"
+      },
+      "quantity": 1,
+      "unit": {
+        "tr": "adet",
+        "en": "pcs"
+      }
+    },
+    {
+      "name": {
+        "tr": "tuz",
+        "en": "salt"
+      }
+    }
+  ],
   nodes: [
     {
       id: 'chop_tomato',

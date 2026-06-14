@@ -12,6 +12,25 @@ export const haslanmisYumurta: Recipe = {
     en: 'Perfect every time with a timer, to your liking.',
   },
   totalMinutes: 12,
+  ingredients: [
+    {
+      "name": {
+        "tr": "yumurta",
+        "en": "egg"
+      },
+      "quantity": 4,
+      "unit": {
+        "tr": "adet",
+        "en": "pcs"
+      }
+    },
+    {
+      "name": {
+        "tr": "tuz",
+        "en": "salt"
+      }
+    }
+  ],
   nodes: [
     {
       id: 'boil_water',
