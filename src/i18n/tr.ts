@@ -56,6 +56,9 @@ export const tr = {
     checkPrompt: 'Telefonu tencereye doğrult, fotoğrafı çekiyorum.',
     recoveryDefault: 'Merak etme, hallederiz. Ateşi biraz kıs ve bana anlat.',
   },
+  notify: {
+    timerDone: 'Süre doldu!',
+  },
   subscription: {
     title: 'Lezzet Pro',
     subtitle: 'Mutfakta yanında bir usta. İlk hafta ücretsiz.',

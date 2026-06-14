@@ -32,7 +32,8 @@
         {
           "microphonePermission": "Yemek yaparken sizi sesle yönlendirmek için mikrofona ihtiyacımız var."
         }
-      ]
+      ],
+      "expo-notifications"
     ]
   }
 }

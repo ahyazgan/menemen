@@ -3,3 +3,4 @@ export * from './types';
 export * from './RecipeEngine';
 export * from './foodSafety';
 export * from './localize';
+export * from './notifications';

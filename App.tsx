@@ -10,11 +10,17 @@ import { CookingScreen } from './src/screens/CookingScreen';
 import { RecipeListScreen } from './src/screens/RecipeListScreen';
 import { SubscriptionGate } from './src/components/SubscriptionGate';
 import { initLocaleFromDevice } from './src/i18n/deviceLocale';
+import { useCookingStore } from './src/state/cookingStore';
+import { createExpoNotify } from './src/services/notify';
 import type { Recipe } from './src/engine/types';
 
 export default function App() {
-  // İlk render'dan önce cihaz dilini uygula (lazy initializer senkron çalışır).
-  useState(() => initLocaleFromDevice());
+  // İlk render'dan önce: cihaz dilini uygula + gerçek bildirim servisini bağla.
+  useState(() => {
+    initLocaleFromDevice();
+    useCookingStore.getState().setNotify(createExpoNotify());
+    return null;
+  });
   const [recipe, setRecipe] = useState<Recipe | null>(null);
 
   return (

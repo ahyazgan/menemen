@@ -10,13 +10,18 @@ import { create } from 'zustand';
 import {
   RecipeEngine,
   SafetyError,
+  buildTimerNotification,
+  isTimerNode,
   localize,
   safeCookingAdvice,
+  timerNotificationId,
   type EngineSnapshot,
   type Recipe,
 } from '../engine';
 import type { Services, VisionResult } from '../services/types';
 import { createMockServices } from '../services/mock';
+import { createMockNotify } from '../services/notify';
+import type { NotificationService } from '../services/notify';
 import { INTENT_CONFIDENCE_THRESHOLD } from '../config';
 import { getLocale, t } from '../i18n';
 
@@ -26,6 +31,7 @@ interface CookingState {
   recipe: Recipe | null;
   snapshot: EngineSnapshot | null;
   services: Services;
+  notify: NotificationService;
   /** Kullanıcının odaklandığı düğüm. */
   currentNodeId: string | null;
   listening: boolean;
@@ -37,6 +43,8 @@ interface CookingState {
   // --- action'lar ---
   /** Servisleri değiştir (mock → gerçek geçişi; bkz. services/real). */
   setServices: (services: Services) => void;
+  /** Bildirim servisini değiştir (mock → expo; bkz. services/notify). */
+  setNotify: (notify: NotificationService) => void;
   loadRecipe: (recipe: Recipe) => void;
   startCooking: () => void;
   focus: (nodeId: string) => void;
@@ -61,6 +69,7 @@ export const useCookingStore = create<CookingState>((set, get) => ({
   recipe: null,
   snapshot: null,
   services: createMockServices(),
+  notify: createMockNotify(),
   currentNodeId: null,
   listening: false,
   lastSpoken: null,
@@ -68,6 +77,7 @@ export const useCookingStore = create<CookingState>((set, get) => ({
   safetyNotice: null,
 
   setServices: (services) => set({ services }),
+  setNotify: (notify) => set({ notify }),
 
   loadRecipe: (recipe) => {
     const engine = new RecipeEngine(recipe);
@@ -77,6 +87,7 @@ export const useCookingStore = create<CookingState>((set, get) => ({
   startCooking: () => {
     const { engine } = get();
     if (!engine) return;
+    void get().notify.requestPermission();
     const snap = engine.snapshot();
     const first = snap.ready[0] ?? null;
     set({ snapshot: snap, currentNodeId: first });
@@ -91,7 +102,16 @@ export const useCookingStore = create<CookingState>((set, get) => ({
     const snapshot = engine.start(nodeId);
     set({ snapshot, currentNodeId: nodeId, safetyNotice: null });
     const node = engine.node(nodeId);
-    if (node.voice_on_enter) await get().speak(localize(node.voice_on_enter, getLocale()));
+    const locale = getLocale();
+    // Süreli adım: arka planda/ekran kapalıyken uyarması için bildirim planla.
+    if (isTimerNode(node)) {
+      const body = node.voice_on_complete
+        ? localize(node.voice_on_complete, locale)
+        : t('notify.timerDone');
+      const notice = buildTimerNotification(node, locale, body, engine.remainingSec(nodeId) ?? undefined);
+      void get().notify.schedule(notice);
+    }
+    if (node.voice_on_enter) await get().speak(localize(node.voice_on_enter, locale));
   },
 
   completeNode: async (nodeId) => {
@@ -99,6 +119,7 @@ export const useCookingStore = create<CookingState>((set, get) => ({
     if (!engine) return;
     const node = engine.node(nodeId);
     const snapshot = engine.complete(nodeId);
+    void get().notify.cancel(timerNotificationId(nodeId)); // erken bitti → bildirimi iptal et
     if (node.voice_on_complete) await get().speak(localize(node.voice_on_complete, getLocale()));
     // Odağı bir sonraki hazır adıma taşı; bittiyse kutla.
     const nextId = snapshot.ready[0] ?? null;
@@ -115,6 +136,7 @@ export const useCookingStore = create<CookingState>((set, get) => ({
     if (!engine) return;
     try {
       const snapshot = engine.skip(nodeId);
+      void get().notify.cancel(timerNotificationId(nodeId));
       const nextId = snapshot.ready[0] ?? get().currentNodeId;
       set({ snapshot, currentNodeId: nextId, safetyNotice: null });
     } catch (err) {
@@ -133,12 +155,14 @@ export const useCookingStore = create<CookingState>((set, get) => ({
   retryNode: (nodeId) => {
     const { engine } = get();
     if (!engine) return;
+    void get().notify.cancel(timerNotificationId(nodeId));
     set({ snapshot: engine.retry(nodeId), safetyNotice: null });
   },
 
   failNode: (nodeId) => {
     const { engine } = get();
     if (!engine) return;
+    void get().notify.cancel(timerNotificationId(nodeId));
     set({ snapshot: engine.fail(nodeId) });
   },
 
@@ -229,6 +253,8 @@ export const useCookingStore = create<CookingState>((set, get) => ({
     for (const id of snap.active) {
       if (engine.node(id).completion === 'timer' && engine.isExpired(id)) {
         engine.complete(id);
+        // Önplandayken motor tamamladı → planlı bildirimi iptal et (çift uyarma).
+        void get().notify.cancel(timerNotificationId(id));
         changed = true;
       }
     }

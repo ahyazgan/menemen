@@ -28,6 +28,10 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
 - **`src/services/billing/`** — abonelik (RevenueCat) interface'i + mock + gerçek
   sarmalayıcı; `subscriptionStore` ve `Paywall`/`SubscriptionGate`. iOS Apple IAP,
   Android Play Billing; uygulama içi IAP-dışı dijital ödeme YOK (CLAUDE.md).
+- **`src/services/notify/`** — yerel bildirim interface'i + mock + expo
+  sarmalayıcı. Süreli adım başlayınca store bir bildirim planlar; ekran
+  kapalıyken/arka planda süre dolunca uyarır (erken bitiş/atla/yeniden dene'de
+  iptal). Saf zamanlama mantığı `engine/notifications.ts`'te ve testli.
 - **`src/recipes/`** — 13 tarif grafı (menemen, sahanda/haşlanmış yumurta, çoban
   salatası, mercimek/domates çorbası, pilav, sigara böreği, tavuk sote, köfte,
   fırın tavuk, ızgara balık, kuru fasulye) + `RecipeListScreen` ("Ne pişsem?",
@@ -150,6 +154,7 @@ npx expo start --dev-client
 4. **Kamera izni** istenir; "tencereye bak" tek kare çeker (frame-on-demand),
    Vision yanıtı **gözlem + öneri** verir (kritik adımda asla "tamam" demez).
 5. Zamanlayıcılı adımda geri sayım işler; süre dolunca otomatik tamamlanır.
+   Uygulama arka plandayken/ekran kapalıyken **bildirim** ile uyarır (izin sorulur).
 6. Kritik güvenlik adımı (örn. tavuk/balık) **atlanamaz** (uyarı gösterilir).
 7. Ekran kilitliyken/arka planda sesli yönlendirme devam eder (`UIBackgroundModes`).
 8. (Üretim) `REQUIRE_SUBSCRIPTION=true` ile paywall kapısı; satın alma sonrası geçiş.
