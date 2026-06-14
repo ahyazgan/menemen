@@ -14,72 +14,72 @@ export const tavukSote: Recipe = {
   totalMinutes: 30,
   ingredients: [
     {
-      "name": {
-        "tr": "tavuk göğsü",
-        "en": "chicken breast"
+      name: {
+        tr: 'tavuk göğsü',
+        en: 'chicken breast',
       },
-      "quantity": 500,
-      "unit": {
-        "tr": "g",
-        "en": "g"
-      }
-    },
-    {
-      "name": {
-        "tr": "biber",
-        "en": "pepper"
+      quantity: 500,
+      unit: {
+        tr: 'g',
+        en: 'g',
       },
-      "quantity": 2,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
     },
     {
-      "name": {
-        "tr": "soğan",
-        "en": "onion"
+      name: {
+        tr: 'biber',
+        en: 'pepper',
       },
-      "quantity": 1,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
-    },
-    {
-      "name": {
-        "tr": "domates",
-        "en": "tomato"
+      quantity: 2,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
       },
-      "quantity": 2,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
     },
     {
-      "name": {
-        "tr": "yağ",
-        "en": "oil"
+      name: {
+        tr: 'soğan',
+        en: 'onion',
       },
-      "quantity": 2,
-      "unit": {
-        "tr": "yemek kaşığı",
-        "en": "tbsp"
-      }
+      quantity: 1,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
+      },
     },
     {
-      "name": {
-        "tr": "tuz",
-        "en": "salt"
-      }
+      name: {
+        tr: 'domates',
+        en: 'tomato',
+      },
+      quantity: 2,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
+      },
     },
     {
-      "name": {
-        "tr": "karabiber",
-        "en": "black pepper"
-      }
-    }
+      name: {
+        tr: 'yağ',
+        en: 'oil',
+      },
+      quantity: 2,
+      unit: {
+        tr: 'yemek kaşığı',
+        en: 'tbsp',
+      },
+    },
+    {
+      name: {
+        tr: 'tuz',
+        en: 'salt',
+      },
+    },
+    {
+      name: {
+        tr: 'karabiber',
+        en: 'black pepper',
+      },
+    },
   ],
   nodes: [
     {
@@ -118,7 +118,10 @@ export const tavukSote: Recipe = {
       requires: ['chop_chicken'],
       completion: 'timer',
       durationSec: 480,
-      voice_on_enter: { tr: 'Tavuğu kızgın yağda soteleyelim.', en: "Let's sear the chicken in hot oil." },
+      voice_on_enter: {
+        tr: 'Tavuğu kızgın yağda soteleyelim.',
+        en: "Let's sear the chicken in hot oil.",
+      },
       voice_on_complete: { tr: 'Tavuk renk aldı.', en: 'The chicken has browned.' },
       recovery_rules: {
         yaktim: {

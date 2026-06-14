@@ -55,9 +55,7 @@ export const recipeList: Recipe[] = [
   nohutYemegi,
 ];
 
-export const recipes: Record<string, Recipe> = Object.fromEntries(
-  recipeList.map((r) => [r.id, r]),
-);
+export const recipes: Record<string, Recipe> = Object.fromEntries(recipeList.map((r) => [r.id, r]));
 
 export {
   menemen,

@@ -187,9 +187,7 @@ export function RecipeListScreen({
                   : ''}
                 {recipe.servings} {t('picker.servings')}
                 {` · ${t(`difficulty.${recipeDifficulty(recipe)}`)}`}
-                {(counts[recipe.id] ?? 0) > 0
-                  ? ` · ${counts[recipe.id]} ${t('picker.times')}`
-                  : ''}
+                {(counts[recipe.id] ?? 0) > 0 ? ` · ${counts[recipe.id]} ${t('picker.times')}` : ''}
               </Text>
             </Pressable>
           );

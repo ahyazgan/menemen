@@ -40,8 +40,7 @@ export function createClaudeVision(
         tools: [
           {
             name: 'report_observation',
-            description:
-              'Gözlem ve öneriyi bildir. Asla kesin pişti/yenebilir hükmü verme.',
+            description: 'Gözlem ve öneriyi bildir. Asla kesin pişti/yenebilir hükmü verme.',
             input_schema: {
               type: 'object',
               properties: {

@@ -1,9 +1,7 @@
 /** Mock bildirim servisi — UI'ı native modülsüz test/çalıştırmak için. */
 import type { NotificationService, ScheduledNotice } from './types';
 
-export function createMockNotify(
-  sink: (line: string) => void = () => {},
-): NotificationService {
+export function createMockNotify(sink: (line: string) => void = () => {}): NotificationService {
   const scheduled = new Map<string, ScheduledNotice>();
   return {
     async requestPermission(): Promise<boolean> {

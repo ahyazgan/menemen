@@ -14,7 +14,11 @@ export const peynirliTost: Recipe = {
   totalMinutes: 8,
   ingredients: [
     { name: { tr: 'ekmek', en: 'bread' }, quantity: 2, unit: { tr: 'dilim', en: 'slices' } },
-    { name: { tr: 'kaşar peyniri', en: 'kashar cheese' }, quantity: 2, unit: { tr: 'dilim', en: 'slices' } },
+    {
+      name: { tr: 'kaşar peyniri', en: 'kashar cheese' },
+      quantity: 2,
+      unit: { tr: 'dilim', en: 'slices' },
+    },
     { name: { tr: 'tereyağı', en: 'butter' }, quantity: 1, unit: { tr: 'çay kaşığı', en: 'tsp' } },
   ],
   nodes: [
@@ -28,7 +32,10 @@ export const peynirliTost: Recipe = {
       kind: 'prep',
       requires: [],
       completion: 'user',
-      voice_on_enter: { tr: 'Peyniri ekmeğin arasına koyalım.', en: "Let's tuck the cheese between the bread." },
+      voice_on_enter: {
+        tr: 'Peyniri ekmeğin arasına koyalım.',
+        en: "Let's tuck the cheese between the bread.",
+      },
     },
     {
       id: 'toast',
@@ -41,7 +48,10 @@ export const peynirliTost: Recipe = {
       requires: ['assemble'],
       completion: 'timer',
       durationSec: 240,
-      voice_on_complete: { tr: 'Kızarmış ve peynir erimiş olmalı.', en: 'It should be golden and the cheese melted.' },
+      voice_on_complete: {
+        tr: 'Kızarmış ve peynir erimiş olmalı.',
+        en: 'It should be golden and the cheese melted.',
+      },
     },
     {
       id: 'serve',

@@ -14,72 +14,72 @@ export const cobanSalatasi: Recipe = {
   totalMinutes: 10,
   ingredients: [
     {
-      "name": {
-        "tr": "domates",
-        "en": "tomato"
+      name: {
+        tr: 'domates',
+        en: 'tomato',
       },
-      "quantity": 3,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
-    },
-    {
-      "name": {
-        "tr": "salatalık",
-        "en": "cucumber"
+      quantity: 3,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
       },
-      "quantity": 2,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
     },
     {
-      "name": {
-        "tr": "soğan",
-        "en": "onion"
+      name: {
+        tr: 'salatalık',
+        en: 'cucumber',
       },
-      "quantity": 1,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
-    },
-    {
-      "name": {
-        "tr": "maydanoz",
-        "en": "parsley"
-      }
-    },
-    {
-      "name": {
-        "tr": "zeytinyağı",
-        "en": "olive oil"
+      quantity: 2,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
       },
-      "quantity": 3,
-      "unit": {
-        "tr": "yemek kaşığı",
-        "en": "tbsp"
-      }
     },
     {
-      "name": {
-        "tr": "limon",
-        "en": "lemon"
+      name: {
+        tr: 'soğan',
+        en: 'onion',
       },
-      "quantity": 1,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
+      quantity: 1,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
+      },
     },
     {
-      "name": {
-        "tr": "tuz",
-        "en": "salt"
-      }
-    }
+      name: {
+        tr: 'maydanoz',
+        en: 'parsley',
+      },
+    },
+    {
+      name: {
+        tr: 'zeytinyağı',
+        en: 'olive oil',
+      },
+      quantity: 3,
+      unit: {
+        tr: 'yemek kaşığı',
+        en: 'tbsp',
+      },
+    },
+    {
+      name: {
+        tr: 'limon',
+        en: 'lemon',
+      },
+      quantity: 1,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
+      },
+    },
+    {
+      name: {
+        tr: 'tuz',
+        en: 'salt',
+      },
+    },
   ],
   nodes: [
     {

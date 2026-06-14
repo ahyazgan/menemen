@@ -14,39 +14,39 @@ export const sigaraBoregi: Recipe = {
   totalMinutes: 25,
   ingredients: [
     {
-      "name": {
-        "tr": "yufka",
-        "en": "filo sheet"
+      name: {
+        tr: 'yufka',
+        en: 'filo sheet',
       },
-      "quantity": 4,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
-    },
-    {
-      "name": {
-        "tr": "beyaz peynir",
-        "en": "white cheese"
+      quantity: 4,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
       },
-      "quantity": 200,
-      "unit": {
-        "tr": "g",
-        "en": "g"
-      }
     },
     {
-      "name": {
-        "tr": "maydanoz",
-        "en": "parsley"
-      }
+      name: {
+        tr: 'beyaz peynir',
+        en: 'white cheese',
+      },
+      quantity: 200,
+      unit: {
+        tr: 'g',
+        en: 'g',
+      },
     },
     {
-      "name": {
-        "tr": "kızartma yağı",
-        "en": "frying oil"
-      }
-    }
+      name: {
+        tr: 'maydanoz',
+        en: 'parsley',
+      },
+    },
+    {
+      name: {
+        tr: 'kızartma yağı',
+        en: 'frying oil',
+      },
+    },
   ],
   nodes: [
     {

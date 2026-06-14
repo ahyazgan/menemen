@@ -17,7 +17,11 @@ export const cacik: Recipe = {
     { name: { tr: 'salatalık', en: 'cucumber' }, quantity: 2, unit: { tr: 'adet', en: 'pcs' } },
     { name: { tr: 'sarımsak', en: 'garlic' }, quantity: 1, unit: { tr: 'diş', en: 'clove' } },
     { name: { tr: 'nane', en: 'dried mint' } },
-    { name: { tr: 'zeytinyağı', en: 'olive oil' }, quantity: 1, unit: { tr: 'yemek kaşığı', en: 'tbsp' } },
+    {
+      name: { tr: 'zeytinyağı', en: 'olive oil' },
+      quantity: 1,
+      unit: { tr: 'yemek kaşığı', en: 'tbsp' },
+    },
     { name: { tr: 'tuz', en: 'salt' } },
   ],
   nodes: [
@@ -56,7 +60,10 @@ export const cacik: Recipe = {
       kind: 'finish',
       requires: ['grate_cucumber', 'mix_yogurt'],
       completion: 'user',
-      voice_on_enter: { tr: 'Karıştır, soğuk servis et. Afiyet olsun!', en: 'Mix and serve cold — enjoy!' },
+      voice_on_enter: {
+        tr: 'Karıştır, soğuk servis et. Afiyet olsun!',
+        en: 'Mix and serve cold — enjoy!',
+      },
     },
   ],
 };

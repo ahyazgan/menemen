@@ -14,7 +14,11 @@ export const omlet: Recipe = {
   totalMinutes: 10,
   ingredients: [
     { name: { tr: 'yumurta', en: 'egg' }, quantity: 3, unit: { tr: 'adet', en: 'pcs' } },
-    { name: { tr: 'tereyağı', en: 'butter' }, quantity: 1, unit: { tr: 'yemek kaşığı', en: 'tbsp' } },
+    {
+      name: { tr: 'tereyağı', en: 'butter' },
+      quantity: 1,
+      unit: { tr: 'yemek kaşığı', en: 'tbsp' },
+    },
     { name: { tr: 'tuz', en: 'salt' } },
     { name: { tr: 'karabiber', en: 'black pepper' } },
   ],
@@ -59,10 +63,19 @@ export const omlet: Recipe = {
         },
         minInternalTempC: 71,
       },
-      voice_on_enter: { tr: 'Kısık ateşte sabırla pişirelim.', en: "Let's cook it patiently over low heat." },
-      voice_on_complete: { tr: 'Üstü kurumuş gibi; akışkan kısım kalmadığından emin ol.', en: 'The top looks set; make sure no runny part remains.' },
+      voice_on_enter: {
+        tr: 'Kısık ateşte sabırla pişirelim.',
+        en: "Let's cook it patiently over low heat.",
+      },
+      voice_on_complete: {
+        tr: 'Üstü kurumuş gibi; akışkan kısım kalmadığından emin ol.',
+        en: 'The top looks set; make sure no runny part remains.',
+      },
       recovery_rules: {
-        sulu: { tr: 'Ortası akışkansa kapağı kapat, biraz daha pişir.', en: 'If the center is runny, cover and cook a bit more.' },
+        sulu: {
+          tr: 'Ortası akışkansa kapağı kapat, biraz daha pişir.',
+          en: 'If the center is runny, cover and cook a bit more.',
+        },
       },
     },
     {

@@ -27,8 +27,22 @@ function sampleRecipe(): Recipe {
     servings: 1,
     locale: 'tr',
     nodes: [
-      { id: 'chop', title: 'Doğra', instruction: '', kind: 'prep', requires: [], completion: 'user' },
-      { id: 'grate', title: 'Rendele', instruction: '', kind: 'prep', requires: [], completion: 'user' },
+      {
+        id: 'chop',
+        title: 'Doğra',
+        instruction: '',
+        kind: 'prep',
+        requires: [],
+        completion: 'user',
+      },
+      {
+        id: 'grate',
+        title: 'Rendele',
+        instruction: '',
+        kind: 'prep',
+        requires: [],
+        completion: 'user',
+      },
       {
         id: 'simmer',
         title: 'Pişir',

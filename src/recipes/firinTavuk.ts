@@ -14,67 +14,67 @@ export const firinTavuk: Recipe = {
   totalMinutes: 55,
   ingredients: [
     {
-      "name": {
-        "tr": "tavuk baget",
-        "en": "chicken drumstick"
+      name: {
+        tr: 'tavuk baget',
+        en: 'chicken drumstick',
       },
-      "quantity": 8,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
-    },
-    {
-      "name": {
-        "tr": "zeytinyağı",
-        "en": "olive oil"
+      quantity: 8,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
       },
-      "quantity": 3,
-      "unit": {
-        "tr": "yemek kaşığı",
-        "en": "tbsp"
-      }
     },
     {
-      "name": {
-        "tr": "salça",
-        "en": "tomato paste"
+      name: {
+        tr: 'zeytinyağı',
+        en: 'olive oil',
       },
-      "quantity": 1,
-      "unit": {
-        "tr": "yemek kaşığı",
-        "en": "tbsp"
-      }
-    },
-    {
-      "name": {
-        "tr": "sarımsak",
-        "en": "garlic"
+      quantity: 3,
+      unit: {
+        tr: 'yemek kaşığı',
+        en: 'tbsp',
       },
-      "quantity": 3,
-      "unit": {
-        "tr": "diş",
-        "en": "clove"
-      }
     },
     {
-      "name": {
-        "tr": "tuz",
-        "en": "salt"
-      }
+      name: {
+        tr: 'salça',
+        en: 'tomato paste',
+      },
+      quantity: 1,
+      unit: {
+        tr: 'yemek kaşığı',
+        en: 'tbsp',
+      },
     },
     {
-      "name": {
-        "tr": "karabiber",
-        "en": "black pepper"
-      }
+      name: {
+        tr: 'sarımsak',
+        en: 'garlic',
+      },
+      quantity: 3,
+      unit: {
+        tr: 'diş',
+        en: 'clove',
+      },
     },
     {
-      "name": {
-        "tr": "kekik",
-        "en": "thyme"
-      }
-    }
+      name: {
+        tr: 'tuz',
+        en: 'salt',
+      },
+    },
+    {
+      name: {
+        tr: 'karabiber',
+        en: 'black pepper',
+      },
+    },
+    {
+      name: {
+        tr: 'kekik',
+        en: 'thyme',
+      },
+    },
   ],
   nodes: [
     {

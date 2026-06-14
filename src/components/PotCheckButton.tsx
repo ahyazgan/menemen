@@ -80,8 +80,18 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
     backgroundColor: '#000',
   },
-  captureBtn: { backgroundColor: '#B5300F', borderRadius: 30, paddingVertical: 14, paddingHorizontal: 36 },
+  captureBtn: {
+    backgroundColor: '#B5300F',
+    borderRadius: 30,
+    paddingVertical: 14,
+    paddingHorizontal: 36,
+  },
   captureText: { color: '#FFF', fontSize: 17, fontWeight: '700' },
-  closeBtn: { backgroundColor: '#333', borderRadius: 30, paddingVertical: 14, paddingHorizontal: 28 },
+  closeBtn: {
+    backgroundColor: '#333',
+    borderRadius: 30,
+    paddingVertical: 14,
+    paddingHorizontal: 28,
+  },
   closeText: { color: '#FFF', fontSize: 16 },
 });

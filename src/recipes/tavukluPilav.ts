@@ -14,9 +14,21 @@ export const tavukluPilav: Recipe = {
   totalMinutes: 40,
   ingredients: [
     { name: { tr: 'pirinç', en: 'rice' }, quantity: 2, unit: { tr: 'su bardağı', en: 'cup' } },
-    { name: { tr: 'tavuk göğsü', en: 'chicken breast' }, quantity: 1, unit: { tr: 'adet', en: 'pcs' } },
-    { name: { tr: 'tereyağı', en: 'butter' }, quantity: 2, unit: { tr: 'yemek kaşığı', en: 'tbsp' } },
-    { name: { tr: 'sıcak su', en: 'hot water' }, quantity: 3, unit: { tr: 'su bardağı', en: 'cup' } },
+    {
+      name: { tr: 'tavuk göğsü', en: 'chicken breast' },
+      quantity: 1,
+      unit: { tr: 'adet', en: 'pcs' },
+    },
+    {
+      name: { tr: 'tereyağı', en: 'butter' },
+      quantity: 2,
+      unit: { tr: 'yemek kaşığı', en: 'tbsp' },
+    },
+    {
+      name: { tr: 'sıcak su', en: 'hot water' },
+      quantity: 3,
+      unit: { tr: 'su bardağı', en: 'cup' },
+    },
     { name: { tr: 'tuz', en: 'salt' } },
   ],
   nodes: [
@@ -39,8 +51,14 @@ export const tavukluPilav: Recipe = {
         },
         minInternalTempC: 74,
       },
-      voice_on_enter: { tr: 'Tavuğu iyice haşlayalım, acele etmeyelim.', en: "Let's boil the chicken thoroughly — no rush." },
-      voice_on_complete: { tr: 'Tavuk pişmiş olmalı; ortasını kontrol et.', en: 'The chicken should be done; check the center.' },
+      voice_on_enter: {
+        tr: 'Tavuğu iyice haşlayalım, acele etmeyelim.',
+        en: "Let's boil the chicken thoroughly — no rush.",
+      },
+      voice_on_complete: {
+        tr: 'Tavuk pişmiş olmalı; ortasını kontrol et.',
+        en: 'The chicken should be done; check the center.',
+      },
     },
     {
       id: 'saute_rice',
@@ -70,7 +88,10 @@ export const tavukluPilav: Recipe = {
     {
       id: 'rest',
       title: { tr: 'Demlendir', en: 'Rest' },
-      instruction: { tr: 'Ocağı kapat, 10 dakika demlendir.', en: 'Turn off the heat and rest 10 minutes.' },
+      instruction: {
+        tr: 'Ocağı kapat, 10 dakika demlendir.',
+        en: 'Turn off the heat and rest 10 minutes.',
+      },
       kind: 'action',
       requires: ['combine'],
       completion: 'timer',
@@ -79,7 +100,10 @@ export const tavukluPilav: Recipe = {
     {
       id: 'serve',
       title: { tr: 'Karıştır ve servis et', en: 'Fluff and serve' },
-      instruction: { tr: 'Çatalla havalandır, sıcak servis et.', en: 'Fluff with a fork and serve hot.' },
+      instruction: {
+        tr: 'Çatalla havalandır, sıcak servis et.',
+        en: 'Fluff with a fork and serve hot.',
+      },
       kind: 'finish',
       requires: ['rest'],
       completion: 'user',

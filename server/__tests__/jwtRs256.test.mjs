@@ -38,13 +38,21 @@ test('RS256: süresi geçmiş reddedilir', () => {
 });
 
 test('JWKS: kid eşleşmesiyle doğrular', () => {
-  const token = signRS256({ sub: 'u1', exp: nowSec + 60 }, privateKey, { alg: 'RS256', typ: 'JWT', kid: 'k1' });
+  const token = signRS256({ sub: 'u1', exp: nowSec + 60 }, privateKey, {
+    alg: 'RS256',
+    typ: 'JWT',
+    kid: 'k1',
+  });
   const r = verifyJwtWithJwks(token, { keys: [jwk] }, { now: fixedNow });
   assert.equal(r.valid, true);
 });
 
 test('JWKS: bilinmeyen kid reddedilir', () => {
-  const token = signRS256({ sub: 'u1', exp: nowSec + 60 }, privateKey, { alg: 'RS256', typ: 'JWT', kid: 'nope' });
+  const token = signRS256({ sub: 'u1', exp: nowSec + 60 }, privateKey, {
+    alg: 'RS256',
+    typ: 'JWT',
+    kid: 'nope',
+  });
   const r = verifyJwtWithJwks(token, { keys: [jwk] }, { now: fixedNow });
   assert.equal(r.valid, false);
   assert.equal(r.valid === false && r.reason, 'unknown_kid');

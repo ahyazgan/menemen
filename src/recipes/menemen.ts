@@ -17,61 +17,61 @@ export const menemen: Recipe = {
   totalMinutes: 20,
   ingredients: [
     {
-      "name": {
-        "tr": "sivri biber",
-        "en": "green pepper"
+      name: {
+        tr: 'sivri biber',
+        en: 'green pepper',
       },
-      "quantity": 4,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
-    },
-    {
-      "name": {
-        "tr": "domates",
-        "en": "tomato"
+      quantity: 4,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
       },
-      "quantity": 3,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
     },
     {
-      "name": {
-        "tr": "yumurta",
-        "en": "egg"
+      name: {
+        tr: 'domates',
+        en: 'tomato',
       },
-      "quantity": 4,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
-    },
-    {
-      "name": {
-        "tr": "tereyağı",
-        "en": "butter"
+      quantity: 3,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
       },
-      "quantity": 2,
-      "unit": {
-        "tr": "yemek kaşığı",
-        "en": "tbsp"
-      }
     },
     {
-      "name": {
-        "tr": "tuz",
-        "en": "salt"
-      }
+      name: {
+        tr: 'yumurta',
+        en: 'egg',
+      },
+      quantity: 4,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
+      },
     },
     {
-      "name": {
-        "tr": "karabiber",
-        "en": "black pepper"
-      }
-    }
+      name: {
+        tr: 'tereyağı',
+        en: 'butter',
+      },
+      quantity: 2,
+      unit: {
+        tr: 'yemek kaşığı',
+        en: 'tbsp',
+      },
+    },
+    {
+      name: {
+        tr: 'tuz',
+        en: 'salt',
+      },
+    },
+    {
+      name: {
+        tr: 'karabiber',
+        en: 'black pepper',
+      },
+    },
   ],
   nodes: [
     {

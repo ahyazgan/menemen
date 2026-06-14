@@ -29,7 +29,12 @@ test('bildirim kimliği kararlı', () => {
 });
 
 test('buildTimerNotification başlığı localize eder, body enjekte edilir', () => {
-  const n = node({ id: 'simmer', completion: 'timer', durationSec: 90, title: { tr: 'Pişir', en: 'Simmer' } });
+  const n = node({
+    id: 'simmer',
+    completion: 'timer',
+    durationSec: 90,
+    title: { tr: 'Pişir', en: 'Simmer' },
+  });
   const en = buildTimerNotification(n, 'en', 'Time is up');
   assert.equal(en.id, 'timer:simmer');
   assert.equal(en.title, 'Simmer');

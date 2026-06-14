@@ -5,11 +5,7 @@
  */
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
-import {
-  RecordingPresets,
-  requestRecordingPermissionsAsync,
-  useAudioRecorder,
-} from 'expo-audio';
+import { RecordingPresets, requestRecordingPermissionsAsync, useAudioRecorder } from 'expo-audio';
 
 import { useCookingStore } from '../state/cookingStore';
 import { t } from '../i18n';
@@ -38,11 +34,7 @@ export function VoiceButton() {
   }
 
   const active = recording || listening;
-  const label = recording
-    ? t('cooking.listening')
-    : listening
-      ? '…'
-      : t('cooking.listen');
+  const label = recording ? t('cooking.listening') : listening ? '…' : t('cooking.listen');
 
   return (
     <Pressable

@@ -52,19 +52,25 @@ export function scoreRecipe(tokens: string[], recipe: Recipe): number {
  * Profile uyan tarifleri ifadeye göre puanlayıp sıralar (yüksek puan başta).
  * Boş ifadede tüm puanlar 0 olur; sıra profil süzgecindeki orijinal sıradır.
  */
-export function rankByCraving(craving: string, recipes: Recipe[], profile: Profile): ScoredRecipe[] {
+export function rankByCraving(
+  craving: string,
+  recipes: Recipe[],
+  profile: Profile,
+): ScoredRecipe[] {
   const tokens = tokenize(craving);
   const eligible = filterByProfile(recipes, profile);
-  return eligible
-    .map((recipe, index) => ({
-      recipe,
-      score: scoreRecipe(tokens, recipe),
-      fit: skillFitScore(recipe, profile.skill),
-      index,
-    }))
-    // Önce uygunluk puanı, eşitlikte beceriye uygunluk (orta seviyede nötr), sonra sıra.
-    .sort((a, b) => b.score - a.score || a.fit - b.fit || a.index - b.index)
-    .map(({ recipe, score }) => ({ recipe, score }));
+  return (
+    eligible
+      .map((recipe, index) => ({
+        recipe,
+        score: scoreRecipe(tokens, recipe),
+        fit: skillFitScore(recipe, profile.skill),
+        index,
+      }))
+      // Önce uygunluk puanı, eşitlikte beceriye uygunluk (orta seviyede nötr), sonra sıra.
+      .sort((a, b) => b.score - a.score || a.fit - b.fit || a.index - b.index)
+      .map(({ recipe, score }) => ({ recipe, score }))
+  );
 }
 
 /**

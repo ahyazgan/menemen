@@ -31,7 +31,12 @@ test('generatePlan benzersiz tarif sayısı yeterken tekrar etmez', () => {
 });
 
 test('generatePlan vegan profilde yalnızca uygun tarif seçer', () => {
-  const plan = generatePlan(recipeList, { diet: 'vegan', avoid: [], skill: 'beginner' }, 4, seededRng(3));
+  const plan = generatePlan(
+    recipeList,
+    { diet: 'vegan', avoid: [], skill: 'beginner' },
+    4,
+    seededRng(3),
+  );
   for (const id of plan) {
     const r = recipeList.find((x) => x.id === id)!;
     const keys = (r.ingredients ?? []).map((i) => i.name);

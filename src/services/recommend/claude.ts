@@ -17,7 +17,7 @@ const SYSTEM =
   'Sen sıcak, samimi bir Türk mutfak asistanısın. Kullanıcının canının ne ' +
   'çektiğini ve profilini (diyet, sevmediği malzemeler, beceri) al; SADECE sana ' +
   'verilen aday tarifler arasından EN UYGUN olanı seç. Yeni tarif uydurma. ' +
-  'pick_recipe aracıyla seçtiğin tarifin id\'sini ve tek cümlelik, sıcak bir ' +
+  "pick_recipe aracıyla seçtiğin tarifin id'sini ve tek cümlelik, sıcak bir " +
   'gerekçe ver. Gerekçeyi kullanıcının dilinde yaz.';
 
 interface PickToolInput {
@@ -31,7 +31,7 @@ export function createClaudeRecommend(
 ): RecommendService {
   return {
     async suggest(input: RecommendInput): Promise<RecommendResult> {
-      const { craving, locale, profile, candidates } = input;
+      const { craving, profile, candidates } = input;
       if (candidates.length === 0) return { recipeId: null };
       const ids = candidates.map((r) => r.id);
 

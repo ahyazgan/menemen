@@ -134,10 +134,12 @@ export const tr = {
     welcomeBody:
       'Lezzet bir tarif uygulaması değil; yemek yaparken seni sesle adım adım yönlendiren, ara sıra tencerene bakıp yorum yapan, ters gidince kurtaran canlı bir rehber.',
     dietTitle: 'Neyi seversin?',
-    dietBody: 'Sana uygun tarifler önereyim diye soruyorum. İstediğinde Profilim’den değiştirebilirsin.',
+    dietBody:
+      'Sana uygun tarifler önereyim diye soruyorum. İstediğinde Profilim’den değiştirebilirsin.',
     permsTitle: 'Birkaç izin, net sebeplerle',
     permMic: '🎤 Mikrofon — yemek yaparken seni sesle yönlendirmek için.',
-    permCamera: '📷 Kamera — yalnızca sen isteyince tencerene tek kare bakmak için (sürekli açık değil).',
+    permCamera:
+      '📷 Kamera — yalnızca sen isteyince tencerene tek kare bakmak için (sürekli açık değil).',
     permNotif: '🔔 Bildirim — süre dolunca, ekran kapalıyken bile haber vermek için.',
     permsFooter: 'İzinleri ihtiyaç anında, ilgili adımda isteyeceğiz.',
   },

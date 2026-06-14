@@ -64,7 +64,11 @@ export function SuggestScreen({ onSelect, onBack }: Props) {
         multiline
       />
 
-      <Pressable style={[styles.go, loading && styles.goDisabled]} onPress={onGo} disabled={loading}>
+      <Pressable
+        style={[styles.go, loading && styles.goDisabled]}
+        onPress={onGo}
+        disabled={loading}
+      >
         {loading ? (
           <ActivityIndicator color={colors.onPrimary} />
         ) : (
@@ -76,8 +80,10 @@ export function SuggestScreen({ onSelect, onBack }: Props) {
 
       {!loading && error && <Text style={styles.none}>{t('suggest.error')}</Text>}
 
-      {!loading && !error && result && (
-        suggested ? (
+      {!loading &&
+        !error &&
+        result &&
+        (suggested ? (
           <View style={styles.resultCard}>
             <Text style={styles.resultTitle}>{localize(suggested.title, locale)}</Text>
             {suggested.summary && (
@@ -103,8 +109,7 @@ export function SuggestScreen({ onSelect, onBack }: Props) {
           </View>
         ) : (
           <Text style={styles.none}>{t('suggest.none')}</Text>
-        )
-      )}
+        ))}
     </ScrollView>
   );
 }
@@ -137,7 +142,13 @@ const makeStyles = (c: ThemeColors) =>
     },
     goDisabled: { opacity: 0.7 },
     goText: { color: c.onPrimary, fontSize: 17, fontWeight: '700' },
-    thinking: { fontSize: 14, color: c.textMuted, textAlign: 'center', marginTop: 14, fontStyle: 'italic' },
+    thinking: {
+      fontSize: 14,
+      color: c.textMuted,
+      textAlign: 'center',
+      marginTop: 14,
+      fontStyle: 'italic',
+    },
     resultCard: {
       backgroundColor: c.surface,
       borderRadius: 16,
@@ -149,7 +160,13 @@ const makeStyles = (c: ThemeColors) =>
     resultTitle: { fontSize: 22, fontWeight: '800', color: c.text },
     resultSummary: { fontSize: 15, color: c.textBody, marginTop: 6, lineHeight: 21 },
     resultMeta: { fontSize: 13, color: c.textSubtle, marginTop: 10 },
-    reasonLabel: { fontSize: 12, color: c.label, fontWeight: '700', textTransform: 'uppercase', marginTop: 16 },
+    reasonLabel: {
+      fontSize: 12,
+      color: c.label,
+      fontWeight: '700',
+      textTransform: 'uppercase',
+      marginTop: 16,
+    },
     reason: { fontSize: 16, color: c.textBody, marginTop: 6, lineHeight: 23 },
     cook: {
       backgroundColor: c.accent,

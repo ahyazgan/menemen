@@ -130,7 +130,10 @@ export function CookingScreen({ recipe, onBack }: Props) {
           <View style={styles.ingHeader}>
             <Text style={styles.ingTitle}>{t('cooking.ingredients')}</Text>
             <View style={styles.stepper}>
-              <Pressable style={styles.stepBtn} onPress={() => setServings((s) => Math.max(1, s - 1))}>
+              <Pressable
+                style={styles.stepBtn}
+                onPress={() => setServings((s) => Math.max(1, s - 1))}
+              >
                 <Text style={styles.stepText}>−</Text>
               </Pressable>
               <Text style={styles.servings}>
@@ -305,7 +308,14 @@ const makeStyles = (c: ThemeColors) =>
     backText: { color: c.textMuted, fontSize: 16, fontWeight: '600' },
     title: { fontSize: 28, fontWeight: '700', color: c.primary, marginBottom: 4 },
     progress: { fontSize: 14, color: c.textMuted, marginBottom: 16 },
-    beginnerHint: { fontSize: 14, color: c.label, marginTop: -8, marginBottom: 16, fontStyle: 'italic', lineHeight: 20 },
+    beginnerHint: {
+      fontSize: 14,
+      color: c.label,
+      marginTop: -8,
+      marginBottom: 16,
+      fontStyle: 'italic',
+      lineHeight: 20,
+    },
     ingPanel: {
       backgroundColor: c.surfaceAlt,
       borderRadius: 14,
@@ -314,7 +324,12 @@ const makeStyles = (c: ThemeColors) =>
       padding: 16,
       marginBottom: 16,
     },
-    ingHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 },
+    ingHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 8,
+    },
     ingTitle: { fontSize: 16, fontWeight: '700', color: c.textMuted },
     stepper: { flexDirection: 'row', alignItems: 'center', gap: 10 },
     stepBtn: {
@@ -328,9 +343,21 @@ const makeStyles = (c: ThemeColors) =>
     stepText: { fontSize: 18, color: c.primary, fontWeight: '700' },
     servings: { fontSize: 14, color: c.text, fontWeight: '600', minWidth: 64, textAlign: 'center' },
     ingItem: { fontSize: 15, color: c.textBody, lineHeight: 24 },
-    addBtn: { marginTop: 12, backgroundColor: c.fill, borderRadius: 10, paddingVertical: 12, alignItems: 'center' },
+    addBtn: {
+      marginTop: 12,
+      backgroundColor: c.fill,
+      borderRadius: 10,
+      paddingVertical: 12,
+      alignItems: 'center',
+    },
     addText: { color: c.textMuted, fontSize: 15, fontWeight: '700' },
-    finished: { fontSize: 22, fontWeight: '700', color: c.success, marginTop: 24, marginBottom: 14 },
+    finished: {
+      fontSize: 22,
+      fontWeight: '700',
+      color: c.success,
+      marginTop: 24,
+      marginBottom: 14,
+    },
     share: {
       backgroundColor: c.primary,
       borderRadius: 14,
@@ -354,7 +381,12 @@ const makeStyles = (c: ThemeColors) =>
     timer: { fontSize: 16, color: c.primary, marginTop: 12, fontWeight: '600' },
     safety: { fontSize: 14, color: c.warning, marginTop: 12 },
     row: { flexDirection: 'row', gap: 10, marginTop: 18, flexWrap: 'wrap' },
-    btn: { backgroundColor: c.primary, paddingVertical: 12, paddingHorizontal: 18, borderRadius: 12 },
+    btn: {
+      backgroundColor: c.primary,
+      paddingVertical: 12,
+      paddingHorizontal: 18,
+      borderRadius: 12,
+    },
     btnSubtle: { backgroundColor: c.fill },
     btnText: { color: c.onPrimary, fontWeight: '600' },
     btnTextSubtle: { color: c.textMuted },

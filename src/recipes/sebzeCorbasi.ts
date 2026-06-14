@@ -16,8 +16,16 @@ export const sebzeCorbasi: Recipe = {
     { name: { tr: 'havuç', en: 'carrot' }, quantity: 2, unit: { tr: 'adet', en: 'pcs' } },
     { name: { tr: 'patates', en: 'potato' }, quantity: 2, unit: { tr: 'adet', en: 'pcs' } },
     { name: { tr: 'soğan', en: 'onion' }, quantity: 1, unit: { tr: 'adet', en: 'pcs' } },
-    { name: { tr: 'salça', en: 'tomato paste' }, quantity: 1, unit: { tr: 'yemek kaşığı', en: 'tbsp' } },
-    { name: { tr: 'zeytinyağı', en: 'olive oil' }, quantity: 2, unit: { tr: 'yemek kaşığı', en: 'tbsp' } },
+    {
+      name: { tr: 'salça', en: 'tomato paste' },
+      quantity: 1,
+      unit: { tr: 'yemek kaşığı', en: 'tbsp' },
+    },
+    {
+      name: { tr: 'zeytinyağı', en: 'olive oil' },
+      quantity: 2,
+      unit: { tr: 'yemek kaşığı', en: 'tbsp' },
+    },
     { name: { tr: 'su', en: 'water' }, quantity: 6, unit: { tr: 'su bardağı', en: 'cup' } },
     { name: { tr: 'tuz', en: 'salt' } },
   ],
@@ -32,7 +40,10 @@ export const sebzeCorbasi: Recipe = {
       kind: 'prep',
       requires: [],
       completion: 'user',
-      voice_on_enter: { tr: 'Sebzeleri küçük küp doğrayalım, çabuk pişsin.', en: "Let's dice the veg small so it cooks fast." },
+      voice_on_enter: {
+        tr: 'Sebzeleri küçük küp doğrayalım, çabuk pişsin.',
+        en: "Let's dice the veg small so it cooks fast.",
+      },
     },
     {
       id: 'saute',
@@ -64,12 +75,18 @@ export const sebzeCorbasi: Recipe = {
       requires: ['add_water'],
       completion: 'timer',
       durationSec: 1080,
-      voice_on_complete: { tr: 'Sebzeler yumuşamış olmalı.', en: 'The vegetables should be tender now.' },
+      voice_on_complete: {
+        tr: 'Sebzeler yumuşamış olmalı.',
+        en: 'The vegetables should be tender now.',
+      },
     },
     {
       id: 'serve',
       title: { tr: 'Servis et', en: 'Serve' },
-      instruction: { tr: 'Sıcak servis et, istersen limon sık.', en: 'Serve hot, with a squeeze of lemon if you like.' },
+      instruction: {
+        tr: 'Sıcak servis et, istersen limon sık.',
+        en: 'Serve hot, with a squeeze of lemon if you like.',
+      },
       kind: 'finish',
       requires: ['simmer'],
       completion: 'user',

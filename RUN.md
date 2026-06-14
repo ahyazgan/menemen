@@ -9,6 +9,7 @@ favoriler, alışveriş listesi, dil). Bazı native şeyler (abonelik/RevenueCat
 bildirimlerin tamamı) Expo Go'da kısıtlıdır — onları 2. yolda görürsün.
 
 **Bilgisayarda:**
+
 1. [Node.js](https://nodejs.org) kurulu olsun (LTS yeter).
 2. Proje klasöründe:
    ```bash
@@ -17,10 +18,7 @@ bildirimlerin tamamı) Expo Go'da kısıtlıdır — onları 2. yolda görürsü
    ```
 3. Terminalde bir **QR kod** çıkar.
 
-**Telefonda:**
-4. App Store / Play Store'dan **"Expo Go"** uygulamasını kur.
-5. Expo Go'yu aç → QR kodu okut (iPhone'da Kamera ile de okutabilirsin).
-6. Uygulama telefonunda açılır. Bilgisayar ve telefon **aynı Wi-Fi'da** olmalı.
+**Telefonda:** 4. App Store / Play Store'dan **"Expo Go"** uygulamasını kur. 5. Expo Go'yu aç → QR kodu okut (iPhone'da Kamera ile de okutabilirsin). 6. Uygulama telefonunda açılır. Bilgisayar ve telefon **aynı Wi-Fi'da** olmalı.
 
 > Takılırsan: `npx expo start --tunnel` (farklı ağ/ç güvenlik duvarı sorunlarını aşar).
 

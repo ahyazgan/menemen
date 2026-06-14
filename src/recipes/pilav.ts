@@ -14,55 +14,55 @@ export const pilav: Recipe = {
   totalMinutes: 30,
   ingredients: [
     {
-      "name": {
-        "tr": "pirinç",
-        "en": "rice"
+      name: {
+        tr: 'pirinç',
+        en: 'rice',
       },
-      "quantity": 2,
-      "unit": {
-        "tr": "su bardağı",
-        "en": "cup"
-      }
+      quantity: 2,
+      unit: {
+        tr: 'su bardağı',
+        en: 'cup',
+      },
     },
     {
-      "name": {
-        "tr": "şehriye",
-        "en": "vermicelli"
+      name: {
+        tr: 'şehriye',
+        en: 'vermicelli',
       },
-      "quantity": 0.5,
-      "unit": {
-        "tr": "su bardağı",
-        "en": "cup"
-      }
+      quantity: 0.5,
+      unit: {
+        tr: 'su bardağı',
+        en: 'cup',
+      },
     },
     {
-      "name": {
-        "tr": "su",
-        "en": "water"
+      name: {
+        tr: 'su',
+        en: 'water',
       },
-      "quantity": 3,
-      "unit": {
-        "tr": "su bardağı",
-        "en": "cup"
-      }
+      quantity: 3,
+      unit: {
+        tr: 'su bardağı',
+        en: 'cup',
+      },
     },
     {
-      "name": {
-        "tr": "tereyağı",
-        "en": "butter"
+      name: {
+        tr: 'tereyağı',
+        en: 'butter',
       },
-      "quantity": 2,
-      "unit": {
-        "tr": "yemek kaşığı",
-        "en": "tbsp"
-      }
+      quantity: 2,
+      unit: {
+        tr: 'yemek kaşığı',
+        en: 'tbsp',
+      },
     },
     {
-      "name": {
-        "tr": "tuz",
-        "en": "salt"
-      }
-    }
+      name: {
+        tr: 'tuz',
+        en: 'salt',
+      },
+    },
   ],
   nodes: [
     {

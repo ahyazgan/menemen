@@ -82,7 +82,13 @@ const makeStyles = (c: ThemeColors) =>
     backText: { color: c.textMuted, fontSize: 16, fontWeight: '600' },
     title: { fontSize: 30, fontWeight: '800', color: c.primary },
     subtitle: { fontSize: 15, color: c.textMuted, marginTop: 6, marginBottom: 16, lineHeight: 21 },
-    section: { fontSize: 13, fontWeight: '700', color: c.textMuted, marginTop: 12, marginBottom: 10 },
+    section: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: c.textMuted,
+      marginTop: 12,
+      marginBottom: 10,
+    },
     chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
     chip: {
       backgroundColor: c.surface,

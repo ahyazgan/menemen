@@ -14,50 +14,50 @@ export const izgaraBalik: Recipe = {
   totalMinutes: 20,
   ingredients: [
     {
-      "name": {
-        "tr": "balık",
-        "en": "fish"
+      name: {
+        tr: 'balık',
+        en: 'fish',
       },
-      "quantity": 2,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
-    },
-    {
-      "name": {
-        "tr": "limon",
-        "en": "lemon"
+      quantity: 2,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
       },
-      "quantity": 1,
-      "unit": {
-        "tr": "adet",
-        "en": "pcs"
-      }
     },
     {
-      "name": {
-        "tr": "zeytinyağı",
-        "en": "olive oil"
+      name: {
+        tr: 'limon',
+        en: 'lemon',
       },
-      "quantity": 2,
-      "unit": {
-        "tr": "yemek kaşığı",
-        "en": "tbsp"
-      }
+      quantity: 1,
+      unit: {
+        tr: 'adet',
+        en: 'pcs',
+      },
     },
     {
-      "name": {
-        "tr": "tuz",
-        "en": "salt"
-      }
+      name: {
+        tr: 'zeytinyağı',
+        en: 'olive oil',
+      },
+      quantity: 2,
+      unit: {
+        tr: 'yemek kaşığı',
+        en: 'tbsp',
+      },
     },
     {
-      "name": {
-        "tr": "roka",
-        "en": "arugula"
-      }
-    }
+      name: {
+        tr: 'tuz',
+        en: 'salt',
+      },
+    },
+    {
+      name: {
+        tr: 'roka',
+        en: 'arugula',
+      },
+    },
   ],
   nodes: [
     {

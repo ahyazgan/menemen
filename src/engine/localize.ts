@@ -5,11 +5,7 @@
  */
 import type { LocalizedText } from './types';
 
-export function localize(
-  text: LocalizedText | undefined,
-  locale: string,
-  fallback = 'tr',
-): string {
+export function localize(text: LocalizedText | undefined, locale: string, fallback = 'tr'): string {
   if (text == null) return '';
   if (typeof text === 'string') return text;
   return text[locale] ?? text[fallback] ?? Object.values(text)[0] ?? '';
