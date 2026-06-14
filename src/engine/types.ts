@@ -27,6 +27,9 @@ export type NodeKind = 'prep' | 'action' | 'finish';
  */
 export type LocalizedText = string | Record<string, string>;
 
+/** Tarif seçim ekranında filtreleme kategorisi. */
+export type RecipeCategory = 'kahvalti' | 'corba' | 'ana-yemek' | 'salata' | 'pilav';
+
 /**
  * Tamamlanma türü — bir düğümün nasıl "done" olacağını belirler.
  * - user:   sesli onay (kullanıcı "tamam/bitti" der)
@@ -87,6 +90,8 @@ export interface Recipe {
   servings: number;
   /** İçeriğin kaynak BCP-47 yerel ayarı, örn. "tr". */
   locale: string;
+  /** Filtreleme kategorisi (opsiyonel). */
+  category?: RecipeCategory;
   /** Tarif seçim ekranında gösterilen kısa tanıtım (çok dilli, opsiyonel). */
   summary?: LocalizedText;
   /** Tahmini süre (dakika), seçim ekranı için (opsiyonel). */

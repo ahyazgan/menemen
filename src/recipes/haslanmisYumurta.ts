@@ -6,6 +6,7 @@ export const haslanmisYumurta: Recipe = {
   title: { tr: 'Haşlanmış Yumurta', en: 'Boiled Eggs' },
   servings: 2,
   locale: 'tr',
+  category: 'kahvalti',
   summary: {
     tr: 'İstediğin kıvamda, zamanlayıcıyla kusursuz.',
     en: 'Perfect every time with a timer, to your liking.',

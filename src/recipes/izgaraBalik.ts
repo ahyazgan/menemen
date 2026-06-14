@@ -6,6 +6,7 @@ export const izgaraBalik: Recipe = {
   title: { tr: 'Izgara Balık', en: 'Grilled Fish' },
   servings: 2,
   locale: 'tr',
+  category: 'ana-yemek',
   summary: {
     tr: 'Limonlu, sade ve sağlıklı ızgara balık.',
     en: 'Simple, healthy grilled fish with lemon.',

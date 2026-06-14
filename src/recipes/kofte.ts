@@ -6,6 +6,7 @@ export const kofte: Recipe = {
   title: { tr: 'Tava Köfte', en: 'Pan Meatballs' },
   servings: 4,
   locale: 'tr',
+  category: 'ana-yemek',
   summary: {
     tr: 'Baharatlı, sulu ev köftesi.',
     en: 'Spiced, juicy homemade meatballs.',

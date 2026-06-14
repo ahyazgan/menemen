@@ -6,6 +6,7 @@ export const kuruFasulye: Recipe = {
   title: { tr: 'Kuru Fasulye', en: 'White Bean Stew' },
   servings: 4,
   locale: 'tr',
+  category: 'ana-yemek',
   summary: {
     tr: 'Salçalı, doyurucu Türk klasiği.',
     en: 'A hearty Turkish classic in a tomato-paste sauce.',

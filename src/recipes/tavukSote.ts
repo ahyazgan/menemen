@@ -6,6 +6,7 @@ export const tavukSote: Recipe = {
   title: { tr: 'Tavuk Sote', en: 'Chicken Sauté' },
   servings: 3,
   locale: 'tr',
+  category: 'ana-yemek',
   summary: {
     tr: 'Sebzeli, sulu, pratik tavuk sote.',
     en: 'A quick, saucy chicken sauté with vegetables.',

@@ -14,6 +14,16 @@ export const en: TranslationTree = {
     random: '🎲 Surprise me',
     minutes: 'min',
     servings: 'servings',
+    search: 'Search recipes…',
+    all: 'All',
+    noResults: 'No results.',
+    categories: {
+      kahvalti: 'Breakfast',
+      corba: 'Soup',
+      'ana-yemek': 'Main',
+      salata: 'Salad',
+      pilav: 'Pilaf',
+    },
   },
   cooking: {
     back: '‹ Recipes',

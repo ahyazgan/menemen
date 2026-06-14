@@ -12,6 +12,16 @@ export const tr = {
     random: '🎲 Şansıma seç',
     minutes: 'dk',
     servings: 'kişilik',
+    search: 'Tarif ara…',
+    all: 'Hepsi',
+    noResults: 'Sonuç yok.',
+    categories: {
+      kahvalti: 'Kahvaltı',
+      corba: 'Çorba',
+      'ana-yemek': 'Ana Yemek',
+      salata: 'Salata',
+      pilav: 'Pilav',
+    },
   },
   cooking: {
     back: '‹ Tarifler',

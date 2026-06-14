@@ -31,7 +31,8 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
 - **`src/recipes/`** — 13 tarif grafı (menemen, sahanda/haşlanmış yumurta, çoban
   salatası, mercimek/domates çorbası, pilav, sigara böreği, tavuk sote, köfte,
   fırın tavuk, ızgara balık, kuru fasulye) + `RecipeListScreen` ("Ne pişsem?",
-  şansıma seç). Her graf testlerle doğrulanıyor: geçerli DAG, başlatılabilir,
+  **arama + kategori filtresi**, şansıma seç; filtre saf `filterRecipes` ile).
+  Her graf testlerle doğrulanıyor: geçerli DAG, başlatılabilir,
   tamamlanabilir ve her **kritik** pişirme adımı iç sıcaklık eşiği taşıyor.
   Metinler **çok dilli** (`LocalizedText` + saf `localize()`): **13/13 tarif
   baştan sona TR+EN** (başlık, özet, yönerge, sesli metin, kurtarma ve güvenlik

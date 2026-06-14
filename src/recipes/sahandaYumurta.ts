@@ -9,6 +9,7 @@ export const sahandaYumurta: Recipe = {
   title: { tr: 'Sahanda Yumurta', en: 'Fried Eggs' },
   servings: 1,
   locale: 'tr',
+  category: 'kahvalti',
   summary: {
     tr: 'Tereyağında, dakikalar içinde hazır kahvaltılık.',
     en: 'A buttery breakfast ready in minutes.',

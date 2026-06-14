@@ -6,6 +6,7 @@ export const sigaraBoregi: Recipe = {
   title: { tr: 'Sigara Böreği', en: 'Cheese Rolls (Sigara Böreği)' },
   servings: 4,
   locale: 'tr',
+  category: 'kahvalti',
   summary: {
     tr: 'Çıtır çıtır, peynirli klasik börek.',
     en: 'Crispy, cheese-filled classic pastry rolls.',

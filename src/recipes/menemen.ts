@@ -9,6 +9,7 @@ export const menemen: Recipe = {
   title: { tr: 'Menemen', en: 'Menemen' },
   servings: 2,
   locale: 'tr',
+  category: 'kahvalti',
   summary: {
     tr: 'Biber, domates ve yumurtayla klasik Türk kahvaltısı.',
     en: 'A classic Turkish breakfast with peppers, tomatoes and eggs.',

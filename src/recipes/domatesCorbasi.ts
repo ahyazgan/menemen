@@ -6,6 +6,7 @@ export const domatesCorbasi: Recipe = {
   title: { tr: 'Domates Çorbası', en: 'Tomato Soup' },
   servings: 4,
   locale: 'tr',
+  category: 'corba',
   summary: {
     tr: 'Kadifemsi, sıcacık ev usulü domates çorbası.',
     en: 'A velvety, warming homemade tomato soup.',

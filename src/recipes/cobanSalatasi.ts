@@ -6,6 +6,7 @@ export const cobanSalatasi: Recipe = {
   title: { tr: 'Çoban Salatası', en: "Shepherd's Salad" },
   servings: 2,
   locale: 'tr',
+  category: 'salata',
   summary: {
     tr: 'Pişirmeden, dakikalar içinde ferah bir salata.',
     en: 'A fresh, no-cook salad ready in minutes.',

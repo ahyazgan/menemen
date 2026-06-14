@@ -6,6 +6,7 @@ export const pilav: Recipe = {
   title: { tr: 'Tereyağlı Pirinç Pilavı', en: 'Buttery Rice Pilaf' },
   servings: 4,
   locale: 'tr',
+  category: 'pilav',
   summary: {
     tr: 'Tane tane, şehriyeli klasik pilav.',
     en: 'Fluffy, separate grains — the classic vermicelli pilaf.',

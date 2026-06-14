@@ -9,6 +9,7 @@ export const mercimekCorbasi: Recipe = {
   title: { tr: 'Mercimek Çorbası', en: 'Red Lentil Soup' },
   servings: 4,
   locale: 'tr',
+  category: 'corba',
   summary: {
     tr: 'Kırmızı mercimekle pürüzsüz, ısıtan klasik çorba.',
     en: 'A smooth, warming classic made with red lentils.',

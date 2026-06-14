@@ -6,6 +6,7 @@ export const firinTavuk: Recipe = {
   title: { tr: 'Fırında Tavuk Baget', en: 'Baked Chicken Drumsticks' },
   servings: 4,
   locale: 'tr',
+  category: 'ana-yemek',
   summary: {
     tr: 'Baharatlı, çıtır kabuklu fırın tavuk.',
     en: 'Spiced, crispy-skinned baked chicken.',
