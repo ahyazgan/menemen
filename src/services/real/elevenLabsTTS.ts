@@ -16,6 +16,8 @@ export interface ElevenLabsConfig {
   modelId?: string;
   /** Üretimde kendi proxy kökün (örn. https://api.lezzet.app/elevenlabs). */
   baseUrl?: string;
+  /** Proxy'ye gönderilecek istemci oturum token'ı (Bearer). */
+  clientToken?: string;
 }
 
 export function createElevenLabsTTS(config: ElevenLabsConfig): TTSService {
@@ -31,13 +33,16 @@ export function createElevenLabsTTS(config: ElevenLabsConfig): TTSService {
   return {
     async speak(text: string, opts?: { interrupt?: boolean }): Promise<void> {
       if (opts?.interrupt) await stop();
+      const headers: Record<string, string> = {
+        'xi-api-key': config.apiKey,
+        'Content-Type': 'application/json',
+        Accept: 'audio/mpeg',
+      };
+      // Proxy modunda Bearer ekle; proxy gerçek xi-api-key'i enjekte eder.
+      if (config.clientToken) headers.Authorization = `Bearer ${config.clientToken}`;
       const res = await fetch(`${endpoint}/${voiceId}`, {
         method: 'POST',
-        headers: {
-          'xi-api-key': config.apiKey,
-          'Content-Type': 'application/json',
-          Accept: 'audio/mpeg',
-        },
+        headers,
         body: JSON.stringify({ text, model_id: modelId }),
       });
       if (!res.ok) {

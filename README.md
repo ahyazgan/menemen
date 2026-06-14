@@ -91,7 +91,7 @@ uç nokta allowlist'i eklenmeli (bkz. `server/README.md`).
 1. ~~`services/real/` — Deepgram, ElevenLabs, Claude Vision/Intent~~ ✅
 2. ~~`expo-audio` ses kaydı + `expo-camera` frame-on-demand (store'a)~~ ✅
 3. ~~Anahtarlar için backend proxy iskeleti~~ ✅
-4. Proxy'ye kullanıcı oturum doğrulaması + hız sınırlama
+4. ~~Proxy'ye Bearer token doğrulaması + anahtar başına hız sınırlama~~ ✅
 5. RevenueCat — abonelik (iOS IAP + Android Play Billing)
 6. "Ne pişsem" ekranı ve tarif seçimi
 7. Tarif kütüphanesini çoğalt (graf JSON'ları)

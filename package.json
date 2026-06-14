@@ -10,7 +10,8 @@
     "proxy": "node server/proxy.mjs",
     "typecheck": "tsc --noEmit",
     "test:engine": "node scripts/test-engine.mjs",
-    "test": "npm run typecheck && npm run test:engine"
+    "test:server": "node --test server/__tests__/*.test.mjs",
+    "test": "npm run typecheck && npm run test:engine && npm run test:server"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.70.1",

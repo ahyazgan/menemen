@@ -25,17 +25,25 @@ export interface RealServiceConfig {
   elevenLabs: ElevenLabsConfig;
 }
 
+export interface ProxyOptions {
+  /** Proxy'ye gönderilecek istemci oturum token'ı (Bearer). */
+  clientToken?: string;
+  /** Claude modeli (varsayılan claude-opus-4-8). */
+  model?: string;
+}
+
 /**
  * Tüm sağlayıcıları tek bir backend proxy'ye yönlendiren config üretir.
  * Anahtarlar uygulamada DEĞİL, proxy'de tutulur (apiKey alanı yalnızca placeholder).
- * Bkz. server/proxy.mjs.
+ * `clientToken` proxy'nin Bearer doğrulamasını geçer. Bkz. server/proxy.mjs.
  */
-export function proxyRealConfig(proxyBaseUrl: string, model?: string): RealServiceConfig {
+export function proxyRealConfig(proxyBaseUrl: string, opts: ProxyOptions = {}): RealServiceConfig {
   const base = proxyBaseUrl.replace(/\/$/, '');
+  const { clientToken, model } = opts;
   return {
-    anthropic: { apiKey: 'via-proxy', baseURL: `${base}/anthropic`, model },
-    deepgram: { apiKey: 'via-proxy', baseUrl: `${base}/deepgram` },
-    elevenLabs: { apiKey: 'via-proxy', baseUrl: `${base}/elevenlabs` },
+    anthropic: { apiKey: 'via-proxy', baseURL: `${base}/anthropic`, model, clientToken },
+    deepgram: { apiKey: 'via-proxy', baseUrl: `${base}/deepgram`, clientToken },
+    elevenLabs: { apiKey: 'via-proxy', baseUrl: `${base}/elevenlabs`, clientToken },
   };
 }
 

@@ -13,6 +13,8 @@ export interface DeepgramConfig {
   language?: string;
   /** Üretimde kendi proxy kökün (örn. https://api.lezzet.app/deepgram). */
   baseUrl?: string;
+  /** Proxy'ye gönderilecek istemci oturum token'ı (Bearer). Varsa proxy modu. */
+  clientToken?: string;
 }
 
 interface DeepgramResponse {
@@ -32,9 +34,13 @@ export function createDeepgramSTT(config: DeepgramConfig): STTService {
   return {
     async transcribe(audioUri: string): Promise<string> {
       const audio = await fetch(audioUri).then((r) => r.arrayBuffer());
+      // Proxy modunda Bearer (proxy gerçek anahtarı ekler); değilse doğrudan key.
+      const authorization = config.clientToken
+        ? `Bearer ${config.clientToken}`
+        : `Token ${config.apiKey}`;
       const res = await fetch(url, {
         method: 'POST',
-        headers: { Authorization: `Token ${config.apiKey}`, 'Content-Type': 'audio/*' },
+        headers: { Authorization: authorization, 'Content-Type': 'audio/*' },
         body: audio,
       });
       if (!res.ok) {

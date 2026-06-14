@@ -13,6 +13,8 @@ export interface AnthropicConfig {
   baseURL?: string;
   /** Varsayılan model; düşük gecikme için claude-haiku-4-5 tercih edilebilir. */
   model?: string;
+  /** Proxy'ye gönderilecek istemci oturum token'ı (Bearer). */
+  clientToken?: string;
 }
 
 /** CLAUDE API rehberi varsayılanı. */
@@ -22,6 +24,8 @@ export function createAnthropicClient(config: AnthropicConfig): Anthropic {
   return new Anthropic({
     apiKey: config.apiKey,
     baseURL: config.baseURL,
+    // Proxy kullanılıyorsa istemci token'ını Bearer olarak gönder.
+    defaultHeaders: config.clientToken ? { Authorization: `Bearer ${config.clientToken}` } : undefined,
     // RN/Hermes ortamında çalışır; üretimde anahtarı istemciye gömme — proxy kullan.
     dangerouslyAllowBrowser: true,
   });
