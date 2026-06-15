@@ -14,7 +14,7 @@ import {
   View,
 } from 'react-native';
 
-import { recipeList, getRecipe } from '../recipes';
+import { allRecipes, getRecipe } from '../recipes';
 import { recipeDifficulty } from '../recipes/profile';
 import { useUiStore, useThemeColors } from '../state/uiStore';
 import { useProfileStore } from '../state/profileStore';
@@ -44,7 +44,7 @@ export function SuggestScreen({ onSelect, onBack }: Props) {
   const suggested = result?.recipeId ? getRecipe(result.recipeId) : null;
 
   function onGo(): void {
-    void suggest({ craving, locale, profile, candidates: recipeList });
+    void suggest({ craving, locale, profile, candidates: allRecipes() });
   }
 
   return (

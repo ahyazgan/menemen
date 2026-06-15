@@ -112,12 +112,38 @@ export const recipeList: Recipe[] = [
 
 export const recipes: Record<string, Recipe> = Object.fromEntries(recipeList.map((r) => [r.id, r]));
 
-export function getRecipe(id: string): Recipe | undefined {
-  return recipes[id];
+// --- Dinamik registry (uzak/CMS içeriği) -------------------------------------
+// Paket içi tarifler GARANTİLİ tabandır (offline + güvenli). Uzak tarifler
+// yalnızca YENİ id'lerle EKLENİR; çakışmada paket kazanır (uzak, güvenlik
+// kritik bir paket tarifini EZEMEZ). Doğrulama recipes/validate.ts'te.
+let effectiveList: Recipe[] = recipeList;
+let effectiveMap: Record<string, Recipe> = recipes;
+
+/** Uzak (doğrulanmış) tarifleri tabana ekle. Paket id'leri korunur. */
+export function setRemoteRecipes(extra: Recipe[]): void {
+  const ids = new Set(recipeList.map((r) => r.id));
+  const merged = [...recipeList];
+  for (const r of extra) {
+    if (!ids.has(r.id)) {
+      merged.push(r);
+      ids.add(r.id);
+    }
+  }
+  effectiveList = merged;
+  effectiveMap = Object.fromEntries(merged.map((r) => [r.id, r]));
 }
 
-/** "Şansıma seç" için rastgele bir tarif. */
+/** Paket + uzak tariflerin birleşik (etkin) listesi. */
+export function allRecipes(): Recipe[] {
+  return effectiveList;
+}
+
+export function getRecipe(id: string): Recipe | undefined {
+  return effectiveMap[id];
+}
+
+/** "Şansıma seç" için rastgele bir tarif (paket + uzak). */
 export function randomRecipe(): Recipe {
-  const index = Math.floor(Math.random() * recipeList.length);
-  return recipeList[index] ?? menemen;
+  const index = Math.floor(Math.random() * effectiveList.length);
+  return effectiveList[index] ?? menemen;
 }

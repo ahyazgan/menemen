@@ -31,6 +31,7 @@ import { useReviewStore } from './src/state/reviewStore';
 import { createExpoReview } from './src/services/review';
 import { useReferralStore } from './src/state/referralStore';
 import { useVoiceSessionStore } from './src/state/voiceSessionStore';
+import { useRecipeSourceStore } from './src/state/recipeSourceStore';
 import { useNotesStore } from './src/state/notesStore';
 import { usePantryStore } from './src/state/pantryStore';
 import { useStepPhotosStore } from './src/state/stepPhotosStore';
@@ -100,6 +101,10 @@ export default function App() {
     const referral = useReferralStore.getState();
     referral.setStore(storage);
     void referral.load();
+    // Uzak tarif önbelleği (offline): paket tariflerin üstüne yeni içerik ekler.
+    const recipeSource = useRecipeSourceStore.getState();
+    recipeSource.setStore(storage);
+    void recipeSource.load();
     const notes = useNotesStore.getState();
     notes.setStore(storage);
     void notes.load();
@@ -264,6 +269,16 @@ export default function App() {
         if (!cancelled && res.ok) useFlagsStore.getState().applyRemote(await res.json());
       } catch {
         // remote config alınamadı → güvenli varsayılanlarla devam
+      }
+      // Uzak tarif içeriği (CMS). Doğrulanır; bozuk olan düşülür; paket korunur.
+      try {
+        const res = await fetch(`${base.replace(/\/$/, '')}/recipes`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        });
+        if (!cancelled && res.ok)
+          await useRecipeSourceStore.getState().applyRemote(await res.json());
+      } catch {
+        // uzak tarifler alınamadı → yalnızca paket tarifler (offline güvenli)
       }
       // Canlı ses: LIVEKIT_WS_URL doluysa gerçek LiveKit servisini bağla
       // (token proxy'den; native modül dinamik import). Yoksa mock kalır.

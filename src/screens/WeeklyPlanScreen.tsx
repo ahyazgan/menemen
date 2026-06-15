@@ -6,7 +6,7 @@
 import { useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { recipeList, getRecipe } from '../recipes';
+import { allRecipes, getRecipe } from '../recipes';
 import { useTransientFlag } from '../hooks/useTransientFlag';
 import { planIngredients } from '../recipes/mealPlan';
 import { recipeDifficulty } from '../recipes/profile';
@@ -37,7 +37,7 @@ export function WeeklyPlanScreen({ onSelect, onBack }: Props) {
   const [added, flashAdded] = useTransientFlag();
 
   function onAddAll(): void {
-    const items = planIngredients(plan, recipeList, locale);
+    const items = planIngredients(plan, allRecipes(), locale);
     void addToShopping(items);
     flashAdded();
   }

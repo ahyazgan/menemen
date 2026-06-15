@@ -6,7 +6,7 @@
 import { useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { recipeList } from '../recipes';
+import { allRecipes } from '../recipes';
 import { allIngredients } from '../recipes/pantry';
 import type { DietPref, SkillLevel } from '../recipes/profile';
 import { useUiStore, useThemeColors } from '../state/uiStore';
@@ -27,7 +27,7 @@ export function ProfileScreen({ onBack }: { onBack: () => void }) {
   const setSkill = useProfileStore((s) => s.setSkill);
   const toggleAvoid = useProfileStore((s) => s.toggleAvoid);
 
-  const ingredients = useMemo(() => allIngredients(recipeList), []);
+  const ingredients = useMemo(() => allIngredients(allRecipes()), []);
   const avoidSet = useMemo(() => new Set(profile.avoid), [profile.avoid]);
 
   return (

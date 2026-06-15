@@ -19,7 +19,7 @@ import {
   type ListRenderItem,
 } from 'react-native';
 
-import { recipeList, randomRecipe, getRecipe } from '../recipes';
+import { randomRecipe, getRecipe } from '../recipes';
 import { CATEGORIES, filterRecipes } from '../recipes/filter';
 import { filterByProfile, recipeDifficulty } from '../recipes/profile';
 import { AVAILABLE_LOCALES, t } from '../i18n';
@@ -28,6 +28,7 @@ import { useFavoritesStore } from '../state/favoritesStore';
 import { useHistoryStore } from '../state/historyStore';
 import { useStreakStore } from '../state/streakStore';
 import { useProfileStore } from '../state/profileStore';
+import { useRecipeSourceStore } from '../state/recipeSourceStore';
 import { useFlag } from '../state/flagsStore';
 import { cookCounts } from '../recipes/history';
 import { computeStreak, toDayNumber } from '../recipes/streak';
@@ -75,6 +76,7 @@ export function RecipeListScreen({
   const toggleFavorite = useFavoritesStore((s) => s.toggle);
   const historyEntries = useHistoryStore((s) => s.entries);
   const profile = useProfileStore((s) => s.profile);
+  const sourceList = useRecipeSourceStore((s) => s.list);
   const recent = useMemo(
     () =>
       historyEntries
@@ -93,10 +95,10 @@ export function RecipeListScreen({
 
   const shown = useMemo(() => {
     // Önce profil (diyet + kaçınılan malzeme), sonra arama/kategori/favori süzgeci.
-    const byProfile = filterByProfile(recipeList, profile);
+    const byProfile = filterByProfile(sourceList, profile);
     const base = filterRecipes(byProfile, { query, category });
     return onlyFavorites ? base.filter((r) => favoriteIds.includes(r.id)) : base;
-  }, [query, category, onlyFavorites, favoriteIds, profile]);
+  }, [sourceList, query, category, onlyFavorites, favoriteIds, profile]);
 
   const renderItem = useCallback<ListRenderItem<Recipe>>(
     ({ item }) => (
