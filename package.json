@@ -8,6 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "proxy": "node server/proxy.mjs",
+    "gen:assets": "node scripts/gen-assets.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "format": "prettier --write .",
