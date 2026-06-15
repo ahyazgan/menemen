@@ -6,6 +6,11 @@ kısa tutulmuştur.
 
 ---
 
+> **İpucu:** Her adımdan sonra `npm run preflight` çalıştır — app.json ↔ config
+> tutarlılığını, ikon/splash dosyalarını, bundle id'leri ve üretim ayarlarını
+> denetler (gerçek bozuklukta hata, eksik üretim ayarında uyarı). Release öncesi
+> `npm run preflight -- --strict` ile uyarıları da hata say.
+
 ## 0. Önkoşullar
 
 - Expo hesabı (`npm i -g eas-cli && eas login`)
