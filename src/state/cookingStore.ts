@@ -40,6 +40,8 @@ interface CookingState {
   lastVision: VisionResult | null;
   /** Güvenlik nedeniyle engellenen eylem için kullanıcıya not. */
   safetyNotice: string | null;
+  /** Zamanlayıcılar duraklatıldı mı? */
+  paused: boolean;
 
   // --- action'lar ---
   /** Servisleri değiştir (mock → gerçek geçişi; bkz. services/real). */
@@ -54,6 +56,10 @@ interface CookingState {
   skipNode: (nodeId: string) => Promise<void>;
   retryNode: (nodeId: string) => void;
   failNode: (nodeId: string) => void;
+  /** Zamanlayıcıları duraklat (kalan süre donar, sesli yönlendirme susar). */
+  pauseCooking: () => void;
+  /** Duraklatılan zamanlayıcıları sürdür. */
+  resumeCooking: () => void;
   /** Ses kaydını dinle → metne çevir → niyet işle. */
   listen: (audioUri: string) => Promise<void>;
   /** Metni doğrudan niyet olarak işle (test/klavye girişi). */
@@ -76,6 +82,7 @@ export const useCookingStore = create<CookingState>((set, get) => ({
   lastSpoken: null,
   lastVision: null,
   safetyNotice: null,
+  paused: false,
 
   setServices: (services) => set({ services }),
   setNotify: (notify) => set({ notify }),
@@ -83,7 +90,29 @@ export const useCookingStore = create<CookingState>((set, get) => ({
   loadRecipe: (recipe) => {
     const engine = new RecipeEngine(recipe);
     track({ name: 'recipe_started', recipeId: recipe.id });
-    set({ engine, recipe, snapshot: engine.snapshot(), currentNodeId: null, safetyNotice: null });
+    set({
+      engine,
+      recipe,
+      snapshot: engine.snapshot(),
+      currentNodeId: null,
+      safetyNotice: null,
+      paused: false,
+    });
+  },
+
+  pauseCooking: () => {
+    const { engine } = get();
+    if (!engine || engine.isPaused) return;
+    engine.pauseTimers();
+    void get().services.tts.stop();
+    set({ paused: true });
+  },
+
+  resumeCooking: () => {
+    const { engine } = get();
+    if (!engine || !engine.isPaused) return;
+    engine.resumeTimers();
+    set({ paused: false });
   },
 
   startCooking: () => {
@@ -231,7 +260,10 @@ export const useCookingStore = create<CookingState>((set, get) => ({
         break;
       }
       case 'pause':
-        await get().services.tts.stop();
+        get().pauseCooking();
+        break;
+      case 'resume':
+        get().resumeCooking();
         break;
       default:
         await get().speak(t('intent.unknown'));

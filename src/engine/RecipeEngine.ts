@@ -39,6 +39,8 @@ export class RecipeEngine {
   private readonly clock: Clock;
   private readonly states = new Map<string, NodeState>();
   private readonly byId = new Map<string, RecipeNode>();
+  /** Duraklatma başlangıcı (ms epoch); null ise çalışıyor. */
+  private pausedAt: number | null = null;
 
   constructor(recipe: Recipe, clock: Clock = () => Date.now()) {
     this.recipe = recipe;
@@ -74,14 +76,39 @@ export class RecipeEngine {
     const node = this.node(id);
     const state = this.state(id);
     if (node.durationSec == null || state.startedAt == null) return null;
-    const elapsed = (now - state.startedAt) / 1000;
+    // Duraklatıldıysa zaman durur: kalan süre duraklama anına göre hesaplanır.
+    const ref = this.pausedAt ?? now;
+    const elapsed = (ref - state.startedAt) / 1000;
     return Math.max(0, Math.ceil(node.durationSec - elapsed));
   }
 
-  /** Süreli, aktif bir düğümün süresi doldu mu? */
+  /** Süreli, aktif bir düğümün süresi doldu mu? (Duraklatıldıysa dolmaz.) */
   isExpired(id: string, now: number = this.clock()): boolean {
+    if (this.pausedAt !== null) return false;
     const remaining = this.remainingSec(id, now);
     return remaining !== null && remaining <= 0 && this.state(id).status === 'active';
+  }
+
+  /** Zamanlayıcılar duraklatıldı mı? */
+  get isPaused(): boolean {
+    return this.pausedAt !== null;
+  }
+
+  /** Tüm aktif zamanlayıcıları dondur (kalan süre sabit kalır). */
+  pauseTimers(now: number = this.clock()): void {
+    if (this.pausedAt === null) this.pausedAt = now;
+  }
+
+  /** Zamanlayıcıları sürdür; duraklama süresini aktif düğümlere ekler. */
+  resumeTimers(now: number = this.clock()): void {
+    if (this.pausedAt === null) return;
+    const delta = now - this.pausedAt;
+    for (const state of this.states.values()) {
+      if (state.status === 'active' && state.startedAt != null) {
+        state.startedAt += delta;
+      }
+    }
+    this.pausedAt = null;
   }
 
   // --- geçişler ------------------------------------------------------------

@@ -61,6 +61,13 @@ export const en: TranslationTree = {
     removePhoto: 'Remove photo',
     step: 'Step',
     beginnerHint: 'No rush — we’ll go step by step. Ask me if you get stuck.',
+    pause: '⏸ Pause',
+    resume: '▶ Resume',
+    paused: 'Paused',
+    exitTitle: 'Leave cooking?',
+    exitMessage: 'Your progress will be lost. Are you sure you want to leave?',
+    exitConfirm: 'Leave',
+    exitCancel: 'Stay',
   },
   safety: {
     cannotSkip: 'This step cannot be skipped for safety reasons.',
