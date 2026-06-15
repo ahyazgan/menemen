@@ -7,6 +7,7 @@ import { create } from 'zustand';
 import type { BillingService, SubscriptionPlan } from '../services/billing';
 import { createMockBilling } from '../services/billing';
 import { track } from '../services/analytics';
+import { getFlags } from './flagsStore';
 
 interface SubscriptionState {
   billing: BillingService;
@@ -63,7 +64,8 @@ export const useSubscriptionStore = create<SubscriptionState>((set, get) => ({
     try {
       const subscribed = await get().billing.purchase(planId);
       set({ subscribed });
-      if (subscribed) track({ name: 'subscribed' });
+      // Varyantla izle → paywall_view ile birlikte dönüşüm oranı kıyaslanır.
+      if (subscribed) track({ name: 'subscribed', variant: getFlags().paywallVariant });
     } catch (err) {
       set({ error: toMessage(err) });
     } finally {

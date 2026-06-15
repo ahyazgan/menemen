@@ -22,7 +22,7 @@ export type AnalyticsEvent =
   | { name: 'screen_view'; screen: string }
   // --- büyüme / monetizasyon ---
   | { name: 'paywall_view'; variant: string }
-  | { name: 'subscribed' }
+  | { name: 'subscribed'; variant: string }
   | { name: 'review_prompted' }
   | { name: 'nudge_scheduled'; kind: string }
   | { name: 'referral_opened' }

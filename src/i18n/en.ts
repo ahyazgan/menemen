@@ -147,6 +147,24 @@ export const en: TranslationTree = {
     loading: 'Loading…',
     purchase: 'Start',
     terms: 'Subscription renews via your store account; cancel anytime.',
+    trialBadge: '{days}-day free trial',
+    variants: {
+      control: {
+        title: 'Lezzet Pro',
+        subtitle: 'A pro by your side — voice guidance, pot checks, rescue when it goes wrong.',
+        cta: 'Cancel anytime.',
+      },
+      trial7: {
+        title: '7 days free',
+        subtitle: 'Try Lezzet Pro free for a week. No charge if it’s not for you.',
+        cta: 'Cancel before the trial ends and you won’t be charged.',
+      },
+      hard: {
+        title: 'Keep cooking',
+        subtitle: 'Live voice guidance and every recipe with Lezzet Pro. Start now.',
+        cta: 'Secure payment via your store account.',
+      },
+    },
   },
   shopping: {
     title: 'Shopping List',

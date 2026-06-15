@@ -145,6 +145,24 @@ export const tr = {
     loading: 'Yükleniyor…',
     purchase: 'Başla',
     terms: 'Abonelik mağaza hesabından yenilenir; istediğin zaman iptal edebilirsin.',
+    trialBadge: '{days} gün ücretsiz dene',
+    variants: {
+      control: {
+        title: 'Lezzet Pro',
+        subtitle: 'Mutfakta yanında bir usta — sesli rehber, tencere kontrolü, kurtarma.',
+        cta: 'İstediğin zaman iptal edebilirsin.',
+      },
+      trial7: {
+        title: '7 gün ücretsiz',
+        subtitle: 'Lezzet Pro’yu bir hafta ücretsiz dene. Beğenmezsen ücret yok.',
+        cta: 'Deneme bitmeden iptal et, ücret alınmaz.',
+      },
+      hard: {
+        title: 'Pişirmeye devam et',
+        subtitle: 'Canlı sesli rehber ve tüm tarifler Lezzet Pro ile. Hemen başla.',
+        cta: 'Mağaza hesabından güvenle ödeme.',
+      },
+    },
   },
   shopping: {
     title: 'Alışveriş Listesi',
