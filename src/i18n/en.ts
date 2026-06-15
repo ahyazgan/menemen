@@ -57,6 +57,8 @@ export const en: TranslationTree = {
     retake: 'Retake',
     potCheckTitle: 'Pot check',
     visionConfidence: 'visual confidence',
+    saveAsStepPhoto: '📷 Save as step photo',
+    photoSaved: 'Saved to step photos ✓',
     permissionNeeded: 'Permission required.',
     micDenied: 'Microphone permission is off. Allow it for voice guidance.',
     cameraDenied: 'Camera permission is off. Allow it to check the pot.',
@@ -90,6 +92,11 @@ export const en: TranslationTree = {
   },
   intent: {
     unknown: "Sorry, I didn't catch that — say it again?",
+  },
+  error: {
+    title: 'Something went wrong',
+    message: 'An unexpected error occurred. You can try again.',
+    retry: 'Try again',
   },
   voice: {
     secondsLeft: 'seconds left',

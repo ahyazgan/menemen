@@ -13,6 +13,7 @@ import { CameraView, useCameraPermissions, type CameraType } from 'expo-camera';
 
 import { useCookingStore } from '../state/cookingStore';
 import { useUiStore, useThemeColors } from '../state/uiStore';
+import { useStepPhotosStore } from '../state/stepPhotosStore';
 import { localize } from '../engine';
 import { t } from '../i18n';
 import type { ThemeColors } from '../config/theme';
@@ -25,6 +26,8 @@ export function PotCheckButton() {
   const [torch, setTorch] = useState(false);
   const [facing, setFacing] = useState<CameraType>('back');
   const [result, setResult] = useState<VisionResult | null>(null);
+  const [capturedUri, setCapturedUri] = useState<string | null>(null);
+  const [photoSaved, setPhotoSaved] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
   const colors = useThemeColors();
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -35,8 +38,16 @@ export function PotCheckButton() {
   // Aktif adım kritik mi? (gözlem sonucunda güvenlik dili için)
   const engine = useCookingStore((s) => s.engine);
   const currentNodeId = useCookingStore((s) => s.currentNodeId);
+  const recipe = useCookingStore((s) => s.recipe);
+  const setStepUri = useStepPhotosStore((s) => s.setUri);
   const node = engine && currentNodeId ? engine.node(currentNodeId) : null;
   const critical = node?.safety?.critical ?? false;
+
+  function saveStepPhoto(): void {
+    if (!capturedUri || !recipe || !currentNodeId) return;
+    void setStepUri(recipe.id, currentNodeId, capturedUri);
+    setPhotoSaved(true);
+  }
 
   async function openCamera(): Promise<void> {
     if (!permission?.granted) {
@@ -57,6 +68,8 @@ export function PotCheckButton() {
     try {
       const picture = await cameraRef.current?.takePictureAsync({ base64: true, quality: 0.5 });
       if (picture?.base64) {
+        setCapturedUri(picture.uri ?? null);
+        setPhotoSaved(false);
         await checkPot(`data:image/jpeg;base64,${picture.base64}`);
         setResult(useCookingStore.getState().lastVision);
       }
@@ -67,11 +80,15 @@ export function PotCheckButton() {
 
   function retake(): void {
     setResult(null);
+    setCapturedUri(null);
+    setPhotoSaved(false);
   }
 
   function close(): void {
     setOpen(false);
     setTorch(false);
+    setCapturedUri(null);
+    setPhotoSaved(false);
   }
 
   return (
@@ -116,6 +133,19 @@ export function PotCheckButton() {
               <Text style={styles.confidence}>
                 {t('cooking.visionConfidence')}: %{Math.round(result.confidence * 100)}
               </Text>
+              {capturedUri && (
+                <Pressable
+                  style={styles.savePhoto}
+                  onPress={saveStepPhoto}
+                  disabled={photoSaved}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('cooking.saveAsStepPhoto')}
+                >
+                  <Text style={styles.savePhotoText}>
+                    {photoSaved ? t('cooking.photoSaved') : t('cooking.saveAsStepPhoto')}
+                  </Text>
+                </Pressable>
+              )}
               <View style={styles.resultActions}>
                 <Pressable style={styles.captureBtn} onPress={retake}>
                   <Text style={styles.captureText}>{t('cooking.retake')}</Text>
@@ -271,5 +301,13 @@ const makeStyles = (c: ThemeColors) =>
     },
     safetyText: { color: c.warning, fontSize: 15, fontWeight: '600', lineHeight: 22 },
     confidence: { fontSize: 13, color: c.textSubtle, marginTop: 14 },
+    savePhoto: {
+      marginTop: 16,
+      backgroundColor: c.fill,
+      borderRadius: 12,
+      paddingVertical: 12,
+      alignItems: 'center',
+    },
+    savePhotoText: { color: c.textMuted, fontSize: 15, fontWeight: '700' },
     resultActions: { flexDirection: 'row', gap: 12, marginTop: 24 },
   });
