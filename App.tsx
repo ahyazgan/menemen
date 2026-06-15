@@ -29,6 +29,7 @@ import { useHistoryStore } from './src/state/historyStore';
 import { useStreakStore } from './src/state/streakStore';
 import { useReviewStore } from './src/state/reviewStore';
 import { createExpoReview } from './src/services/review';
+import { useReferralStore } from './src/state/referralStore';
 import { useNotesStore } from './src/state/notesStore';
 import { usePantryStore } from './src/state/pantryStore';
 import { useStepPhotosStore } from './src/state/stepPhotosStore';
@@ -95,6 +96,9 @@ export default function App() {
     review.setStore(storage);
     review.setService(createExpoReview());
     void review.load();
+    const referral = useReferralStore.getState();
+    referral.setStore(storage);
+    void referral.load();
     const notes = useNotesStore.getState();
     notes.setStore(storage);
     void notes.load();
@@ -195,9 +199,11 @@ export default function App() {
     return () => sub.remove();
   }, [handleHardwareBack]);
 
-  // Gelen derin bağlantı (lezzet://recipe/<id>) → paylaşılan tarifi aç.
+  // Gelen derin bağlantı (lezzet://recipe/<id>?ref=...) → davet atfını yakala +
+  // paylaşılan tarifi aç.
   useEffect(() => {
     function handle(url: string | null): void {
+      void useReferralStore.getState().captureIncoming(url); // viral atıf (bir kez)
       const id = parseRecipeLink(url);
       if (!id) return;
       const r = getRecipe(id);

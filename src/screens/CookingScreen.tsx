@@ -24,9 +24,12 @@ import { useNotesStore } from '../state/notesStore';
 import { useStepPhotosStore } from '../state/stepPhotosStore';
 import { useProfileStore } from '../state/profileStore';
 import { useShareStore } from '../state/shareStore';
+import { useReferralStore } from '../state/referralStore';
+import { useFlag } from '../state/flagsStore';
+import { track } from '../services/analytics';
 import { getStepPhoto } from '../recipes/stepPhotos';
 import { guidance } from '../recipes/skill';
-import { recipeDeepLink, buildShareText } from '../recipes/share';
+import { recipeDeepLink, buildShareText, buildReferralLink } from '../recipes/share';
 import { VoiceButton } from '../components/VoiceButton';
 import { PotCheckButton } from '../components/PotCheckButton';
 import { useTransientFlag } from '../hooks/useTransientFlag';
@@ -80,15 +83,17 @@ export function CookingScreen({ recipe, onBack, resumeDone }: Props) {
   const skill = useProfileStore((s) => s.profile.skill);
   const guide = guidance(skill);
   const share = useShareStore((s) => s.share);
+  const referralEnabled = useFlag('referral');
   const [servings, setServings] = useState(recipe.servings);
 
   function onShare(): void {
-    const text = buildShareText(
-      t('cooking.shareText'),
-      localize(recipe.title, locale),
-      recipeDeepLink(recipe.id),
-    );
+    // Referans açıksa davet kodlu bağlantı paylaş (viral atıf); yoksa düz link.
+    const code = useReferralStore.getState().myCode;
+    const link =
+      referralEnabled && code ? buildReferralLink(recipe.id, code) : recipeDeepLink(recipe.id);
+    const text = buildShareText(t('cooking.shareText'), localize(recipe.title, locale), link);
     void share(text);
+    if (referralEnabled && code) track({ name: 'referral_shared' });
   }
   const [added, flashAdded] = useTransientFlag();
   const complete = snapshot?.complete ?? false;

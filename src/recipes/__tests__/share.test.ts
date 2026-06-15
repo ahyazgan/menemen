@@ -2,7 +2,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { recipeDeepLink, buildShareText, parseRecipeLink } from '../share';
+import {
+  recipeDeepLink,
+  buildShareText,
+  parseRecipeLink,
+  buildReferralLink,
+  parseReferral,
+  genReferralCode,
+} from '../share';
 
 test('recipeDeepLink scheme + id', () => {
   assert.equal(recipeDeepLink('menemen'), 'lezzet://recipe/menemen');
@@ -36,4 +43,23 @@ test('parseRecipeLink eşleşmeyende null', () => {
   assert.equal(parseRecipeLink(null), null);
   assert.equal(parseRecipeLink('https://example.com'), null);
   assert.equal(parseRecipeLink('lezzet://other/x'), null);
+});
+
+test('buildReferralLink tarif id + kodu taşır, tarif id hâlâ ayrıştırılır', () => {
+  const link = buildReferralLink('menemen', 'abc123');
+  assert.equal(link, 'lezzet://recipe/menemen?ref=abc123');
+  assert.equal(parseRecipeLink(link), 'menemen');
+  assert.equal(parseReferral(link), 'abc123');
+});
+
+test('parseReferral kod yoksa null', () => {
+  assert.equal(parseReferral('lezzet://recipe/menemen'), null);
+  assert.equal(parseReferral(null), null);
+});
+
+test('genReferralCode 8 karakter, deterministik (rand enjekte)', () => {
+  const a = genReferralCode(() => 0.42);
+  const b = genReferralCode(() => 0.42);
+  assert.equal(a.length, 8);
+  assert.equal(a, b);
 });
