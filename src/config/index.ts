@@ -31,3 +31,11 @@ export const PROXY_BASE_URL = '';
 
 /** Proxy'ye gönderilecek istemci oturum token'ı (Bearer). Opsiyonel. */
 export const PROXY_CLIENT_TOKEN = '';
+
+/**
+ * Sentry DSN. DOLU olursa App açılışta çökme/hata raporlamayı (Sentry) bağlar;
+ * BOŞ ise konsola düşer (Expo Go/dev). Üretim için `npx expo install
+ * @sentry/react-native` + buraya DSN. DSN gizli anahtar değildir (yalnızca olay
+ * gönderimi); gerçek sağlayıcı anahtarları yine proxy'de kalır.
+ */
+export const SENTRY_DSN = '';

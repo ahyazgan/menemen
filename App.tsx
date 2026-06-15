@@ -44,13 +44,14 @@ import { createExpoSpeechTTS } from './src/services/speech';
 import { VOICE_RATE_VALUE } from './src/state/uiStore';
 import { getLocale } from './src/i18n';
 import { setAnalytics, createMockAnalytics, track } from './src/services/analytics';
+import { setCrash, createSentryCrash } from './src/services/crash';
 import { useFlagsStore } from './src/state/flagsStore';
 import { rescheduleNudges } from './src/state/nudges';
 import { createAsyncStorage } from './src/services/storage';
 import { getRecipe } from './src/recipes';
 import { parseRecipeLink } from './src/recipes/share';
 import { isResumable } from './src/recipes/session';
-import { PROXY_BASE_URL, PROXY_CLIENT_TOKEN } from './src/config';
+import { PROXY_BASE_URL, PROXY_CLIENT_TOKEN, SENTRY_DSN } from './src/config';
 import type { Recipe } from './src/engine/types';
 
 /** Cihaz-içi (anahtarsız) TTS — hem açılışta hem proxy bağlanınca korunur. */
@@ -67,6 +68,8 @@ export default function App() {
   useState(() => {
     const detected = initLocaleFromDevice();
     useUiStore.getState().setLocale(detected);
+    // Çökme raporlama: DSN doluysa Sentry'yi bağla (anahtarsız kalırsa konsol).
+    if (SENTRY_DSN.trim()) setCrash(createSentryCrash(SENTRY_DSN.trim()));
     useCookingStore.getState().setNotify(createExpoNotify());
     // Cihaz-içi TTS: uygulama anahtar/proxy olmadan da gerçekten konuşur.
     useCookingStore.getState().setTts(makeDeviceTts());
