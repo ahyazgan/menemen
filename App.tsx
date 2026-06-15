@@ -32,6 +32,7 @@ import { useProfileStore } from './src/state/profileStore';
 import { useMealPlanStore } from './src/state/mealPlanStore';
 import { useShareStore } from './src/state/shareStore';
 import { useOnboardingStore } from './src/state/onboardingStore';
+import { useRecommendStore } from './src/state/recommendStore';
 import { createExpoNotify } from './src/services/notify';
 import { createExpoPhoto } from './src/services/photo';
 import { createRNShare } from './src/services/share';
@@ -42,7 +43,17 @@ import { setAnalytics, createMockAnalytics } from './src/services/analytics';
 import { createAsyncStorage } from './src/services/storage';
 import { getRecipe } from './src/recipes';
 import { parseRecipeLink } from './src/recipes/share';
+import { PROXY_BASE_URL, PROXY_CLIENT_TOKEN } from './src/config';
 import type { Recipe } from './src/engine/types';
+
+/** Cihaz-içi (anahtarsız) TTS — hem açılışta hem proxy bağlanınca korunur. */
+function makeDeviceTts() {
+  return createExpoSpeechTTS({
+    getLocale,
+    isEnabled: () => useUiStore.getState().voiceEnabled,
+    getRate: () => VOICE_RATE_VALUE[useUiStore.getState().voiceRate],
+  });
+}
 
 export default function App() {
   // İlk render'dan önce: cihaz dilini uygula + uiStore'a yansıt + bildirim servisi.
@@ -51,13 +62,7 @@ export default function App() {
     useUiStore.getState().setLocale(detected);
     useCookingStore.getState().setNotify(createExpoNotify());
     // Cihaz-içi TTS: uygulama anahtar/proxy olmadan da gerçekten konuşur.
-    useCookingStore.getState().setTts(
-      createExpoSpeechTTS({
-        getLocale,
-        isEnabled: () => useUiStore.getState().voiceEnabled,
-        getRate: () => VOICE_RATE_VALUE[useUiStore.getState().voiceRate],
-      }),
-    );
+    useCookingStore.getState().setTts(makeDeviceTts());
     // Kalıcı depoları (favori + alışveriş + tema) bağla ve yükle.
     const storage = createAsyncStorage();
     const ui = useUiStore.getState();
@@ -166,6 +171,45 @@ export default function App() {
     void Linking.getInitialURL().then(handle);
     const sub = Linking.addEventListener('url', (e) => handle(e.url));
     return () => sub.remove();
+  }, []);
+
+  // Proxy adresi yapılandırıldıysa gerçek servisleri otomatik bağla (Claude
+  // vision/intent + AI öneri + bulut STT). Cihaz-içi TTS korunur (anahtarsız).
+  // Servisler dinamik import edilir → proxy yokken @anthropic-ai/sdk açılışa girmez.
+  useEffect(() => {
+    const base = PROXY_BASE_URL.trim();
+    if (!base) return;
+    let cancelled = false;
+    void (async () => {
+      const [real, recommend, analytics] = await Promise.all([
+        import('./src/services/real'),
+        import('./src/services/recommend'),
+        import('./src/services/analytics'),
+      ]);
+      if (cancelled) return;
+      const token = PROXY_CLIENT_TOKEN.trim() || undefined;
+      const config = real.proxyRealConfig(base, { clientToken: token });
+      const cooking = useCookingStore.getState();
+      cooking.setServices(real.createRealServices(config));
+      cooking.setTts(makeDeviceTts()); // sesi cihazda tut (anahtarsız + offline)
+      useRecommendStore
+        .getState()
+        .setService(
+          recommend.createClaudeRecommend(
+            real.createAnthropicClient(config.anthropic),
+            config.anthropic.model,
+          ),
+        );
+      setAnalytics(
+        analytics.createHttpAnalytics({
+          url: `${base.replace(/\/$/, '')}/analytics`,
+          clientToken: token,
+        }),
+      );
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   function content() {
