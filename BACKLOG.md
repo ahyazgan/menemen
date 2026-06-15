@@ -6,18 +6,13 @@
 ## Now (yukarıdan aşağı, durmadan)
 
 - [x] Ses/kamera butonları temaya uyumlu + izin reddi yönlendirmesi (fbce57b)
-- [ ] Erişilebilirlik etiketleri
-  Done when: ana etkileşimli öğeler (ses/kamera, pişirme tamam/atla/tekrar/
-  duraklat, önizleme pişir+favori, ayarlar/tema) accessibilityRole+Label taşır;
-  tsc/eslint yeşil.
-- [ ] Adım fotoğrafları galerisi (önizlemede)
-  Done when: RecipePreviewScreen, o tarif için kayıtlı adım fotoğraflarını
-  küçük resimlerle gösterir (yoksa bölüm gizli); tsc/eslint/test yeşil.
+- [x] Erişilebilirlik etiketleri (e5fac43)
+- [x] Adım fotoğrafları galerisi (önizlemede) (5e7d718)
 
 ## Next
 
 - [ ] Favori boş durumu ipucu (favori filtresinde sonuç yokken açıklayıcı metin)
-  Done when: favori filtresi açık ve boşken bilgilendirici mesaj görünür.
+      Done when: favori filtresi açık ve boşken bilgilendirici mesaj görünür.
 
 ## Later
 

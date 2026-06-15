@@ -140,6 +140,7 @@ export const tr = {
     cook: '🍳 Pişirmeye başla',
     steps: 'Adımlar',
     critical: 'Güvenlik adımı',
+    photos: 'Fotoğrafların',
   },
   settings: {
     button: '⚙️',

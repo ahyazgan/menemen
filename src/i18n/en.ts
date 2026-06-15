@@ -142,6 +142,7 @@ export const en: TranslationTree = {
     cook: '🍳 Start cooking',
     steps: 'Steps',
     critical: 'Safety step',
+    photos: 'Your photos',
   },
   settings: {
     button: '⚙️',
