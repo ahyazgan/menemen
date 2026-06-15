@@ -10,6 +10,7 @@ import type { DietPref } from '../recipes/profile';
 import { useThemeColors } from '../state/uiStore';
 import { useProfileStore } from '../state/profileStore';
 import { useOnboardingStore } from '../state/onboardingStore';
+import { useCookingStore } from '../state/cookingStore';
 import { t } from '../i18n';
 import type { ThemeColors } from '../config/theme';
 
@@ -21,6 +22,7 @@ export function OnboardingScreen() {
   const diet = useProfileStore((s) => s.profile.diet);
   const setDiet = useProfileStore((s) => s.setDiet);
   const complete = useOnboardingStore((s) => s.complete);
+  const speak = useCookingStore((s) => s.speak);
   const [step, setStep] = useState(0);
 
   const last = 2;
@@ -43,6 +45,14 @@ export function OnboardingScreen() {
             <Text style={styles.emoji}>👩‍🍳</Text>
             <Text style={styles.title}>{t('onboarding.welcomeTitle')}</Text>
             <Text style={styles.text}>{t('onboarding.welcomeBody')}</Text>
+            <Pressable
+              style={styles.tryVoice}
+              onPress={() => void speak(t('onboarding.voiceSample'), true)}
+              accessibilityRole="button"
+              accessibilityLabel={t('onboarding.tryVoice')}
+            >
+              <Text style={styles.tryVoiceText}>{t('onboarding.tryVoice')}</Text>
+            </Pressable>
           </>
         )}
 
@@ -102,6 +112,15 @@ const makeStyles = (c: ThemeColors) =>
     emoji: { fontSize: 56, textAlign: 'center', marginBottom: 16 },
     title: { fontSize: 28, fontWeight: '800', color: c.primary, marginBottom: 14, lineHeight: 34 },
     text: { fontSize: 17, color: c.textBody, lineHeight: 25 },
+    tryVoice: {
+      marginTop: 20,
+      alignSelf: 'flex-start',
+      backgroundColor: c.fill,
+      borderRadius: 12,
+      paddingVertical: 12,
+      paddingHorizontal: 18,
+    },
+    tryVoiceText: { color: c.textMuted, fontSize: 15, fontWeight: '700' },
     diets: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 24 },
     pill: {
       backgroundColor: c.surface,

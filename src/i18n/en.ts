@@ -214,6 +214,8 @@ export const en: TranslationTree = {
     welcomeTitle: 'A pro by your side in the kitchen',
     welcomeBody:
       'Lezzet isn’t a recipe app; it’s a live guide that walks you through cooking by voice, glances at your pot now and then, and rescues you when things go sideways.',
+    tryVoice: '🔊 Hear my voice',
+    voiceSample: 'Hi! This is how I’ll guide you while you cook. Ready when you are.',
     dietTitle: 'What do you prefer?',
     dietBody:
       'I ask so I can suggest recipes that fit you. You can change it anytime from My Profile.',
