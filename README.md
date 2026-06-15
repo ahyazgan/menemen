@@ -193,6 +193,11 @@ androidApiKey }))` ile gerçek SDK'ya geç.
 (`npx expo config` temiz: bundle id'ler, arka plan ses `UIBackgroundModes:[audio]`,
 mikrofon/kamera izin metinleri, Android izinleri).
 
+**Görseller:** `assets/` içinde marka renkli **yer tutucu** ikon/splash/adaptive/
+favicon var (`npm run gen:assets` ile yeniden üretilir; `scripts/gen-assets.mjs`,
+bağımlılık yok). `app.json` bunlara bağlı — EAS build config olarak hazır.
+Üretimde gerçek tasarım görselleriyle değiştir (aynı dosya adları/boyutlar).
+
 > **Not:** Gerçek `eas build` bir Expo hesabı (`eas login`) ve bulut derleme
 > gerektirir; cihaz duman testi de fiziksel cihaz/simülatör ister. Bunlar bu
 > repoda çalıştırılamaz — aşağıdaki komutları kendi ortamında çalıştır.

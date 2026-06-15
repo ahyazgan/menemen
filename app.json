@@ -7,6 +7,12 @@
     "scheme": "lezzet",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFF8F0"
+    },
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.lezzet.app",
@@ -18,7 +24,14 @@
     },
     "android": {
       "package": "com.lezzet.app",
-      "permissions": ["RECORD_AUDIO", "CAMERA"]
+      "permissions": ["RECORD_AUDIO", "CAMERA"],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#B5300F"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
     },
     "plugins": [
       [
