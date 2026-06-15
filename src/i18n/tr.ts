@@ -212,6 +212,8 @@ export const tr = {
     welcomeTitle: 'Mutfakta yanında bir usta',
     welcomeBody:
       'Lezzet bir tarif uygulaması değil; yemek yaparken seni sesle adım adım yönlendiren, ara sıra tencerene bakıp yorum yapan, ters gidince kurtaran canlı bir rehber.',
+    tryVoice: '🔊 Sesimi dinle',
+    voiceSample: 'Merhaba! Yemek yaparken sana işte böyle eşlik edeceğim. Hazırsan başlayalım.',
     dietTitle: 'Neyi seversin?',
     dietBody:
       'Sana uygun tarifler önereyim diye soruyorum. İstediğinde Profilim’den değiştirebilirsin.',
