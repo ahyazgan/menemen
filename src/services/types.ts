@@ -19,20 +19,11 @@ export interface TTSService {
 }
 
 /**
- * Niyet türleri — kullanıcının sesli ifadesinin anlamı.
- * Mutfak bağlamına özel; UNKNOWN her zaman güvenli geri dönüştür.
+ * Niyet türleri — kullanıcının sesli/yazılı ifadesinin anlamı. Tanım motorda
+ * (saf, testli; engine/intent.ts). Burada içe alınıp re-export edilir.
  */
-export type IntentKind =
-  | 'next' // "tamam", "bitti", "sonraki"
-  | 'repeat' // "tekrar et", "ne demiştin"
-  | 'how_long' // "ne kadar kaldı", "kaç dakika"
-  | 'what_now' // "şimdi ne yapayım"
-  | 'ingredients' // "malzemeler neydi"
-  | 'pause' // "dur", "bekle"
-  | 'resume' // "devam"
-  | 'check' // "bir bak", "kontrol et" → Vision
-  | 'recovery' // "yaktım", "çok tuzlu oldu"
-  | 'unknown';
+import type { IntentKind } from '../engine/intent';
+export type { IntentKind };
 
 export interface Intent {
   kind: IntentKind;

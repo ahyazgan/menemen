@@ -8,6 +8,7 @@
     "exactOptionalPropertyTypes": false,
     "skipLibCheck": true,
     "jsx": "react-jsx",
+    "module": "esnext",
     "moduleResolution": "bundler"
   },
   "include": ["App.tsx", "src/**/*.ts", "src/**/*.tsx"],

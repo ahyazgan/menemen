@@ -1,14 +1,17 @@
 /**
- * VoiceButton — bas-konuş ses kaydı (expo-audio). Basılı tutarken kaydeder,
- * bırakınca kaydı durdurup store.listen(uri)'ye verir. KURAL: servisi doğrudan
- * çağırmaz; yalnızca store action'ını tetikler (screens → state → services).
+ * VoiceButton — bas-konuş sesli komut. Önce **cihaz-içi canlı tanıma**
+ * (@react-native-voice; dev-client) denenir; ara sonuçlar gösterilir, bırakınca
+ * son metin store.handleUtterance'a verilir. Canlı tanıma yoksa (Expo Go) eski
+ * **kayıt → store.listen(uri)** yoluna düşülür. KURAL: servisi doğrudan çağırmaz;
+ * yalnızca store action'larını tetikler (screens → state → services).
  */
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 import { RecordingPresets, requestRecordingPermissionsAsync, useAudioRecorder } from 'expo-audio';
 
 import { useCookingStore } from '../state/cookingStore';
-import { useThemeColors } from '../state/uiStore';
+import { useUiStore, useThemeColors } from '../state/uiStore';
+import { createVoiceRecognizer } from '../services/stt';
 import { t } from '../i18n';
 import type { ThemeColors } from '../config/theme';
 
@@ -17,18 +20,34 @@ export function VoiceButton() {
   const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY!);
   const colors = useThemeColors();
   const styles = useMemo(() => makeStyles(colors), [colors]);
+  const locale = useUiStore((s) => s.locale);
   const listening = useCookingStore((s) => s.listening);
   const listen = useCookingStore((s) => s.listen);
+  const handleUtterance = useCookingStore((s) => s.handleUtterance);
+  const recognizer = useRef(createVoiceRecognizer());
+  const liveActive = useRef(false);
   const [recording, setRecording] = useState(false);
   const [denied, setDenied] = useState(false);
+  const [partial, setPartial] = useState('');
 
   async function start(): Promise<void> {
+    setDenied(false);
+    setPartial('');
+    // 1) Cihaz-içi canlı tanıma (dev-client). Başarısızsa kayıt yedeğine düş.
+    try {
+      await recognizer.current.start({ locale, onPartial: setPartial });
+      liveActive.current = true;
+      setRecording(true);
+      return;
+    } catch {
+      liveActive.current = false;
+    }
+    // 2) Yedek: ses kaydı → store.listen (mock/cloud STT).
     const permission = await requestRecordingPermissionsAsync();
     if (!permission.granted) {
       setDenied(true);
       return;
     }
-    setDenied(false);
     await recorder.prepareToRecordAsync();
     recorder.record();
     setRecording(true);
@@ -37,6 +56,13 @@ export function VoiceButton() {
   async function finish(): Promise<void> {
     if (!recording) return;
     setRecording(false);
+    if (liveActive.current) {
+      liveActive.current = false;
+      const text = await recognizer.current.stop();
+      setPartial('');
+      if (text.trim()) await handleUtterance(text);
+      return;
+    }
     await recorder.stop();
     const uri = recorder.uri;
     if (uri) await listen(uri);
@@ -56,6 +82,7 @@ export function VoiceButton() {
       >
         <Text style={styles.micText}>🎙 {label}</Text>
       </Pressable>
+      {partial.length > 0 && <Text style={styles.partial}>“{partial}”</Text>}
       {denied && (
         <View style={styles.deniedRow}>
           <Text style={styles.deniedText}>{t('cooking.micDenied')}</Text>
@@ -83,6 +110,7 @@ const makeStyles = (c: ThemeColors) =>
     },
     micActive: { backgroundColor: c.primary },
     micText: { color: c.onAccent, fontSize: 17, fontWeight: '600' },
+    partial: { marginTop: 8, color: c.textMuted, fontStyle: 'italic', textAlign: 'center' },
     deniedRow: { marginTop: 8, alignItems: 'center' },
     deniedText: { color: c.warning, fontSize: 13, textAlign: 'center', lineHeight: 18 },
     deniedLink: { color: c.primary, fontSize: 14, fontWeight: '700', marginTop: 4 },
