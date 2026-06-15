@@ -2,9 +2,22 @@
  * RecipeListScreen — "Ne pişsem?" (CLAUDE.md değer #1: ne pişeceğine karar).
  * Arama + kategori filtresi. Sadece UI: seçim yukarı bildirilir; filtre saf
  * (filterRecipes), pişirmeyi App yönlendirir.
+ *
+ * Performans: kartlar FlatList ile sanallaştırılır ve React.memo'lu — aramada
+ * her tuşta tüm liste değil, yalnızca değişen kartlar render olur. Başlık
+ * `ListHeaderComponent`'e ELEMENT olarak verilir (arama kutusu odağını korur).
  */
-import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { memo, useCallback, useMemo, useState } from 'react';
+import {
+  FlatList,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  type ListRenderItem,
+} from 'react-native';
 
 import { recipeList, randomRecipe, getRecipe } from '../recipes';
 import { CATEGORIES, filterRecipes } from '../recipes/filter';
@@ -18,6 +31,8 @@ import { cookCounts } from '../recipes/history';
 import { localize } from '../engine';
 import type { ThemeColors } from '../config/theme';
 import type { Recipe, RecipeCategory } from '../engine/types';
+
+type Styles = ReturnType<typeof makeStyles>;
 
 interface Props {
   onSelect: (recipe: Recipe) => void;
@@ -68,8 +83,25 @@ export function RecipeListScreen({
     return onlyFavorites ? base.filter((r) => favoriteIds.includes(r.id)) : base;
   }, [query, category, onlyFavorites, favoriteIds, profile]);
 
-  return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+  const renderItem = useCallback<ListRenderItem<Recipe>>(
+    ({ item }) => (
+      <RecipeCard
+        recipe={item}
+        locale={locale}
+        fav={favoriteIds.includes(item.id)}
+        count={counts[item.id] ?? 0}
+        styles={styles}
+        onSelect={onSelect}
+        onToggleFavorite={toggleFavorite}
+      />
+    ),
+    [locale, favoriteIds, counts, styles, onSelect, toggleFavorite],
+  );
+
+  // Başlık ELEMENT olarak verilir (fonksiyon DEĞİL) → liste güncellenince
+  // yeniden monte olmaz, arama kutusu odağı korunur.
+  const header = (
+    <View>
       <View style={styles.header}>
         <Text style={styles.title}>{t('picker.title')}</Text>
         <View style={styles.langRow}>
@@ -165,44 +197,71 @@ export function RecipeListScreen({
           <Text style={styles.shoppingText}>{t('profile.button')}</Text>
         </Pressable>
       </View>
+    </View>
+  );
 
-      {shown.length === 0 ? (
+  return (
+    <FlatList
+      style={styles.screen}
+      contentContainerStyle={styles.content}
+      data={shown}
+      keyExtractor={(r) => r.id}
+      renderItem={renderItem}
+      ListHeaderComponent={header}
+      ListEmptyComponent={
         <Text style={styles.empty}>
           {onlyFavorites ? t('picker.noFavorites') : t('picker.noResults')}
         </Text>
-      ) : (
-        shown.map((recipe) => {
-          const fav = favoriteIds.includes(recipe.id);
-          return (
-            <Pressable key={recipe.id} style={styles.card} onPress={() => onSelect(recipe)}>
-              <View style={styles.cardHeader}>
-                <Text style={styles.cardTitle}>{localize(recipe.title, locale)}</Text>
-                <Pressable
-                  hitSlop={10}
-                  onPress={() => void toggleFavorite(recipe.id)}
-                  style={styles.star}
-                >
-                  <Text style={[styles.starText, fav && styles.starActive]}>{fav ? '★' : '☆'}</Text>
-                </Pressable>
-              </View>
-              {recipe.summary && (
-                <Text style={styles.cardSummary}>{localize(recipe.summary, locale)}</Text>
-              )}
-              <Text style={styles.cardMeta}>
-                {recipe.totalMinutes != null
-                  ? `${recipe.totalMinutes} ${t('picker.minutes')} · `
-                  : ''}
-                {recipe.servings} {t('picker.servings')}
-                {` · ${t(`difficulty.${recipeDifficulty(recipe)}`)}`}
-                {(counts[recipe.id] ?? 0) > 0 ? ` · ${counts[recipe.id]} ${t('picker.times')}` : ''}
-              </Text>
-            </Pressable>
-          );
-        })
-      )}
-    </ScrollView>
+      }
+      keyboardShouldPersistTaps="handled"
+      initialNumToRender={8}
+      windowSize={11}
+      removeClippedSubviews
+    />
   );
 }
+
+interface CardProps {
+  recipe: Recipe;
+  locale: string;
+  fav: boolean;
+  count: number;
+  styles: Styles;
+  onSelect: (recipe: Recipe) => void;
+  onToggleFavorite: (id: string) => void;
+}
+
+const RecipeCard = memo(function RecipeCard({
+  recipe,
+  locale,
+  fav,
+  count,
+  styles,
+  onSelect,
+  onToggleFavorite,
+}: CardProps) {
+  return (
+    <Pressable style={styles.card} onPress={() => onSelect(recipe)}>
+      <View style={styles.cardHeader}>
+        <Text style={styles.cardTitle}>{localize(recipe.title, locale)}</Text>
+        <Pressable
+          hitSlop={10}
+          onPress={() => void onToggleFavorite(recipe.id)}
+          style={styles.star}
+        >
+          <Text style={[styles.starText, fav && styles.starActive]}>{fav ? '★' : '☆'}</Text>
+        </Pressable>
+      </View>
+      {recipe.summary && <Text style={styles.cardSummary}>{localize(recipe.summary, locale)}</Text>}
+      <Text style={styles.cardMeta}>
+        {recipe.totalMinutes != null ? `${recipe.totalMinutes} ${t('picker.minutes')} · ` : ''}
+        {recipe.servings} {t('picker.servings')}
+        {` · ${t(`difficulty.${recipeDifficulty(recipe)}`)}`}
+        {count > 0 ? ` · ${count} ${t('picker.times')}` : ''}
+      </Text>
+    </Pressable>
+  );
+});
 
 function Chip({
   label,
@@ -213,7 +272,7 @@ function Chip({
   label: string;
   active: boolean;
   onPress: () => void;
-  styles: ReturnType<typeof makeStyles>;
+  styles: Styles;
 }) {
   return (
     <Pressable style={[styles.chip, active && styles.chipActive]} onPress={onPress}>
