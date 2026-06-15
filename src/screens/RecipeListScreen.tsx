@@ -26,6 +26,7 @@ interface Props {
   onOpenProfile: () => void;
   onOpenSuggest: () => void;
   onOpenPlan: () => void;
+  onOpenSettings: () => void;
 }
 
 export function RecipeListScreen({
@@ -35,6 +36,7 @@ export function RecipeListScreen({
   onOpenProfile,
   onOpenSuggest,
   onOpenPlan,
+  onOpenSettings,
 }: Props) {
   const locale = useUiStore((s) => s.locale);
   const setLocale = useUiStore((s) => s.setLocale);
@@ -84,6 +86,9 @@ export function RecipeListScreen({
           ))}
           <Pressable style={styles.lang} onPress={() => void toggleTheme()}>
             <Text style={styles.langText}>{theme === 'dark' ? '☀️' : '🌙'}</Text>
+          </Pressable>
+          <Pressable style={styles.lang} onPress={onOpenSettings}>
+            <Text style={styles.langText}>{t('settings.button')}</Text>
           </Pressable>
         </View>
       </View>

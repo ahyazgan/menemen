@@ -3,8 +3,8 @@
  * tarif seçimi (RecipeListScreen) → canlı pişirme (CookingScreen).
  * Henüz harici navigasyon kütüphanesi yok; tek state ile geçiş yeterli.
  */
-import { useEffect, useState } from 'react';
-import { Linking, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { BackHandler, Linking, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 
 import { CookingScreen } from './src/screens/CookingScreen';
 import { RecipeListScreen } from './src/screens/RecipeListScreen';
@@ -13,6 +13,8 @@ import { PantryScreen } from './src/screens/PantryScreen';
 import { ProfileScreen } from './src/screens/ProfileScreen';
 import { SuggestScreen } from './src/screens/SuggestScreen';
 import { WeeklyPlanScreen } from './src/screens/WeeklyPlanScreen';
+import { SettingsScreen } from './src/screens/SettingsScreen';
+import { PrivacyScreen } from './src/screens/PrivacyScreen';
 import { OnboardingScreen } from './src/screens/OnboardingScreen';
 import { SubscriptionGate } from './src/components/SubscriptionGate';
 import { initLocaleFromDevice } from './src/i18n/deviceLocale';
@@ -87,6 +89,8 @@ export default function App() {
   const [showProfile, setShowProfile] = useState(false);
   const [showSuggest, setShowSuggest] = useState(false);
   const [showPlan, setShowPlan] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
 
   function openRecipe(r: Recipe) {
     setShowPantry(false);
@@ -94,6 +98,41 @@ export default function App() {
     setShowPlan(false);
     setRecipe(r);
   }
+
+  // Android donanım geri tuşu: açık alt ekranı kapat (uygulamadan çıkma).
+  // Pişirme ekranı kendi geri tuşunu yönetir; orada bu devre dışı.
+  const handleHardwareBack = useCallback(() => {
+    if (recipe) return false; // CookingScreen kendi onayını yönetir
+    const closers: [boolean, () => void][] = [
+      [showPrivacy, () => setShowPrivacy(false)],
+      [showSettings, () => setShowSettings(false)],
+      [showSuggest, () => setShowSuggest(false)],
+      [showPlan, () => setShowPlan(false)],
+      [showProfile, () => setShowProfile(false)],
+      [showPantry, () => setShowPantry(false)],
+      [showShopping, () => setShowShopping(false)],
+    ];
+    const open = closers.find(([isOpen]) => isOpen);
+    if (open) {
+      open[1]();
+      return true;
+    }
+    return false;
+  }, [
+    recipe,
+    showPrivacy,
+    showSettings,
+    showSuggest,
+    showPlan,
+    showProfile,
+    showPantry,
+    showShopping,
+  ]);
+
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', handleHardwareBack);
+    return () => sub.remove();
+  }, [handleHardwareBack]);
 
   // Gelen derin bağlantı (lezzet://recipe/<id>) → paylaşılan tarifi aç.
   useEffect(() => {
@@ -118,6 +157,14 @@ export default function App() {
       return <SuggestScreen onSelect={openRecipe} onBack={() => setShowSuggest(false)} />;
     if (showPlan)
       return <WeeklyPlanScreen onSelect={openRecipe} onBack={() => setShowPlan(false)} />;
+    if (showPrivacy) return <PrivacyScreen onBack={() => setShowPrivacy(false)} />;
+    if (showSettings)
+      return (
+        <SettingsScreen
+          onBack={() => setShowSettings(false)}
+          onOpenPrivacy={() => setShowPrivacy(true)}
+        />
+      );
     return (
       <RecipeListScreen
         onSelect={setRecipe}
@@ -126,6 +173,7 @@ export default function App() {
         onOpenProfile={() => setShowProfile(true)}
         onOpenSuggest={() => setShowSuggest(true)}
         onOpenPlan={() => setShowPlan(true)}
+        onOpenSettings={() => setShowSettings(true)}
       />
     );
   }
