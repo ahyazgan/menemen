@@ -59,16 +59,49 @@ düzenlemen gerekmez; boş bırakırsan mock/yerel kalır.
 > Vision/AI ve (isteğe bağlı) bulut STT için proxy gerekir. İleri kullanım için
 > `setServices(createRealServices(proxyRealConfig(...)))` ile elle de bağlanabilir.
 
+### 2.1 Remote içerik (feature-flag + uzak tarifler) — anahtarsız
+
+Proxy iki **anahtarsız** uç sunar; uygulama ikisini de doğrular, boşsa
+varsayılan/paket içerik kalır:
+
+- **`GET /config`** → `LEZZET_FLAGS` ortam değişkenindeki feature-flag JSON'u.
+  A/B için segmentlere göre üretebilirsin. Örn:
+  `LEZZET_FLAGS={"paywallVariant":"trial7","liveVoice":false}`
+- **`GET /recipes`** → `LEZZET_RECIPES_FILE` yolundaki JSON tarif dizisi (uzak/CMS
+  içeriği). Uygulama doğrular; bozuk olanı düşürür, paket tarifleri korur.
+
+Açılış özetinde her ikisinin ayarlı olup olmadığı görünür.
+
 ## 3. Dev-client build + cihaz duman testi
 
 **Neden:** Cihaz-içi canlı STT (@react-native-voice) ve RevenueCat **Expo Go'da
 çalışmaz**; dev-client gerekir.
 
 ```bash
-eas init                 # app.json'a extra.eas.projectId yazar
+eas init                 # app.json'a extra.eas.projectId yazar (Expo hesabın gerekir)
 eas build --profile development --platform ios   # veya android / all
 # kurulan dev-client'te:
 npx expo start --dev-client
+```
+
+> **`eas init` SENDE:** `app.json` → `extra.eas.projectId` Expo hesabına bağlı
+> gerçek bir kimlik üretir; elle uydurma yazma. Bu adım yapılmadan build alınamaz
+> (preflight de uyarır).
+
+> **Yeni mimari (New Architecture):** İlk build'i sorunsuz almak için
+> `app.json` → `newArchEnabled` şimdilik **false** (RN 0.74 + bazı üçüncü-parti
+> native modüller — voice/purchases — yeni mimaride sorun çıkarabilir). Modüllerin
+> uyumunu doğruladıktan sonra `true` yapabilirsin.
+
+### 3.1 Opsiyonel native paketler (özelliği açarken kur)
+
+Kod bu paketleri **dinamik import** eder; yoksa ilgili özellik sessizce atlanır.
+İlgili özelliği açacağın zaman kur:
+
+```bash
+npx expo install expo-store-review      # in-app review (mağaza puanı)
+npx expo install @sentry/react-native   # çökme raporlama (config/SENTRY_DSN ile)
+npx expo install @livekit/react-native  # canlı full-duplex ses (flags.liveVoice)
 ```
 
 Kontrol listesi: `README.md` → "Cihaz duman-testi kontrol listesi".

@@ -24,6 +24,7 @@ import { randomUUID } from 'node:crypto';
 
 import { createRateLimiter } from './rateLimit.mjs';
 import { createLiveKitToken } from './livekitToken.mjs';
+import { loadFlags, loadRecipes } from './remoteContent.mjs';
 import { verifyHS256, verifyRS256, verifyJwtWithJwks } from './jwt.mjs';
 import { ALLOWLIST, isAllowed } from './allowlist.mjs';
 import { contentLengthExceeds } from './bodyLimit.mjs';
@@ -282,6 +283,25 @@ async function handleRequest(req, res) {
     return send(res, 200, { token, url: process.env.LIVEKIT_WS_URL ?? '', room, identity }, reqId);
   }
 
+  // 2.6) Remote içerik — yerel (upstream'e gitmez). Anahtarsız: flag'ler ortamdan,
+  // tarifler JSON dosyasından. Uygulama tarafı doğrular; boş yapılandırma güvenli.
+  if (url === '/config' || url.startsWith('/config?')) {
+    if (req.method !== 'GET') {
+      finalize(res, reqId, '/config', 405);
+      return send(res, 405, { error: 'Yalnızca GET' }, reqId);
+    }
+    finalize(res, reqId, '/config', 200);
+    return send(res, 200, loadFlags(process.env), reqId);
+  }
+  if (url === '/recipes' || url.startsWith('/recipes?')) {
+    if (req.method !== 'GET') {
+      finalize(res, reqId, '/recipes', 405);
+      return send(res, 405, { error: 'Yalnızca GET' }, reqId);
+    }
+    finalize(res, reqId, '/recipes', 200);
+    return send(res, 200, loadRecipes(process.env.LEZZET_RECIPES_FILE), reqId);
+  }
+
   // 3) Yönlendirme
   const prefix = Object.keys(ROUTES).find(
     (p) => url === p || url.startsWith(`${p}/`) || url.startsWith(`${p}?`),
@@ -372,6 +392,9 @@ server.listen(PORT, () => {
       `    Deepgram (STT):        ${ok(process.env.DEEPGRAM_API_KEY)}`,
       `    ElevenLabs (TTS):      ${ok(process.env.ELEVENLABS_API_KEY)}`,
       `    LiveKit (canlı ses):   ${ok(process.env.LIVEKIT_API_KEY && process.env.LIVEKIT_API_SECRET)}`,
+      `  Remote içerik:`,
+      `    Feature-flag (/config):  ${ok(process.env.LEZZET_FLAGS)}`,
+      `    Uzak tarifler (/recipes): ${ok(process.env.LEZZET_RECIPES_FILE)}`,
       `  Auth modu: ${AUTH_MODE} · Hız limiti: ${process.env.RATE_LIMIT_RPM ?? 60}/dk · Allowlist: ${ALLOWLIST_ON ? 'on' : 'off'}`,
     ].join('\n'),
   );
