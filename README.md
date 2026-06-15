@@ -35,9 +35,12 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
 - **`src/state/cookingStore.ts`** — motoru Zustand'a saran durum makinesi;
   servisleri buraya bağlar. Ekranlar yalnızca buradaki action'ları çağırır.
 - **`src/screens/CookingScreen.tsx`** — canlı pişirme ekranı (sadece UI).
-- **`src/components/`** — `VoiceButton` (expo-audio bas-konuş kaydı) ve
-  `PotCheckButton` (expo-camera frame-on-demand tek kare). İkisi de yalnızca
-  store action'larını (`listen`, `checkPot`) çağırır.
+- **`src/components/`** — `VoiceButton` (cihaz-içi canlı tanıma → yedek kayıt) ve
+  **profesyonel `PotCheckButton`**: frame-on-demand kamera (sürekli akış YOK),
+  **çerçeve kılavuzu + fener + kamera çevir**, analiz sırasında spinner ve
+  ardından **Vision sonucu** (gözlem + öneri; **kritik adımda** öneri yerine
+  güvenlik uyarısı — asla "pişti" denmez). Sonuç pişirme ekranında da kalıcı
+  kart olarak görünür. İkisi de yalnızca store action'larını çağırır.
 - **`server/proxy.mjs`** — anahtarları istemciden çıkaran sıfır-bağımlılık
   backend proxy iskeleti (`npm run proxy`).
 - **`src/services/billing/`** — abonelik (RevenueCat) interface'i + mock + gerçek
