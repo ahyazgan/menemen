@@ -313,9 +313,24 @@ async function handleRequest(req, res) {
 
 server.listen(PORT, () => {
   log({ event: 'listen', port: PORT, authMode: AUTH_MODE });
+  // Açılış yapılandırma özeti: deploy'da yanlış kurulum hemen görünsün.
+  const ok = (v) => (v ? '✓' : '✗ (eksik)');
+  console.warn(
+    [
+      `Lezzet proxy hazır → http://0.0.0.0:${PORT}`,
+      `  Sağlayıcı anahtarları:`,
+      `    Anthropic (AI/Vision): ${ok(process.env.ANTHROPIC_API_KEY)}`,
+      `    Deepgram (STT):        ${ok(process.env.DEEPGRAM_API_KEY)}`,
+      `    ElevenLabs (TTS):      ${ok(process.env.ELEVENLABS_API_KEY)}`,
+      `  Auth modu: ${AUTH_MODE} · Hız limiti: ${process.env.RATE_LIMIT_RPM ?? 60}/dk · Allowlist: ${ALLOWLIST_ON ? 'on' : 'off'}`,
+    ].join('\n'),
+  );
   if (AUTH_MODE === 'dev') {
     console.warn(
       '⚠️  Auth KAPALI (dev). Üretimde LEZZET_JWT_SECRET veya LEZZET_PROXY_TOKENS ayarla.',
     );
+  }
+  if (!process.env.ANTHROPIC_API_KEY) {
+    console.warn('⚠️  ANTHROPIC_API_KEY yok → AI öneri ve tencere yorumu çalışmaz.');
   }
 });

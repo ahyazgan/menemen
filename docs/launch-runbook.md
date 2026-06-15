@@ -20,14 +20,21 @@ kısa tutulmuştur.
 ince bir aracıdır: uygulama ona konuşur, o gerçek sağlayıcıya iletir ve anahtarı
 sunucu tarafında ekler.
 
-1. Bir sunucuya `server/` klasörünü koy, `npm run proxy` ile çalıştır (ya da
-   Docker/PaaS). Ortam değişkenleri: `.env.example`'a bak.
-2. Sağlayıcı anahtarlarını sunucuya ekle:
-   - **Anthropic** (Vision + AI öneri/Intent)
+1. `.env.example`'ı `.env` olarak kopyala, sağlayıcı anahtarlarını doldur:
+   - **Anthropic** (Vision + AI öneri/Intent) — en kritik
    - **Deepgram** (bulut STT — opsiyonel; cihaz-içi STT zaten var)
    - **ElevenLabs** (bulut TTS — opsiyonel; cihaz-içi TTS zaten var)
-3. Proxy'nin JWT doğrulaması + hız sınırı + allowlist'i açık olsun (zaten var).
-4. Sağlık kontrolü: `GET /health`, `GET /metrics`.
+2. **Docker ile (önerilir, tek komut)** — repo kökünden:
+   ```bash
+   docker build -f server/Dockerfile -t lezzet-proxy .
+   docker run -p 8787:8787 --env-file .env lezzet-proxy
+   ```
+   (Docker'sız: `npm run proxy`.) Proxy sıfır bağımlılıktır (saf Node).
+3. Açılışta **yapılandırma özeti** loglanır (hangi anahtar var/yok, auth modu) —
+   yanlış kurulum hemen görünür. Üretimde `LEZZET_JWT_SECRET` veya
+   `LEZZET_PROXY_TOKENS` ayarla (yoksa auth KAPALI uyarısı çıkar).
+4. JWT doğrulaması + hız sınırı + allowlist zaten açık. Sağlık: `GET /health`,
+   ölçüm: `GET /metrics`.
 
 ## 2. Uygulamayı proxy'ye bağla
 
