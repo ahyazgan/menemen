@@ -20,6 +20,7 @@ export const tr = {
     recent: 'Son pişirdiklerin',
     times: 'kez',
     noResults: 'Sonuç yok.',
+    noFavorites: 'Henüz favorin yok. Bir tarifte ☆ yıldıza dokunarak ekleyebilirsin.',
     categories: {
       kahvalti: 'Kahvaltı',
       corba: 'Çorba',

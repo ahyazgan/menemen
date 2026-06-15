@@ -22,6 +22,7 @@ export const en: TranslationTree = {
     recent: 'Recently cooked',
     times: '×',
     noResults: 'No results.',
+    noFavorites: 'No favorites yet. Tap the ☆ star on a recipe to add one.',
     categories: {
       kahvalti: 'Breakfast',
       corba: 'Soup',
