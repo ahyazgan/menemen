@@ -4,7 +4,7 @@
  * başla" ile canlı pişirmeye geçilir. Sadece UI; mantık saf yardımcılardan/store'lardan.
  */
 import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ingredientLabel } from '../recipes/ingredients';
 import { recipeDifficulty, recipeDiet } from '../recipes/profile';
@@ -12,6 +12,7 @@ import type { ShoppingItem } from '../recipes/shopping';
 import { useUiStore, useThemeColors } from '../state/uiStore';
 import { useFavoritesStore } from '../state/favoritesStore';
 import { useShoppingStore } from '../state/shoppingStore';
+import { useStepPhotosStore } from '../state/stepPhotosStore';
 import { localize } from '../engine';
 import { t } from '../i18n';
 import type { ThemeColors } from '../config/theme';
@@ -30,6 +31,8 @@ export function RecipePreviewScreen({ recipe, onCook, onBack }: Props) {
   const favoriteIds = useFavoritesStore((s) => s.ids);
   const toggleFavorite = useFavoritesStore((s) => s.toggle);
   const addToShopping = useShoppingStore((s) => s.add);
+  const recipePhotos = useStepPhotosStore((s) => s.map[recipe.id]);
+  const photoUris = useMemo(() => Object.values(recipePhotos ?? {}), [recipePhotos]);
   const [servings, setServings] = useState(recipe.servings);
   const [added, setAdded] = useState(false);
 
@@ -61,7 +64,13 @@ export function RecipePreviewScreen({ recipe, onCook, onBack }: Props) {
 
       <View style={styles.header}>
         <Text style={styles.title}>{localize(recipe.title, locale)}</Text>
-        <Pressable hitSlop={10} onPress={() => void toggleFavorite(recipe.id)} style={styles.star}>
+        <Pressable
+          hitSlop={10}
+          onPress={() => void toggleFavorite(recipe.id)}
+          style={styles.star}
+          accessibilityRole="button"
+          accessibilityLabel={t('picker.favorites')}
+        >
           <Text style={[styles.starText, fav && styles.starActive]}>{fav ? '★' : '☆'}</Text>
         </Pressable>
       </View>
@@ -76,7 +85,12 @@ export function RecipePreviewScreen({ recipe, onCook, onBack }: Props) {
         {dietLabel && <Badge text={dietLabel} styles={styles} />}
       </View>
 
-      <Pressable style={styles.cook} onPress={onCook}>
+      <Pressable
+        style={styles.cook}
+        onPress={onCook}
+        accessibilityRole="button"
+        accessibilityLabel={t('preview.cook')}
+      >
         <Text style={styles.cookText}>{t('preview.cook')}</Text>
       </Pressable>
 
@@ -110,6 +124,17 @@ export function RecipePreviewScreen({ recipe, onCook, onBack }: Props) {
             </Text>
           </Pressable>
         </View>
+      )}
+
+      {photoUris.length > 0 && (
+        <>
+          <Text style={styles.section}>{t('preview.photos')}</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.photoRow}>
+            {photoUris.map((uri) => (
+              <Image key={uri} source={{ uri }} style={styles.photoThumb} resizeMode="cover" />
+            ))}
+          </ScrollView>
+        </>
       )}
 
       <Text style={styles.section}>{t('preview.steps')}</Text>
@@ -211,6 +236,14 @@ const makeStyles = (c: ThemeColors) =>
       marginTop: 24,
       marginBottom: 12,
       textTransform: 'uppercase',
+    },
+    photoRow: { marginBottom: 4 },
+    photoThumb: {
+      width: 120,
+      height: 120,
+      borderRadius: 12,
+      marginRight: 10,
+      backgroundColor: c.fill,
     },
     stepRow: { flexDirection: 'row', marginBottom: 16 },
     stepNum: {

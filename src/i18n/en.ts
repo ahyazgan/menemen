@@ -22,6 +22,7 @@ export const en: TranslationTree = {
     recent: 'Recently cooked',
     times: '×',
     noResults: 'No results.',
+    noFavorites: 'No favorites yet. Tap the ☆ star on a recipe to add one.',
     categories: {
       kahvalti: 'Breakfast',
       corba: 'Soup',
@@ -50,6 +51,9 @@ export const en: TranslationTree = {
     capture: 'Capture',
     close: 'Close',
     permissionNeeded: 'Permission required.',
+    micDenied: 'Microphone permission is off. Allow it for voice guidance.',
+    cameraDenied: 'Camera permission is off. Allow it to check the pot.',
+    openSettings: 'Open settings',
     progress: 'Progress',
     finished: 'Your meal is ready — enjoy!',
     share: '📣 I made it, share',
@@ -139,6 +143,7 @@ export const en: TranslationTree = {
     cook: '🍳 Start cooking',
     steps: 'Steps',
     critical: 'Safety step',
+    photos: 'Your photos',
   },
   settings: {
     button: '⚙️',

@@ -167,7 +167,9 @@ export function RecipeListScreen({
       </View>
 
       {shown.length === 0 ? (
-        <Text style={styles.empty}>{t('picker.noResults')}</Text>
+        <Text style={styles.empty}>
+          {onlyFavorites ? t('picker.noFavorites') : t('picker.noResults')}
+        </Text>
       ) : (
         shown.map((recipe) => {
           const fav = favoriteIds.includes(recipe.id);

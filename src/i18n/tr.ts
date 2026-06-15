@@ -20,6 +20,7 @@ export const tr = {
     recent: 'Son pişirdiklerin',
     times: 'kez',
     noResults: 'Sonuç yok.',
+    noFavorites: 'Henüz favorin yok. Bir tarifte ☆ yıldıza dokunarak ekleyebilirsin.',
     categories: {
       kahvalti: 'Kahvaltı',
       corba: 'Çorba',
@@ -48,6 +49,9 @@ export const tr = {
     capture: 'Çek',
     close: 'Kapat',
     permissionNeeded: 'İzin gerekiyor.',
+    micDenied: 'Mikrofon izni kapalı. Sesli yönlendirme için izin ver.',
+    cameraDenied: 'Kamera izni kapalı. Tencereye bakmak için izin ver.',
+    openSettings: 'Ayarları aç',
     progress: 'İlerleme',
     finished: 'Yemek hazır, afiyet olsun!',
     share: '📣 Yaptım, paylaş',
@@ -137,6 +141,7 @@ export const tr = {
     cook: '🍳 Pişirmeye başla',
     steps: 'Adımlar',
     critical: 'Güvenlik adımı',
+    photos: 'Fotoğrafların',
   },
   settings: {
     button: '⚙️',
