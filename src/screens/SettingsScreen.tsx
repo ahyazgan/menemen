@@ -3,10 +3,11 @@
  * tek yerde. Sadece UI; iş store'lardan (uiStore/subscriptionStore) ve
  * resetUserData yardımcısından geçer.
  */
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AVAILABLE_LOCALES, t } from '../i18n';
+import { useTransientFlag } from '../hooks/useTransientFlag';
 import { useUiStore, useThemeColors, type VoiceRate } from '../state/uiStore';
 import { useSubscriptionStore } from '../state/subscriptionStore';
 import { useCookingStore } from '../state/cookingStore';
@@ -42,14 +43,11 @@ export function SettingsScreen({
   const speak = useCookingStore((s) => s.speak);
   const subscribed = useSubscriptionStore((s) => s.subscribed);
   const restore = useSubscriptionStore((s) => s.restore);
-  const [restored, setRestored] = useState(false);
-  const [cleared, setCleared] = useState(false);
+  const [restored, flashRestored] = useTransientFlag();
+  const [cleared, flashCleared] = useTransientFlag();
 
   function onRestore(): void {
-    void restore().then(() => {
-      setRestored(true);
-      setTimeout(() => setRestored(false), 2000);
-    });
+    void restore().then(() => flashRestored());
   }
 
   function onClear(): void {
@@ -58,11 +56,7 @@ export function SettingsScreen({
       {
         text: t('settings.clearConfirm'),
         style: 'destructive',
-        onPress: () =>
-          void resetUserData().then(() => {
-            setCleared(true);
-            setTimeout(() => setCleared(false), 2000);
-          }),
+        onPress: () => void resetUserData().then(() => flashCleared()),
       },
     ]);
   }

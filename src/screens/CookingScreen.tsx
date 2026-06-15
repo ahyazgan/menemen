@@ -28,6 +28,7 @@ import { guidance } from '../recipes/skill';
 import { recipeDeepLink, buildShareText } from '../recipes/share';
 import { VoiceButton } from '../components/VoiceButton';
 import { PotCheckButton } from '../components/PotCheckButton';
+import { useTransientFlag } from '../hooks/useTransientFlag';
 import { ingredientLabel } from '../recipes/ingredients';
 import type { ShoppingItem } from '../recipes/shopping';
 import { t } from '../i18n';
@@ -87,7 +88,7 @@ export function CookingScreen({ recipe, onBack, resumeDone }: Props) {
     );
     void share(text);
   }
-  const [added, setAdded] = useState(false);
+  const [added, flashAdded] = useTransientFlag();
   const complete = snapshot?.complete ?? false;
 
   // Tarif tamamlanınca pişirme geçmişine kaydet (bir kez).
@@ -103,8 +104,7 @@ export function CookingScreen({ recipe, onBack, resumeDone }: Props) {
       checked: false,
     }));
     void addToShopping(items);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
+    flashAdded();
   }
 
   // Tarifi yükle (varsa kaldığı yerden) ve pişirmeyi başlat.
