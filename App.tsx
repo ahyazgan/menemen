@@ -40,7 +40,8 @@ import { createRNShare } from './src/services/share';
 import { createExpoSpeechTTS } from './src/services/speech';
 import { VOICE_RATE_VALUE } from './src/state/uiStore';
 import { getLocale } from './src/i18n';
-import { setAnalytics, createMockAnalytics } from './src/services/analytics';
+import { setAnalytics, createMockAnalytics, track } from './src/services/analytics';
+import { useFlagsStore } from './src/state/flagsStore';
 import { createAsyncStorage } from './src/services/storage';
 import { getRecipe } from './src/recipes';
 import { parseRecipeLink } from './src/recipes/share';
@@ -99,6 +100,7 @@ export default function App() {
     useShareStore.getState().setService(createRNShare());
     // Analitik: dev'de olayları logla. Üretimde createHttpAnalytics(proxy) ile değiştir.
     setAnalytics(createMockAnalytics((event) => console.log('[analytics]', event.name)));
+    track({ name: 'app_opened' }); // oturum başı (retention/funnel zemini)
     const onboarding = useOnboardingStore.getState();
     onboarding.setStore(storage);
     void onboarding.load();
@@ -225,6 +227,15 @@ export default function App() {
           clientToken: token,
         }),
       );
+      // Remote config (özellik bayrakları). Hata akışı bozmaz → varsayılanlar kalır.
+      try {
+        const res = await fetch(`${base.replace(/\/$/, '')}/config`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        });
+        if (!cancelled && res.ok) useFlagsStore.getState().applyRemote(await res.json());
+      } catch {
+        // remote config alınamadı → güvenli varsayılanlarla devam
+      }
     })();
     return () => {
       cancelled = true;

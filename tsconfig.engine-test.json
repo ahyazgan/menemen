@@ -17,6 +17,8 @@
     "src/engine/**/*",
     "src/recipes/**/*",
     "src/i18n/**/*",
+    "src/config/flags.ts",
+    "src/config/__tests__/**/*",
     "scripts/node-test-shims.d.ts"
   ],
   "exclude": ["src/i18n/deviceLocale.ts"]
