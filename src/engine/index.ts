@@ -7,3 +7,4 @@ export * from './notifications';
 export * from './format';
 export * from './intent';
 export * from './async';
+export * from './voiceSession';

@@ -26,7 +26,9 @@ export type AnalyticsEvent =
   | { name: 'review_prompted' }
   | { name: 'nudge_scheduled'; kind: string }
   | { name: 'referral_opened' }
-  | { name: 'referral_shared' };
+  | { name: 'referral_shared' }
+  | { name: 'live_voice_started' }
+  | { name: 'live_voice_ended' };
 
 /** Olay adlarının birliği (loglama/test için kullanışlı). */
 export type AnalyticsEventName = AnalyticsEvent['name'];

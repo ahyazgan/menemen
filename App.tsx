@@ -30,6 +30,7 @@ import { useStreakStore } from './src/state/streakStore';
 import { useReviewStore } from './src/state/reviewStore';
 import { createExpoReview } from './src/services/review';
 import { useReferralStore } from './src/state/referralStore';
+import { useVoiceSessionStore } from './src/state/voiceSessionStore';
 import { useNotesStore } from './src/state/notesStore';
 import { usePantryStore } from './src/state/pantryStore';
 import { useStepPhotosStore } from './src/state/stepPhotosStore';
@@ -52,7 +53,7 @@ import { createAsyncStorage } from './src/services/storage';
 import { getRecipe } from './src/recipes';
 import { parseRecipeLink } from './src/recipes/share';
 import { isResumable } from './src/recipes/session';
-import { PROXY_BASE_URL, PROXY_CLIENT_TOKEN, SENTRY_DSN } from './src/config';
+import { PROXY_BASE_URL, PROXY_CLIENT_TOKEN, SENTRY_DSN, LIVEKIT_WS_URL } from './src/config';
 import type { Recipe } from './src/engine/types';
 
 /** Cihaz-içi (anahtarsız) TTS — hem açılışta hem proxy bağlanınca korunur. */
@@ -263,6 +264,20 @@ export default function App() {
         if (!cancelled && res.ok) useFlagsStore.getState().applyRemote(await res.json());
       } catch {
         // remote config alınamadı → güvenli varsayılanlarla devam
+      }
+      // Canlı ses: LIVEKIT_WS_URL doluysa gerçek LiveKit servisini bağla
+      // (token proxy'den; native modül dinamik import). Yoksa mock kalır.
+      if (!cancelled && LIVEKIT_WS_URL.trim()) {
+        const voice = await import('./src/services/voice');
+        if (!cancelled) {
+          useVoiceSessionStore.getState().setService(
+            voice.createLiveKitVoice({
+              wsUrl: LIVEKIT_WS_URL.trim(),
+              tokenUrl: `${base.replace(/\/$/, '')}/voice-token`,
+              clientToken: token,
+            }),
+          );
+        }
       }
     })();
     return () => {

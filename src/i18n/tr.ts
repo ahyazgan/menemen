@@ -50,6 +50,16 @@ export const tr = {
       body: 'Hadi yeniden başlayalım — canının çektiği bir tarif seçeyim.',
     },
   },
+  live: {
+    start: '🎙️ Canlı mod — benimle konuş',
+    hint: 'Canlı modda seni sürekli dinlerim, istediğin an sözümü kesebilirsin. Mikrofon açık kalır.',
+    listening: 'Dinliyorum…',
+    agentSpeaking: 'Konuşuyorum…',
+    reconnecting: 'Yeniden bağlanıyor…',
+    mute: 'Sustur',
+    unmute: 'Aç',
+    end: 'Bitir',
+  },
   cooking: {
     back: '‹ Tarifler',
     ingredients: 'Malzemeler',

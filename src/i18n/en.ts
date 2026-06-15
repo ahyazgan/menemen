@@ -52,6 +52,16 @@ export const en: TranslationTree = {
       body: 'Let’s get back to it — I’ll pick a recipe you’ll love.',
     },
   },
+  live: {
+    start: '🎙️ Live mode — talk to me',
+    hint: 'In live mode I listen continuously and you can interrupt me anytime. The mic stays on.',
+    listening: 'Listening…',
+    agentSpeaking: 'Speaking…',
+    reconnecting: 'Reconnecting…',
+    mute: 'Mute',
+    unmute: 'Unmute',
+    end: 'End',
+  },
   cooking: {
     back: '‹ Recipes',
     ingredients: 'Ingredients',

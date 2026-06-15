@@ -27,3 +27,8 @@ test('paywall varyantı yalnızca bilinen değerlerden olur', () => {
   assert.equal(sanitizeFlags({ paywallVariant: 'trial7' }).paywallVariant, 'trial7');
   assert.equal(sanitizeFlags({ paywallVariant: 'uydurma' }).paywallVariant, 'control');
 });
+
+test('liveVoice v1 varsayılanı kapalı, remote ile açılabilir', () => {
+  assert.equal(DEFAULT_FLAGS.liveVoice, false);
+  assert.equal(sanitizeFlags({ liveVoice: true }).liveVoice, true);
+});

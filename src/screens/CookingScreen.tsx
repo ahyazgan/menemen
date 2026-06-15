@@ -32,6 +32,7 @@ import { guidance } from '../recipes/skill';
 import { recipeDeepLink, buildShareText, buildReferralLink } from '../recipes/share';
 import { VoiceButton } from '../components/VoiceButton';
 import { PotCheckButton } from '../components/PotCheckButton';
+import { LiveVoiceButton } from '../components/LiveVoiceButton';
 import { useTransientFlag } from '../hooks/useTransientFlag';
 import { ingredientLabel } from '../recipes/ingredients';
 import type { ShoppingItem } from '../recipes/shopping';
@@ -84,6 +85,7 @@ export function CookingScreen({ recipe, onBack, resumeDone }: Props) {
   const guide = guidance(skill);
   const share = useShareStore((s) => s.share);
   const referralEnabled = useFlag('referral');
+  const liveVoiceEnabled = useFlag('liveVoice');
   const [servings, setServings] = useState(recipe.servings);
 
   function onShare(): void {
@@ -358,6 +360,9 @@ export function CookingScreen({ recipe, onBack, resumeDone }: Props) {
       {/* Ses (bas-konuş) ve frame-on-demand kamera kontrolleri */}
       <VoiceButton />
       <PotCheckButton />
+
+      {/* Canlı (full-duplex) ses modu — yalnızca flag açıkken (v1'de kapalı) */}
+      {liveVoiceEnabled && !complete && <LiveVoiceButton recipe={recipe} currentNode={current} />}
 
       {/* Yazılı komut yedeği (mikrofon yokken/Expo Go'da bile çalışır) */}
       <TextInput

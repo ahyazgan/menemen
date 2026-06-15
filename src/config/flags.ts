@@ -14,6 +14,8 @@ export interface FeatureFlags {
   streaks: boolean;
   /** Referans/davet döngüsü. */
   referral: boolean;
+  /** Canlı (full-duplex) ses modu — CLAUDE.md: v1'de KAPALI; altyapı gelince aç. */
+  liveVoice: boolean;
   /** Paywall varyantı (A/B deneyi). */
   paywallVariant: PaywallVariant;
 }
@@ -23,6 +25,7 @@ export const DEFAULT_FLAGS: FeatureFlags = {
   lifecycleNudges: true,
   streaks: true,
   referral: true,
+  liveVoice: false,
   paywallVariant: 'control',
 };
 
@@ -40,6 +43,7 @@ export function sanitizeFlags(raw: unknown): FeatureFlags {
   if (typeof r.lifecycleNudges === 'boolean') out.lifecycleNudges = r.lifecycleNudges;
   if (typeof r.streaks === 'boolean') out.streaks = r.streaks;
   if (typeof r.referral === 'boolean') out.referral = r.referral;
+  if (typeof r.liveVoice === 'boolean') out.liveVoice = r.liveVoice;
   if (PAYWALL_VARIANTS.includes(r.paywallVariant as PaywallVariant)) {
     out.paywallVariant = r.paywallVariant as PaywallVariant;
   }
