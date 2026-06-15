@@ -182,9 +182,15 @@ Kalan üretim işleri (uzak JWKS çekme, OpenTelemetry) `server/README.md`'de.
 > `src/i18n/<dil>.ts` + tariflere o dil anahtarını eklemekten ibaret.
 
 > RevenueCat native modül ister: Expo'da `expo prebuild`/dev-client ile çalışır
-> (Expo Go'da değil). `REQUIRE_SUBSCRIPTION` (config) dev'de `false`; üretimde
-> `true` yapıp `subscriptionStore.setBilling(createRevenueCatBilling({ iosApiKey,
-androidApiKey }))` ile gerçek SDK'ya geç.
+> (Expo Go'da DEĞİL). Bu yüzden `createRevenueCatBilling` billing barrel'ından
+> re-export EDİLMEZ; uygulama açılışta Expo Go'da çökmesin diye doğrudan yoldan
+> import edilir. `REQUIRE_SUBSCRIPTION` (config) dev'de `false`; üretimde `true`
+> yapıp şu şekilde gerçek SDK'ya geç:
+>
+> ```ts
+> import { createRevenueCatBilling } from './src/services/billing/revenuecat';
+> useSubscriptionStore.getState().setBilling(createRevenueCatBilling({ iosApiKey, androidApiKey }));
+> ```
 
 ## Derleme (EAS) & cihaz duman testi
 
