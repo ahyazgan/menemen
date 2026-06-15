@@ -44,7 +44,7 @@ export function pickSupportedLocale(
 }
 
 /** Nokta ayrımlı anahtarı aktif dile göre çözer; bulunamazsa anahtarı döndürür. */
-export function t(path: string): string {
+export function t(path: string, params?: Record<string, string | number>): string {
   const parts = path.split('.');
   let node: unknown = locales[activeLocale];
   for (const part of parts) {
@@ -54,5 +54,8 @@ export function t(path: string): string {
       return path;
     }
   }
-  return typeof node === 'string' ? node : path;
+  if (typeof node !== 'string') return path;
+  if (!params) return node;
+  // {key} yer tutucularını değiştir (eşleşmeyenler olduğu gibi kalır).
+  return node.replace(/\{(\w+)\}/g, (m, k: string) => (k in params ? String(params[k]) : m));
 }

@@ -3,7 +3,7 @@
  * diyet seçimi → izin gerekçeleri. CLAUDE.md: izinler net ve dürüst; kamera
  * sürekli açık değil. Sadece UI; diyet profileStore'a, "görüldü" onboardingStore'a.
  */
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import type { DietPref } from '../recipes/profile';
@@ -11,6 +11,7 @@ import { useThemeColors } from '../state/uiStore';
 import { useProfileStore } from '../state/profileStore';
 import { useOnboardingStore } from '../state/onboardingStore';
 import { useCookingStore } from '../state/cookingStore';
+import { track } from '../services/analytics';
 import { t } from '../i18n';
 import type { ThemeColors } from '../config/theme';
 
@@ -24,6 +25,11 @@ export function OnboardingScreen() {
   const complete = useOnboardingStore((s) => s.complete);
   const speak = useCookingStore((s) => s.speak);
   const [step, setStep] = useState(0);
+
+  // Aktivasyon hunisi: onboarding başladı (kurulum → ilk yemek yolunun başı).
+  useEffect(() => {
+    track({ name: 'onboarding_started' });
+  }, []);
 
   const last = 2;
   function next(): void {

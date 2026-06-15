@@ -161,6 +161,22 @@ test('tüm atlanmamış düğümler bitince tarif tamamlanır', () => {
   assert.equal(snap.progress, 1);
 });
 
+test('restore: kaydedilmiş adımları tamamlanmış sayar, sonrakini hazır yapar', () => {
+  const e = new RecipeEngine(sampleRecipe(), fakeClock());
+  const snap = e.restore(['chop', 'grate']);
+  assert.equal(e.state('chop').status, 'done');
+  assert.equal(e.state('grate').status, 'done');
+  assert.ok(snap.ready.includes('simmer'));
+  assert.ok(snap.progress > 0);
+});
+
+test('restore: bilinmeyen id güvenle yok sayılır', () => {
+  const e = new RecipeEngine(sampleRecipe(), fakeClock());
+  const snap = e.restore(['chop', 'yok-boyle-bir-adim']);
+  assert.equal(e.state('chop').status, 'done');
+  assert.equal(snap.done.length, 1);
+});
+
 test('döngü içeren graf reddedilir', () => {
   const cyclic: Recipe = {
     id: 'c',

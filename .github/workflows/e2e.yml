@@ -1,0 +1,37 @@
+name: E2E (Maestro)
+
+# Manuel tetiklenir — bir uygulama paketi (APK) + öykünücü gerektirir; PR CI'ını
+# bloklamaz. Akışlar e2e/flows altında; ayrıntı için e2e/README.md.
+on:
+  workflow_dispatch:
+
+jobs:
+  maestro:
+    name: Maestro flows (Android emulator)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      # NOT: Uygulama paketi burada üretilmeli ya da bir artefakttan indirilmeli.
+      # Örn. `eas build --profile preview --platform android --local` veya önceden
+      # üretilmiş bir APK'yı indirip APP_APK yoluna koy. Aşağısı kurulu bir APK
+      # varsayar.
+      - name: Maestro CLI kur
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+      - name: Android öykünücüde testleri çalıştır
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 31
+          arch: x86_64
+          script: |
+            # adb install path/to/app.apk
+            maestro test e2e/flows

@@ -12,6 +12,8 @@ import { usePantryStore } from './pantryStore';
 import { useProfileStore } from './profileStore';
 import { useMealPlanStore } from './mealPlanStore';
 import { useStepPhotosStore } from './stepPhotosStore';
+import { useCookSessionStore } from './cookSessionStore';
+import { useStreakStore } from './streakStore';
 
 const KEYS = [
   'lezzet.favorites',
@@ -22,6 +24,8 @@ const KEYS = [
   'lezzet.profile',
   'lezzet.mealPlan',
   'lezzet.stepPhotos',
+  'lezzet.cookSession',
+  'lezzet.cookDays',
 ];
 
 export async function resetUserData(): Promise<void> {
@@ -37,5 +41,7 @@ export async function resetUserData(): Promise<void> {
     useProfileStore.getState().load(),
     useMealPlanStore.getState().load(),
     useStepPhotosStore.getState().load(),
+    useCookSessionStore.getState().load(),
+    useStreakStore.getState().load(),
   ]);
 }

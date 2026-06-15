@@ -19,15 +19,20 @@ import {
   type ListRenderItem,
 } from 'react-native';
 
-import { recipeList, randomRecipe, getRecipe } from '../recipes';
+import { randomRecipe, getRecipe } from '../recipes';
 import { CATEGORIES, filterRecipes } from '../recipes/filter';
 import { filterByProfile, recipeDifficulty } from '../recipes/profile';
 import { AVAILABLE_LOCALES, t } from '../i18n';
 import { useUiStore, useThemeColors } from '../state/uiStore';
 import { useFavoritesStore } from '../state/favoritesStore';
 import { useHistoryStore } from '../state/historyStore';
+import { useStreakStore } from '../state/streakStore';
 import { useProfileStore } from '../state/profileStore';
+import { useRecipeSourceStore } from '../state/recipeSourceStore';
+import { useFlag } from '../state/flagsStore';
 import { cookCounts } from '../recipes/history';
+import { computeStreak, toDayNumber } from '../recipes/streak';
+import { forYou } from '../recipes/personalize';
 import { localize } from '../engine';
 import type { ThemeColors } from '../config/theme';
 import type { Recipe, RecipeCategory } from '../engine/types';
@@ -42,6 +47,12 @@ interface Props {
   onOpenSuggest: () => void;
   onOpenPlan: () => void;
   onOpenSettings: () => void;
+  /** Sürdürülebilir oturum varsa, kaldığı yerden devam edilecek tarif. */
+  resumeRecipe?: Recipe | null;
+  /** "Kaldığın yerden devam et" tıklanınca. */
+  onResume?: () => void;
+  /** Sürdürme teklifini kapat (oturumu unut). */
+  onDismissResume?: () => void;
 }
 
 export function RecipeListScreen({
@@ -52,6 +63,9 @@ export function RecipeListScreen({
   onOpenSuggest,
   onOpenPlan,
   onOpenSettings,
+  resumeRecipe,
+  onResume,
+  onDismissResume,
 }: Props) {
   const locale = useUiStore((s) => s.locale);
   const setLocale = useUiStore((s) => s.setLocale);
@@ -63,6 +77,7 @@ export function RecipeListScreen({
   const toggleFavorite = useFavoritesStore((s) => s.toggle);
   const historyEntries = useHistoryStore((s) => s.entries);
   const profile = useProfileStore((s) => s.profile);
+  const sourceList = useRecipeSourceStore((s) => s.list);
   const recent = useMemo(
     () =>
       historyEntries
@@ -72,16 +87,24 @@ export function RecipeListScreen({
     [historyEntries],
   );
   const counts = useMemo(() => cookCounts(historyEntries), [historyEntries]);
+  // "Sana özel": geçmişe göre cihaz-içi kişiselleştirme (veri cihazda kalır).
+  const forYouPicks = useMemo(
+    () => forYou(sourceList, historyEntries),
+    [sourceList, historyEntries],
+  );
+  const streaksEnabled = useFlag('streaks');
+  const cookDays = useStreakStore((s) => s.days);
+  const streak = useMemo(() => computeStreak(cookDays, toDayNumber(Date.now())), [cookDays]);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<RecipeCategory | null>(null);
   const [onlyFavorites, setOnlyFavorites] = useState(false);
 
   const shown = useMemo(() => {
     // Önce profil (diyet + kaçınılan malzeme), sonra arama/kategori/favori süzgeci.
-    const byProfile = filterByProfile(recipeList, profile);
+    const byProfile = filterByProfile(sourceList, profile);
     const base = filterRecipes(byProfile, { query, category });
     return onlyFavorites ? base.filter((r) => favoriteIds.includes(r.id)) : base;
-  }, [query, category, onlyFavorites, favoriteIds, profile]);
+  }, [sourceList, query, category, onlyFavorites, favoriteIds, profile]);
 
   const renderItem = useCallback<ListRenderItem<Recipe>>(
     ({ item }) => (
@@ -126,9 +149,79 @@ export function RecipeListScreen({
       </View>
       <Text style={styles.subtitle}>{t('picker.subtitle')}</Text>
 
+      {streaksEnabled && (
+        <View style={styles.streakCard}>
+          <Text style={styles.streakTitle}>
+            {streak.current > 0 ? t('streak.title', { count: streak.current }) : t('streak.start')}
+          </Text>
+          <Text style={styles.streakSub}>
+            {streak.cookedToday
+              ? t('streak.today')
+              : streak.current > 0
+                ? t('streak.keepGoing')
+                : t('streak.weekly', { count: streak.weeklyCount })}
+          </Text>
+          <View style={styles.streakDots}>
+            {[6, 5, 4, 3, 2, 1, 0].map((back) => {
+              const day = toDayNumber(Date.now()) - back;
+              const on = cookDays.includes(day);
+              return <View key={back} style={[styles.streakDot, on && styles.streakDotOn]} />;
+            })}
+          </View>
+        </View>
+      )}
+
+      {resumeRecipe && onResume && (
+        <View style={styles.resumeBanner}>
+          <View style={styles.resumeTextBlock}>
+            <Text style={styles.resumeLabel}>{t('picker.resumeLabel')}</Text>
+            <Text style={styles.resumeTitle} numberOfLines={1}>
+              {localize(resumeRecipe.title, locale)}
+            </Text>
+          </View>
+          <Pressable
+            style={styles.resumeBtn}
+            onPress={onResume}
+            accessibilityRole="button"
+            accessibilityLabel={t('picker.resume')}
+          >
+            <Text style={styles.resumeBtnText}>{t('picker.resume')}</Text>
+          </Pressable>
+          {onDismissResume && (
+            <Pressable
+              style={styles.resumeDismiss}
+              hitSlop={10}
+              onPress={onDismissResume}
+              accessibilityRole="button"
+              accessibilityLabel={t('picker.resumeDismiss')}
+            >
+              <Text style={styles.resumeDismissText}>✕</Text>
+            </Pressable>
+          )}
+        </View>
+      )}
+
       <Pressable style={styles.suggest} onPress={onOpenSuggest}>
         <Text style={styles.suggestText}>{t('suggest.button')}</Text>
       </Pressable>
+
+      {forYouPicks.length > 0 && (
+        <View style={styles.recentBlock}>
+          <Text style={styles.recentLabel}>{t('picker.forYou')}</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {forYouPicks.map((r) => (
+              <Pressable key={r.id} style={styles.forYouChip} onPress={() => onSelect(r)}>
+                <Text style={styles.forYouText}>{localize(r.title, locale)}</Text>
+                {r.totalMinutes != null && (
+                  <Text style={styles.forYouMeta}>
+                    {r.totalMinutes} {t('picker.minutes')}
+                  </Text>
+                )}
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
+      )}
 
       {recent.length > 0 && (
         <View style={styles.recentBlock}>
@@ -307,6 +400,43 @@ const makeStyles = (c: ThemeColors) =>
       marginBottom: 16,
     },
     suggestText: { color: c.onPrimary, fontSize: 16, fontWeight: '800' },
+    streakCard: {
+      backgroundColor: c.surface,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: c.border,
+      padding: 16,
+      marginBottom: 16,
+    },
+    streakTitle: { fontSize: 18, fontWeight: '800', color: c.text },
+    streakSub: { fontSize: 14, color: c.textMuted, marginTop: 4 },
+    streakDots: { flexDirection: 'row', gap: 8, marginTop: 12 },
+    streakDot: { flex: 1, height: 8, borderRadius: 4, backgroundColor: c.fill },
+    streakDotOn: { backgroundColor: c.accent },
+    resumeBanner: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: c.surface,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: c.primary,
+      paddingVertical: 12,
+      paddingHorizontal: 14,
+      marginBottom: 16,
+      gap: 10,
+    },
+    resumeTextBlock: { flex: 1 },
+    resumeLabel: { fontSize: 12, color: c.label, fontWeight: '700', textTransform: 'uppercase' },
+    resumeTitle: { fontSize: 16, color: c.text, fontWeight: '700', marginTop: 2 },
+    resumeBtn: {
+      backgroundColor: c.primary,
+      borderRadius: 10,
+      paddingVertical: 9,
+      paddingHorizontal: 14,
+    },
+    resumeBtnText: { color: c.onPrimary, fontSize: 14, fontWeight: '800' },
+    resumeDismiss: { paddingHorizontal: 4 },
+    resumeDismissText: { color: c.textSubtle, fontSize: 16, fontWeight: '700' },
     recentBlock: { marginBottom: 14 },
     recentLabel: { fontSize: 13, fontWeight: '700', color: c.textMuted, marginBottom: 8 },
     recentChip: {
@@ -319,6 +449,18 @@ const makeStyles = (c: ThemeColors) =>
       marginRight: 8,
     },
     recentText: { color: c.text, fontSize: 14, fontWeight: '600' },
+    forYouChip: {
+      backgroundColor: c.surface,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: c.accent,
+      paddingHorizontal: 14,
+      paddingVertical: 10,
+      marginRight: 8,
+      maxWidth: 200,
+    },
+    forYouText: { color: c.text, fontSize: 15, fontWeight: '700' },
+    forYouMeta: { color: c.textSubtle, fontSize: 12, marginTop: 2 },
     search: {
       backgroundColor: c.surface,
       borderRadius: 12,

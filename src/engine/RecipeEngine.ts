@@ -113,6 +113,24 @@ export class RecipeEngine {
 
   // --- geçişler ------------------------------------------------------------
 
+  /**
+   * Kaydedilmiş bir oturumu geri yükle: verilen düğümleri tamamlanmış say.
+   * Kullanıcı pişirme ortasında çıkıp geri döndüğünde, kaldığı yerden devam
+   * etmek için kullanılır. Bilinmeyen id'ler güvenle yok sayılır.
+   */
+  restore(doneIds: readonly string[]): EngineSnapshot {
+    const now = this.clock();
+    for (const id of doneIds) {
+      const state = this.states.get(id);
+      if (!state) continue;
+      state.status = 'done';
+      state.startedAt = state.startedAt ?? now;
+      state.finishedAt = now;
+    }
+    this.recomputeReady();
+    return this.snapshot();
+  }
+
   /** Hazır bir düğümü başlat (active). Paralel: birden fazla aktif olabilir. */
   start(id: string): EngineSnapshot {
     const state = this.state(id);

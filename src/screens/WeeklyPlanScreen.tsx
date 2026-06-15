@@ -3,10 +3,11 @@
  * + planlama). Profile göre plan üret, günü değiştir, tüm malzemeleri alışveriş
  * listesine aktar. Sadece UI; plan mantığı saf (recipes/mealPlan.ts).
  */
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { recipeList, getRecipe } from '../recipes';
+import { allRecipes, getRecipe } from '../recipes';
+import { useTransientFlag } from '../hooks/useTransientFlag';
 import { planIngredients } from '../recipes/mealPlan';
 import { recipeDifficulty } from '../recipes/profile';
 import { useUiStore, useThemeColors } from '../state/uiStore';
@@ -33,13 +34,12 @@ export function WeeklyPlanScreen({ onSelect, onBack }: Props) {
   const swap = useMealPlanStore((s) => s.swap);
   const clear = useMealPlanStore((s) => s.clear);
   const addToShopping = useShoppingStore((s) => s.add);
-  const [added, setAdded] = useState(false);
+  const [added, flashAdded] = useTransientFlag();
 
   function onAddAll(): void {
-    const items = planIngredients(plan, recipeList, locale);
+    const items = planIngredients(plan, allRecipes(), locale);
     void addToShopping(items);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
+    flashAdded();
   }
 
   return (

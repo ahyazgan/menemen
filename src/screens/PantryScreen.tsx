@@ -6,10 +6,10 @@
 import { useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { recipeList } from '../recipes';
 import { allIngredients, rankByPantry } from '../recipes/pantry';
 import { useUiStore, useThemeColors } from '../state/uiStore';
 import { usePantryStore } from '../state/pantryStore';
+import { useRecipeSourceStore } from '../state/recipeSourceStore';
 import { localize } from '../engine';
 import { t } from '../i18n';
 import type { ThemeColors } from '../config/theme';
@@ -27,9 +27,10 @@ export function PantryScreen({ onSelect, onBack }: Props) {
   const owned = usePantryStore((s) => s.owned);
   const toggle = usePantryStore((s) => s.toggle);
 
-  const ingredients = useMemo(() => allIngredients(recipeList), []);
+  const sourceList = useRecipeSourceStore((s) => s.list);
+  const ingredients = useMemo(() => allIngredients(sourceList), [sourceList]);
   const ownedSet = useMemo(() => new Set(owned), [owned]);
-  const ranked = useMemo(() => rankByPantry(recipeList, ownedSet), [ownedSet]);
+  const ranked = useMemo(() => rankByPantry(sourceList, ownedSet), [sourceList, ownedSet]);
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>

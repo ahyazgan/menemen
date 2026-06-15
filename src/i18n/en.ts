@@ -20,9 +20,13 @@ export const en: TranslationTree = {
     shopping: '🛒 Shopping list',
     pantry: '🧺 What can I make?',
     recent: 'Recently cooked',
+    forYou: 'For you',
     times: '×',
     noResults: 'No results.',
     noFavorites: 'No favorites yet. Tap the ☆ star on a recipe to add one.',
+    resumeLabel: 'Unfinished',
+    resume: 'Resume',
+    resumeDismiss: 'Dismiss',
     categories: {
       kahvalti: 'Breakfast',
       corba: 'Soup',
@@ -30,6 +34,34 @@ export const en: TranslationTree = {
       salata: 'Salad',
       pilav: 'Pilaf',
     },
+  },
+  streak: {
+    title: '🔥 {count}-day streak',
+    today: 'You cooked today — streak alive! 👏',
+    keepGoing: 'Cook today to keep your streak.',
+    start: 'Cook today to start a streak! 🔥',
+    weekly: '{count}/7 days this week',
+    best: 'Best: {count} days',
+  },
+  nudge: {
+    dinner: {
+      title: 'Dinner time 🍳',
+      body: 'What shall we cook tonight? Let’s make something in 20 minutes.',
+    },
+    comeback: {
+      title: 'Your kitchen misses you 👩‍🍳',
+      body: 'Let’s get back to it — I’ll pick a recipe you’ll love.',
+    },
+  },
+  live: {
+    start: '🎙️ Live mode — talk to me',
+    hint: 'In live mode I listen continuously and you can interrupt me anytime. The mic stays on.',
+    listening: 'Listening…',
+    agentSpeaking: 'Speaking…',
+    reconnecting: 'Reconnecting…',
+    mute: 'Mute',
+    unmute: 'Unmute',
+    end: 'End',
   },
   cooking: {
     back: '‹ Recipes',
@@ -116,6 +148,24 @@ export const en: TranslationTree = {
     loading: 'Loading…',
     purchase: 'Start',
     terms: 'Subscription renews via your store account; cancel anytime.',
+    trialBadge: '{days}-day free trial',
+    variants: {
+      control: {
+        title: 'Lezzet Pro',
+        subtitle: 'A pro by your side — voice guidance, pot checks, rescue when it goes wrong.',
+        cta: 'Cancel anytime.',
+      },
+      trial7: {
+        title: '7 days free',
+        subtitle: 'Try Lezzet Pro free for a week. No charge if it’s not for you.',
+        cta: 'Cancel before the trial ends and you won’t be charged.',
+      },
+      hard: {
+        title: 'Keep cooking',
+        subtitle: 'Live voice guidance and every recipe with Lezzet Pro. Start now.',
+        cta: 'Secure payment via your store account.',
+      },
+    },
   },
   shopping: {
     title: 'Shopping List',
@@ -174,6 +224,8 @@ export const en: TranslationTree = {
     restoreDone: 'Restored ✓',
     subscribedBadge: 'Your subscription is active',
     notSubscribed: 'No subscription',
+    nudges: 'Reminders',
+    nudgesHint: 'Sends a gentle nudge at dinner time and if you’ve been away a while.',
     voice: 'Voice guidance',
     voiceHint: 'Reads steps aloud with your device’s voice (no internet needed).',
     voiceOn: 'On',

@@ -21,10 +21,17 @@ import { SubscriptionGate } from './src/components/SubscriptionGate';
 import { ErrorBoundary } from './src/components/ErrorBoundary';
 import { initLocaleFromDevice } from './src/i18n/deviceLocale';
 import { useCookingStore } from './src/state/cookingStore';
+import { useCookSessionStore } from './src/state/cookSessionStore';
 import { useUiStore, useThemeColors } from './src/state/uiStore';
 import { useFavoritesStore } from './src/state/favoritesStore';
 import { useShoppingStore } from './src/state/shoppingStore';
 import { useHistoryStore } from './src/state/historyStore';
+import { useStreakStore } from './src/state/streakStore';
+import { useReviewStore } from './src/state/reviewStore';
+import { createExpoReview } from './src/services/review';
+import { useReferralStore } from './src/state/referralStore';
+import { useVoiceSessionStore } from './src/state/voiceSessionStore';
+import { useRecipeSourceStore } from './src/state/recipeSourceStore';
 import { useNotesStore } from './src/state/notesStore';
 import { usePantryStore } from './src/state/pantryStore';
 import { useStepPhotosStore } from './src/state/stepPhotosStore';
@@ -39,11 +46,15 @@ import { createRNShare } from './src/services/share';
 import { createExpoSpeechTTS } from './src/services/speech';
 import { VOICE_RATE_VALUE } from './src/state/uiStore';
 import { getLocale } from './src/i18n';
-import { setAnalytics, createMockAnalytics } from './src/services/analytics';
+import { setAnalytics, createMockAnalytics, track } from './src/services/analytics';
+import { setCrash, createSentryCrash } from './src/services/crash';
+import { useFlagsStore } from './src/state/flagsStore';
+import { rescheduleNudges } from './src/state/nudges';
 import { createAsyncStorage } from './src/services/storage';
 import { getRecipe } from './src/recipes';
 import { parseRecipeLink } from './src/recipes/share';
-import { PROXY_BASE_URL, PROXY_CLIENT_TOKEN } from './src/config';
+import { isResumable } from './src/recipes/session';
+import { PROXY_BASE_URL, PROXY_CLIENT_TOKEN, SENTRY_DSN, LIVEKIT_WS_URL } from './src/config';
 import type { Recipe } from './src/engine/types';
 
 /** Cihaz-içi (anahtarsız) TTS — hem açılışta hem proxy bağlanınca korunur. */
@@ -60,6 +71,8 @@ export default function App() {
   useState(() => {
     const detected = initLocaleFromDevice();
     useUiStore.getState().setLocale(detected);
+    // Çökme raporlama: DSN doluysa Sentry'yi bağla (anahtarsız kalırsa konsol).
+    if (SENTRY_DSN.trim()) setCrash(createSentryCrash(SENTRY_DSN.trim()));
     useCookingStore.getState().setNotify(createExpoNotify());
     // Cihaz-içi TTS: uygulama anahtar/proxy olmadan da gerçekten konuşur.
     useCookingStore.getState().setTts(makeDeviceTts());
@@ -78,6 +91,20 @@ export default function App() {
     const history = useHistoryStore.getState();
     history.setStore(storage);
     void history.load();
+    const streak = useStreakStore.getState();
+    streak.setStore(storage);
+    void streak.load();
+    const review = useReviewStore.getState();
+    review.setStore(storage);
+    review.setService(createExpoReview());
+    void review.load();
+    const referral = useReferralStore.getState();
+    referral.setStore(storage);
+    void referral.load();
+    // Uzak tarif önbelleği (offline): paket tariflerin üstüne yeni içerik ekler.
+    const recipeSource = useRecipeSourceStore.getState();
+    recipeSource.setStore(storage);
+    void recipeSource.load();
     const notes = useNotesStore.getState();
     notes.setStore(storage);
     void notes.load();
@@ -97,13 +124,20 @@ export default function App() {
     useShareStore.getState().setService(createRNShare());
     // Analitik: dev'de olayları logla. Üretimde createHttpAnalytics(proxy) ile değiştir.
     setAnalytics(createMockAnalytics((event) => console.log('[analytics]', event.name)));
+    track({ name: 'app_opened' }); // oturum başı (retention/funnel zemini)
     const onboarding = useOnboardingStore.getState();
     onboarding.setStore(storage);
     void onboarding.load();
+    // Aktif pişirme oturumu: yarım kalan iş varsa "devam et" teklifi için yükle.
+    const cookSession = useCookSessionStore.getState();
+    cookSession.setStore(storage);
+    void cookSession.load();
     return null;
   });
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [cooking, setCooking] = useState(false);
+  // Sürdürülen oturumda tamamlanmış adımlar (varsa CookingScreen'e geçilir).
+  const [resumeDone, setResumeDone] = useState<readonly string[] | undefined>(undefined);
   const [showShopping, setShowShopping] = useState(false);
   const [showPantry, setShowPantry] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
@@ -117,7 +151,18 @@ export default function App() {
     setShowSuggest(false);
     setShowPlan(false);
     setCooking(false); // önce önizleme
+    setResumeDone(undefined); // normal açılış: baştan başla
     setRecipe(r);
+  }
+
+  // "Kaldığın yerden devam et": önizlemeyi atla, doğrudan canlı pişirmeye gir.
+  function resumeRecipe(r: Recipe, doneIds: readonly string[]) {
+    setShowPantry(false);
+    setShowSuggest(false);
+    setShowPlan(false);
+    setResumeDone(doneIds);
+    setRecipe(r);
+    setCooking(true);
   }
 
   // Android donanım geri tuşu: açık alt ekranı kapat (uygulamadan çıkma).
@@ -160,9 +205,11 @@ export default function App() {
     return () => sub.remove();
   }, [handleHardwareBack]);
 
-  // Gelen derin bağlantı (lezzet://recipe/<id>) → paylaşılan tarifi aç.
+  // Gelen derin bağlantı (lezzet://recipe/<id>?ref=...) → davet atfını yakala +
+  // paylaşılan tarifi aç.
   useEffect(() => {
     function handle(url: string | null): void {
+      void useReferralStore.getState().captureIncoming(url); // viral atıf (bir kez)
       const id = parseRecipeLink(url);
       if (!id) return;
       const r = getRecipe(id);
@@ -172,6 +219,14 @@ export default function App() {
     const sub = Linking.addEventListener('url', (e) => handle(e.url));
     return () => sub.remove();
   }, []);
+
+  // Yaşam döngüsü (re-engagement) bildirimlerini planla. cookDays değişince
+  // (açılışta yükleme + her yeni pişirme günü) yeniden planlanır → "bugün
+  // pişirdi mi" ve "son etkinlik" referansları güncel kalır.
+  const cookDays = useStreakStore((s) => s.days);
+  useEffect(() => {
+    void rescheduleNudges();
+  }, [cookDays]);
 
   // Proxy adresi yapılandırıldıysa gerçek servisleri otomatik bağla (Claude
   // vision/intent + AI öneri + bulut STT). Cihaz-içi TTS korunur (anahtarsız).
@@ -206,6 +261,39 @@ export default function App() {
           clientToken: token,
         }),
       );
+      // Remote config (özellik bayrakları). Hata akışı bozmaz → varsayılanlar kalır.
+      try {
+        const res = await fetch(`${base.replace(/\/$/, '')}/config`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        });
+        if (!cancelled && res.ok) useFlagsStore.getState().applyRemote(await res.json());
+      } catch {
+        // remote config alınamadı → güvenli varsayılanlarla devam
+      }
+      // Uzak tarif içeriği (CMS). Doğrulanır; bozuk olan düşülür; paket korunur.
+      try {
+        const res = await fetch(`${base.replace(/\/$/, '')}/recipes`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        });
+        if (!cancelled && res.ok)
+          await useRecipeSourceStore.getState().applyRemote(await res.json());
+      } catch {
+        // uzak tarifler alınamadı → yalnızca paket tarifler (offline güvenli)
+      }
+      // Canlı ses: LIVEKIT_WS_URL doluysa gerçek LiveKit servisini bağla
+      // (token proxy'den; native modül dinamik import). Yoksa mock kalır.
+      if (!cancelled && LIVEKIT_WS_URL.trim()) {
+        const voice = await import('./src/services/voice');
+        if (!cancelled) {
+          useVoiceSessionStore.getState().setService(
+            voice.createLiveKitVoice({
+              wsUrl: LIVEKIT_WS_URL.trim(),
+              tokenUrl: `${base.replace(/\/$/, '')}/voice-token`,
+              clientToken: token,
+            }),
+          );
+        }
+      }
     })();
     return () => {
       cancelled = true;
@@ -214,7 +302,9 @@ export default function App() {
 
   function content() {
     if (recipe && cooking)
-      return <CookingScreen recipe={recipe} onBack={() => setCooking(false)} />;
+      return (
+        <CookingScreen recipe={recipe} resumeDone={resumeDone} onBack={() => setCooking(false)} />
+      );
     if (recipe)
       return (
         <RecipePreviewScreen
@@ -248,6 +338,11 @@ export default function App() {
         onOpenSuggest={() => setShowSuggest(true)}
         onOpenPlan={() => setShowPlan(true)}
         onOpenSettings={() => setShowSettings(true)}
+        resumeRecipe={resumable}
+        onResume={() => {
+          if (resumable && session) resumeRecipe(resumable, session.doneIds);
+        }}
+        onDismissResume={() => void clearSession()}
       />
     );
   }
@@ -256,6 +351,10 @@ export default function App() {
   const theme = useUiStore((s) => s.theme);
   const onboardingLoaded = useOnboardingStore((s) => s.loaded);
   const onboardingSeen = useOnboardingStore((s) => s.seen);
+  const session = useCookSessionStore((s) => s.session);
+  const clearSession = useCookSessionStore((s) => s.clear);
+  // Yarım kalan oturum sürdürülebilir mi (adım var + tarif mevcut)?
+  const resumable = isResumable(session) ? (getRecipe(session.recipeId) ?? null) : null;
 
   function gated() {
     // Kalıcı değer okunana dek nötr (onboarding dönen kullanıcıya yanıp sönmesin).

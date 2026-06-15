@@ -4,7 +4,7 @@
  */
 import { create } from 'zustand';
 
-import { recipeList } from '../recipes';
+import { allRecipes } from '../recipes';
 import {
   generatePlan,
   swapDay,
@@ -41,14 +41,14 @@ export const useMealPlanStore = create<MealPlanState>((set, get) => ({
   },
 
   generate: async (profile, days = DEFAULT_DAYS) => {
-    const plan = generatePlan(recipeList, profile, days);
+    const plan = generatePlan(allRecipes(), profile, days);
     set({ plan });
     track({ name: 'plan_generated', days: plan.length });
     await get().store.setItem(KEY, serializePlan(plan));
   },
 
   swap: async (profile, day) => {
-    const plan = swapDay(get().plan, recipeList, profile, day);
+    const plan = swapDay(get().plan, allRecipes(), profile, day);
     set({ plan });
     await get().store.setItem(KEY, serializePlan(plan));
   },

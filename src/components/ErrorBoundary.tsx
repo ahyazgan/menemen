@@ -8,8 +8,10 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { useThemeColors } from '../state/uiStore';
 import { track } from '../services/analytics';
+import { reportError } from '../services/crash';
 import { t } from '../i18n';
 import type { ThemeColors } from '../config/theme';
+import type { ErrorInfo } from 'react';
 
 interface Props {
   children: ReactNode;
@@ -25,8 +27,9 @@ export class ErrorBoundary extends Component<Props, State> {
     return { hasError: true };
   }
 
-  override componentDidCatch(): void {
+  override componentDidCatch(error: Error, info: ErrorInfo): void {
     track({ name: 'screen_view', screen: 'error' });
+    reportError(error, { componentStack: info.componentStack ?? '' });
   }
 
   reset = (): void => this.setState({ hasError: false });

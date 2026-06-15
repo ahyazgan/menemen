@@ -21,3 +21,7 @@ android/
 # misc
 .DS_Store
 npm-debug.*
+
+# Python (agent/) derleme önbelleği
+__pycache__/
+*.pyc

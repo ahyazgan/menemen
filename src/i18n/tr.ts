@@ -18,9 +18,13 @@ export const tr = {
     shopping: '🛒 Alışveriş listesi',
     pantry: '🧺 Elimde ne var?',
     recent: 'Son pişirdiklerin',
+    forYou: 'Sana özel',
     times: 'kez',
     noResults: 'Sonuç yok.',
     noFavorites: 'Henüz favorin yok. Bir tarifte ☆ yıldıza dokunarak ekleyebilirsin.',
+    resumeLabel: 'Yarım kalan',
+    resume: 'Devam et',
+    resumeDismiss: 'Kapat',
     categories: {
       kahvalti: 'Kahvaltı',
       corba: 'Çorba',
@@ -28,6 +32,34 @@ export const tr = {
       salata: 'Salata',
       pilav: 'Pilav',
     },
+  },
+  streak: {
+    title: '🔥 {count} günlük seri',
+    today: 'Bugün de pişirdin, seri sürüyor! 👏',
+    keepGoing: 'Bugün pişir, serini sürdür.',
+    start: 'Bugün pişir, seriye başla! 🔥',
+    weekly: 'Bu hafta {count}/7 gün',
+    best: 'Rekor: {count} gün',
+  },
+  nudge: {
+    dinner: {
+      title: 'Akşam yemeği vakti 🍳',
+      body: 'Bugün ne pişirelim? Birlikte 20 dakikada bir şeyler yapalım.',
+    },
+    comeback: {
+      title: 'Mutfak seni özledi 👩‍🍳',
+      body: 'Hadi yeniden başlayalım — canının çektiği bir tarif seçeyim.',
+    },
+  },
+  live: {
+    start: '🎙️ Canlı mod — benimle konuş',
+    hint: 'Canlı modda seni sürekli dinlerim, istediğin an sözümü kesebilirsin. Mikrofon açık kalır.',
+    listening: 'Dinliyorum…',
+    agentSpeaking: 'Konuşuyorum…',
+    reconnecting: 'Yeniden bağlanıyor…',
+    mute: 'Sustur',
+    unmute: 'Aç',
+    end: 'Bitir',
   },
   cooking: {
     back: '‹ Tarifler',
@@ -114,6 +146,24 @@ export const tr = {
     loading: 'Yükleniyor…',
     purchase: 'Başla',
     terms: 'Abonelik mağaza hesabından yenilenir; istediğin zaman iptal edebilirsin.',
+    trialBadge: '{days} gün ücretsiz dene',
+    variants: {
+      control: {
+        title: 'Lezzet Pro',
+        subtitle: 'Mutfakta yanında bir usta — sesli rehber, tencere kontrolü, kurtarma.',
+        cta: 'İstediğin zaman iptal edebilirsin.',
+      },
+      trial7: {
+        title: '7 gün ücretsiz',
+        subtitle: 'Lezzet Pro’yu bir hafta ücretsiz dene. Beğenmezsen ücret yok.',
+        cta: 'Deneme bitmeden iptal et, ücret alınmaz.',
+      },
+      hard: {
+        title: 'Pişirmeye devam et',
+        subtitle: 'Canlı sesli rehber ve tüm tarifler Lezzet Pro ile. Hemen başla.',
+        cta: 'Mağaza hesabından güvenle ödeme.',
+      },
+    },
   },
   shopping: {
     title: 'Alışveriş Listesi',
@@ -172,6 +222,8 @@ export const tr = {
     restoreDone: 'Geri yüklendi ✓',
     subscribedBadge: 'Aboneliğin aktif',
     notSubscribed: 'Abonelik yok',
+    nudges: 'Hatırlatmalar',
+    nudgesHint: 'Akşam yemeği vakti ve uzun süre uğramayınca nazik hatırlatma gönderir.',
     voice: 'Sesli yönlendirme',
     voiceHint: 'Adımları cihazının sesiyle yüksek sesle okur (internet gerekmez).',
     voiceOn: 'Açık',

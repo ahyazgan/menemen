@@ -7,7 +7,8 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
 
 ## Bu repoda ne var
 
-Çalışan iskelet kuruldu:
+Uçtan uca çalışan uygulama — çekirdek deneyim, büyüme/monetizasyon, kişiselleştirme
+ve canlı ses temeli (aşağıda "Büyüme, kişiselleştirme ve canlı ses" başlığı):
 
 - **`src/engine/`** — saf TypeScript tarif motoru (React/Expo importu yok).
   Tarifi yürütülebilir bir grafa çevirir; bağımlılık, paralel iş, zamanlayıcı,
@@ -112,6 +113,47 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   harita mantığı `recipes/stepPhotos.ts`'te ve testli; çekim `services/photo`
   arayüzü arkasında (mock + expo), seçim `stepPhotosStore`'da kalıcı.
 
+## Büyüme, kişiselleştirme ve canlı ses
+
+Çekirdek deneyimin üstüne kurulan, "ship → ölç → öğren" döngüsünü ve ürün
+hendegini derinleştiren sistemler. Hepsinin saf mantığı testli; native/anahtar
+gerektirenler dinamik import + flag ile **Expo Go güvenli** ve **geri alınabilir**.
+
+- **Pişirme oturumunu sürdür** — yemek ortasında çıkarsan, tekrar açınca tarif
+  listesinde "kaldığın yerden devam et?" çıkar (aktif tarif + tamamlanan adımlar
+  kalıcı). Motor `restore()` + saf `recipes/session.ts` (testli) + `cookSessionStore`.
+- **Streak / gamification** — günlük pişirme serisi (🔥 N gün + haftalık 7 nokta),
+  alışkanlık döngüsü. Saf `recipes/streak.ts` (testli) + `streakStore`.
+- **"Sana özel" kişiselleştirme** — geçmişten kategori/malzeme afinitesi çıkarıp
+  pişirilmemiş, zevke uygun tarifleri öne çıkarır. **Veri cihazda kalır** (gizlilik
+  dostu, sunucu yok). Saf `recipes/personalize.ts` (testli).
+- **In-app review** — "aha anından" sonra (2+ başarılı yemek, sürüm başına bir kez)
+  mağaza puanı ister (`expo-store-review`, dinamik). Saf kapı `recipes/review.ts`.
+- **Re-engagement bildirimleri** — akşam yemeği saati + "seni özledik" yerel
+  dürtüleri (Ayarlar'dan aç/kapa). Saf plan `recipes/reengage.ts` (testli).
+- **Referans / viral döngü** — takma adlı (PII'siz) davet kodlu derin bağlantı;
+  gelen davet bir kez atfedilir. Saf `recipes/share.ts` (testli) + `referralStore`.
+- **Feature-flag + remote config** — `config/flags.ts` (güvenli `sanitizeFlags`,
+  testli) + `flagsStore`; proxy `/config`'ten uygulanır. A/B ve kademeli açılış için.
+- **Paywall A/B varyantları** — `control / trial7 / hard` (remote config'ten);
+  `paywall_view` + `subscribed` olayları varyantla → dönüşüm kıyaslanır. Saf
+  `recipes/paywall.ts` (testli).
+- **Aktivasyon hunisi + analitik** — `app_opened`, `onboarding_started`,
+  `first_cook_completed` (kuzey yıldızı), paywall/review/nudge/referral olayları.
+- **Çökme/hata raporlama** — `services/crash` (Sentry, dinamik; `SENTRY_DSN`
+  doluysa) ErrorBoundary'ye bağlı; boşsa konsola düşer.
+- **İçerik ölçeği (CMS'e giden yol)** — proxy `/recipes`'ten **uzaktan tarif**
+  yükleme; çalışma-zamanı doğrulama + gerçek motorla DAG sınaması (bozuk olan
+  düşülür), offline önbellek, paket tarifler garantili taban. Saf
+  `recipes/validate.ts` (testli) + `recipeSourceStore`.
+- **Canlı (full-duplex) ses — `flags.liveVoice` ile v1'de KAPALI** — kesintisiz,
+  sözünü kesebildiğin (barge-in) konuşma için tam temel: saf durum makinesi
+  (`engine/voiceSession.ts`, testli), `services/voice` (mock + LiveKit, dinamik),
+  proxy `/voice-token` (sıfır-bağımlılık JWT) ve sunucu-taraflı AI ajanı iskeleti
+  (`agent/`, LiveKit Agents: Deepgram→Claude→ElevenLabs, gıda güvenliği prompt'lu).
+- **E2E test harness** — `e2e/` Maestro akışları (onboarding/keşif/pişirme) + manuel
+  CI workflow'u.
+
 ## Kurulum
 
 ```bash
@@ -154,11 +196,15 @@ sunucu testleri) otomatik koşar.
 ```
 screens/   → ekranlar (sadece UI)
 state/     → Zustand store (cookingStore = durum makinesi)
-engine/    → saf TS graf yürütücü (platformdan bağımsız, test edilebilir)
+engine/    → saf TS graf yürütücü + durum makineleri (platformdan bağımsız, testli)
 services/  → harici servisler, hep interface arkasında (mock + real)
-recipes/   → tarif grafları
+recipes/   → tarif grafları + saf alan mantığı (filtre, plan, streak, kişiselleştirme…)
+hooks/     → paylaşılan UI hook'ları (ör. useTransientFlag)
 config/    → sabitler ve özellik bayrakları
 ```
+
+Depo kökünde ayrıca: `server/` (anahtar-saklayan proxy, sıfır bağımlılık),
+`agent/` (canlı ses AI ajanı — ayrı servis), `e2e/` (Maestro akışları).
 
 Akış: **screens → state → services**. Ekran asla servisi doğrudan çağırmaz.
 `engine` saf kalır ki test edilebilsin.
@@ -181,18 +227,25 @@ useCookingStore
 Proxy artık **JWT doğrulaması (HS256 / RS256 / JWKS)**, anahtar başına **hız
 sınırlama**, **uç nokta allowlist'i**, **gövde boyut limiti** ve **gözlem**
 (`/health`, Prometheus `/metrics`, `reqId`'li JSON log) içeriyor; hepsi testli.
+Ayrıca **anahtarsız** remote içerik uçları: `GET /config` (feature-flag,
+`LEZZET_FLAGS`), `GET /recipes` (uzak tarifler, `LEZZET_RECIPES_FILE`) ve canlı
+ses için `POST /voice-token` (sıfır-bağımlılık LiveKit JWT, secret sunucuda kalır).
 Kalan üretim işleri (uzak JWKS çekme, OpenTelemetry) `server/README.md`'de.
 
-## Sıradaki gerçek işler (öncelik sırası)
+## Durum: kod tarafı tamam
 
-1. ~~`services/real/` — Deepgram, ElevenLabs, Claude Vision/Intent~~ ✅
-2. ~~`expo-audio` ses kaydı + `expo-camera` frame-on-demand (store'a)~~ ✅
-3. ~~Anahtarlar için backend proxy iskeleti~~ ✅
-4. ~~Proxy'ye Bearer token doğrulaması + anahtar başına hız sınırlama~~ ✅
-5. ~~RevenueCat — abonelik iskeleti (iOS IAP + Android Play Billing)~~ ✅
-6. ~~"Ne pişsem" ekranı ve tarif seçimi~~ ✅
-7. ~~Tarif kütüphanesini çoğalt~~ ✅ (50 tarif; istendikçe eklenir)
-8. ~~EN dili (`src/i18n/en.ts`) + locale altyapısı~~ ✅
+Çekirdek deneyim + büyüme + kişiselleştirme + canlı ses temeli + içerik ölçeği
+kuruldu ve testli (motor/uygulama + sunucu testleri, tsc/lint/format temiz,
+`npm run preflight` 0 hata). Geriye kalan iş **operasyoneldir** (kod değil),
+sırasıyla `docs/launch-runbook.md`'de:
+
+1. `eas init` → `extra.eas.projectId` (build öncesi şart; Expo hesabı gerekir).
+2. Proxy'yi yayınla + `PROXY_BASE_URL`'i doldur (AI öneri/vision/bulut ses aktif).
+3. Gerçek görseller (ikon/splash) + mağaza ekran görüntüleri.
+4. Üretim: `REQUIRE_SUBSCRIPTION=true` + RevenueCat ürün/anahtarları.
+5. Gizlilik URL'i (`PRIVACY.md` yayınla) + `docs/store-listing.md` formları.
+6. Dev-client build + cihaz duman testi (aşağıdaki kontrol listesi).
+7. (Opsiyonel) Canlı ses: LiveKit + `agent/` AI ajanı dağıtımı; Sentry DSN.
 
 > EN dili UI metinlerini kapsar; cihaz dili tespiti eklendi (App açılışta
 > `initLocaleFromDevice()`). Tarif içeriği de tamamen çok dilli: **50/50 tarif**
@@ -234,6 +287,10 @@ eas build --profile development --platform ios   # veya android / all
 # dev-client'i cihaza/simülatöre kur, ardından:
 npx expo start --dev-client
 ```
+
+> **Yeni mimari:** İlk dev-client build'ini sorunsuz almak için `app.json` →
+> `newArchEnabled` şimdilik **false** (RN 0.74 + bazı üçüncü-parti native modüller
+> yeni mimaride sorun çıkarabilir). Uyumu doğrulayınca `true` yapılabilir.
 
 ### Cihaz duman-testi kontrol listesi
 

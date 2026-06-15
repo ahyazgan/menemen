@@ -13,6 +13,7 @@ import { useUiStore, useThemeColors } from '../state/uiStore';
 import { useFavoritesStore } from '../state/favoritesStore';
 import { useShoppingStore } from '../state/shoppingStore';
 import { useStepPhotosStore } from '../state/stepPhotosStore';
+import { useTransientFlag } from '../hooks/useTransientFlag';
 import { localize } from '../engine';
 import { t } from '../i18n';
 import type { ThemeColors } from '../config/theme';
@@ -34,7 +35,7 @@ export function RecipePreviewScreen({ recipe, onCook, onBack }: Props) {
   const recipePhotos = useStepPhotosStore((s) => s.map[recipe.id]);
   const photoUris = useMemo(() => Object.values(recipePhotos ?? {}), [recipePhotos]);
   const [servings, setServings] = useState(recipe.servings);
-  const [added, setAdded] = useState(false);
+  const [added, flashAdded] = useTransientFlag();
 
   const fav = favoriteIds.includes(recipe.id);
   const diet = recipeDiet(recipe);
@@ -52,8 +53,7 @@ export function RecipePreviewScreen({ recipe, onCook, onBack }: Props) {
       checked: false,
     }));
     void addToShopping(items);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
+    flashAdded();
   }
 
   return (

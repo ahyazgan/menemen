@@ -19,15 +19,21 @@ import { useCookingStore } from '../state/cookingStore';
 import { useUiStore, useThemeColors } from '../state/uiStore';
 import { useShoppingStore } from '../state/shoppingStore';
 import { useHistoryStore } from '../state/historyStore';
+import { useStreakStore } from '../state/streakStore';
 import { useNotesStore } from '../state/notesStore';
 import { useStepPhotosStore } from '../state/stepPhotosStore';
 import { useProfileStore } from '../state/profileStore';
 import { useShareStore } from '../state/shareStore';
+import { useReferralStore } from '../state/referralStore';
+import { useFlag } from '../state/flagsStore';
+import { track } from '../services/analytics';
 import { getStepPhoto } from '../recipes/stepPhotos';
 import { guidance } from '../recipes/skill';
-import { recipeDeepLink, buildShareText } from '../recipes/share';
+import { recipeDeepLink, buildShareText, buildReferralLink } from '../recipes/share';
 import { VoiceButton } from '../components/VoiceButton';
 import { PotCheckButton } from '../components/PotCheckButton';
+import { LiveVoiceButton } from '../components/LiveVoiceButton';
+import { useTransientFlag } from '../hooks/useTransientFlag';
 import { ingredientLabel } from '../recipes/ingredients';
 import type { ShoppingItem } from '../recipes/shopping';
 import { t } from '../i18n';
@@ -39,9 +45,11 @@ interface Props {
   recipe: Recipe;
   /** Tarif listesine dönüş (opsiyonel). */
   onBack?: () => void;
+  /** Sürdürülen oturumda tamamlanmış adım id'leri (kaldığı yerden devam). */
+  resumeDone?: readonly string[];
 }
 
-export function CookingScreen({ recipe, onBack }: Props) {
+export function CookingScreen({ recipe, onBack, resumeDone }: Props) {
   // Alan-bazlı seçiciler: en karmaşık ekran, yalnızca ilgili alan değişince
   // render olsun (tüm store'a abone olup her tick/konuşmada render etmesin).
   const engine = useCookingStore((s) => s.engine);
@@ -67,6 +75,7 @@ export function CookingScreen({ recipe, onBack }: Props) {
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const addToShopping = useShoppingStore((s) => s.add);
   const recordHistory = useHistoryStore((s) => s.record);
+  const recordStreak = useStreakStore((s) => s.record);
   const note = useNotesStore((s) => s.notes[recipe.id] ?? '');
   const setNote = useNotesStore((s) => s.setNote);
   const photoMap = useStepPhotosStore((s) => s.map);
@@ -75,23 +84,29 @@ export function CookingScreen({ recipe, onBack }: Props) {
   const skill = useProfileStore((s) => s.profile.skill);
   const guide = guidance(skill);
   const share = useShareStore((s) => s.share);
+  const referralEnabled = useFlag('referral');
+  const liveVoiceEnabled = useFlag('liveVoice');
   const [servings, setServings] = useState(recipe.servings);
 
   function onShare(): void {
-    const text = buildShareText(
-      t('cooking.shareText'),
-      localize(recipe.title, locale),
-      recipeDeepLink(recipe.id),
-    );
+    // Referans açıksa davet kodlu bağlantı paylaş (viral atıf); yoksa düz link.
+    const code = useReferralStore.getState().myCode;
+    const link =
+      referralEnabled && code ? buildReferralLink(recipe.id, code) : recipeDeepLink(recipe.id);
+    const text = buildShareText(t('cooking.shareText'), localize(recipe.title, locale), link);
     void share(text);
+    if (referralEnabled && code) track({ name: 'referral_shared' });
   }
-  const [added, setAdded] = useState(false);
+  const [added, flashAdded] = useTransientFlag();
   const complete = snapshot?.complete ?? false;
 
-  // Tarif tamamlanınca pişirme geçmişine kaydet (bir kez).
+  // Tarif tamamlanınca pişirme geçmişine ve günlük seriye kaydet (bir kez).
   useEffect(() => {
-    if (complete) void recordHistory(recipe.id);
-  }, [complete, recipe.id, recordHistory]);
+    if (complete) {
+      void recordHistory(recipe.id);
+      void recordStreak();
+    }
+  }, [complete, recipe.id, recordHistory, recordStreak]);
 
   function onAddToShopping(): void {
     if (!recipe.ingredients) return;
@@ -101,14 +116,13 @@ export function CookingScreen({ recipe, onBack }: Props) {
       checked: false,
     }));
     void addToShopping(items);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
+    flashAdded();
   }
 
-  // Tarifi yükle ve pişirmeyi başlat.
+  // Tarifi yükle (varsa kaldığı yerden) ve pişirmeyi başlat.
   useEffect(() => {
-    loadRecipe(recipe);
-  }, [recipe, loadRecipe]);
+    loadRecipe(recipe, resumeDone);
+  }, [recipe, resumeDone, loadRecipe]);
 
   // Saniyede bir zamanlayıcıları ilerlet (süresi dolan timer'ları tamamlar).
   useEffect(() => {
@@ -346,6 +360,9 @@ export function CookingScreen({ recipe, onBack }: Props) {
       {/* Ses (bas-konuş) ve frame-on-demand kamera kontrolleri */}
       <VoiceButton />
       <PotCheckButton />
+
+      {/* Canlı (full-duplex) ses modu — yalnızca flag açıkken (v1'de kapalı) */}
+      {liveVoiceEnabled && !complete && <LiveVoiceButton recipe={recipe} currentNode={current} />}
 
       {/* Yazılı komut yedeği (mikrofon yokken/Expo Go'da bile çalışır) */}
       <TextInput

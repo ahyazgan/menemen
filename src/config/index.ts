@@ -31,3 +31,19 @@ export const PROXY_BASE_URL = '';
 
 /** Proxy'ye gönderilecek istemci oturum token'ı (Bearer). Opsiyonel. */
 export const PROXY_CLIENT_TOKEN = '';
+
+/**
+ * Sentry DSN. DOLU olursa App açılışta çökme/hata raporlamayı (Sentry) bağlar;
+ * BOŞ ise konsola düşer (Expo Go/dev). Üretim için `npx expo install
+ * @sentry/react-native` + buraya DSN. DSN gizli anahtar değildir (yalnızca olay
+ * gönderimi); gerçek sağlayıcı anahtarları yine proxy'de kalır.
+ */
+export const SENTRY_DSN = '';
+
+/**
+ * Canlı (full-duplex) ses için LiveKit oda WebSocket URL'i (wss://...). DOLU +
+ * `liveVoice` flag'i açık + PROXY_BASE_URL doluysa canlı mod kullanılabilir.
+ * Token uygulamaya gömülmez; proxy /voice-token imzalar. BOŞ ise canlı mod
+ * mock'la çalışır (gerçek odaya bağlanmaz). CLAUDE.md: v1'de flag KAPALI.
+ */
+export const LIVEKIT_WS_URL = '';
