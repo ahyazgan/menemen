@@ -59,6 +59,7 @@ export function CookingScreen({ recipe, onBack }: Props) {
     resumeCooking,
     speak,
     handleUtterance,
+    lastVision,
   } = useCookingStore();
   const [command, setCommand] = useState('');
   const locale = useUiStore((s) => s.locale);
@@ -305,6 +306,19 @@ export function CookingScreen({ recipe, onBack }: Props) {
         </View>
       )}
 
+      {/* Son tencere kontrolü (Vision gözlem + öneri / kritikte güvenlik) */}
+      {lastVision && (
+        <View style={styles.visionCard}>
+          <Text style={styles.visionLabel}>{t('cooking.potCheckTitle')}</Text>
+          <Text style={styles.visionObs}>{lastVision.observation}</Text>
+          {current?.safety?.critical ? (
+            <Text style={styles.visionSafety}>⚠️ {localize(current.safety.message, locale)}</Text>
+          ) : (
+            <Text style={styles.visionSug}>{lastVision.suggestion}</Text>
+          )}
+        </View>
+      )}
+
       {/* Hazır (paralel) adımlar */}
       {snapshot.ready.length > 0 && (
         <View style={styles.section}>
@@ -536,6 +550,30 @@ const makeStyles = (c: ThemeColors) =>
       borderColor: c.warningBorder,
     },
     safetyBannerText: { color: c.warning, fontSize: 14, fontWeight: '600' },
+    visionCard: {
+      backgroundColor: c.surface,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: c.border,
+      padding: 16,
+      marginTop: 16,
+    },
+    visionLabel: {
+      fontSize: 12,
+      color: c.label,
+      fontWeight: '700',
+      textTransform: 'uppercase',
+      marginBottom: 6,
+    },
+    visionObs: { fontSize: 16, color: c.text, lineHeight: 23 },
+    visionSug: { fontSize: 15, color: c.textBody, lineHeight: 22, marginTop: 8 },
+    visionSafety: {
+      fontSize: 15,
+      color: c.warning,
+      fontWeight: '600',
+      lineHeight: 22,
+      marginTop: 8,
+    },
     commandInput: {
       marginTop: 12,
       backgroundColor: c.surface,
