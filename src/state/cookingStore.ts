@@ -24,6 +24,7 @@ import { createMockServices } from '../services/mock';
 import { createMockNotify } from '../services/notify';
 import type { NotificationService } from '../services/notify';
 import { track } from '../services/analytics';
+import { useCookSessionStore } from './cookSessionStore';
 import { INTENT_CONFIDENCE_THRESHOLD } from '../config';
 import { getLocale, t } from '../i18n';
 
@@ -60,7 +61,8 @@ interface CookingState {
   setTts: (tts: Services['tts']) => void;
   /** Bildirim servisini değiştir (mock → expo; bkz. services/notify). */
   setNotify: (notify: NotificationService) => void;
-  loadRecipe: (recipe: Recipe) => void;
+  /** Tarifi yükle. `resumeDone` verilirse o adımlar tamamlanmış sayılır. */
+  loadRecipe: (recipe: Recipe, resumeDone?: readonly string[]) => void;
   startCooking: () => void;
   focus: (nodeId: string) => void;
   startNode: (nodeId: string) => Promise<void>;
@@ -100,13 +102,15 @@ export const useCookingStore = create<CookingState>((set, get) => ({
   setTts: (tts) => set({ services: { ...get().services, tts } }),
   setNotify: (notify) => set({ notify }),
 
-  loadRecipe: (recipe) => {
+  loadRecipe: (recipe, resumeDone) => {
     const engine = new RecipeEngine(recipe);
+    const snapshot =
+      resumeDone && resumeDone.length > 0 ? engine.restore(resumeDone) : engine.snapshot();
     track({ name: 'recipe_started', recipeId: recipe.id });
     set({
       engine,
       recipe,
-      snapshot: engine.snapshot(),
+      snapshot,
       currentNodeId: null,
       safetyNotice: null,
       paused: false,
@@ -175,10 +179,14 @@ export const useCookingStore = create<CookingState>((set, get) => ({
     // Odağı bir sonraki hazır adıma taşı; bittiyse kutla.
     const nextId = snapshot.ready[0] ?? null;
     set({ snapshot, currentNodeId: nextId, safetyNotice: null });
+    // İlerlemeyi kalıcılaştır: bittiyse oturumu temizle, değilse kaydet.
+    const session = useCookSessionStore.getState();
     if (snapshot.complete) {
+      void session.clear();
       await get().speak(t('cooking.finished'));
-    } else if (nextId) {
-      await get().startNode(nextId);
+    } else {
+      void session.save(get().recipe!.id, snapshot.done);
+      if (nextId) await get().startNode(nextId);
     }
   },
 
@@ -190,6 +198,10 @@ export const useCookingStore = create<CookingState>((set, get) => ({
       void get().notify.cancel(timerNotificationId(nodeId));
       const nextId = snapshot.ready[0] ?? get().currentNodeId;
       set({ snapshot, currentNodeId: nextId, safetyNotice: null });
+      // İlerlemeyi kalıcılaştır (atlanan adım da ilerlemeyi değiştirir).
+      const session = useCookSessionStore.getState();
+      if (snapshot.complete) void session.clear();
+      else void session.save(get().recipe!.id, snapshot.done);
     } catch (err) {
       if (err instanceof SafetyError) {
         // Kullanıcıya gösterilecek metni güvenlik kuralından localize et.

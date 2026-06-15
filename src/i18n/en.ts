@@ -23,6 +23,9 @@ export const en: TranslationTree = {
     times: '×',
     noResults: 'No results.',
     noFavorites: 'No favorites yet. Tap the ☆ star on a recipe to add one.',
+    resumeLabel: 'Unfinished',
+    resume: 'Resume',
+    resumeDismiss: 'Dismiss',
     categories: {
       kahvalti: 'Breakfast',
       corba: 'Soup',

@@ -39,9 +39,11 @@ interface Props {
   recipe: Recipe;
   /** Tarif listesine dönüş (opsiyonel). */
   onBack?: () => void;
+  /** Sürdürülen oturumda tamamlanmış adım id'leri (kaldığı yerden devam). */
+  resumeDone?: readonly string[];
 }
 
-export function CookingScreen({ recipe, onBack }: Props) {
+export function CookingScreen({ recipe, onBack, resumeDone }: Props) {
   // Alan-bazlı seçiciler: en karmaşık ekran, yalnızca ilgili alan değişince
   // render olsun (tüm store'a abone olup her tick/konuşmada render etmesin).
   const engine = useCookingStore((s) => s.engine);
@@ -105,10 +107,10 @@ export function CookingScreen({ recipe, onBack }: Props) {
     setTimeout(() => setAdded(false), 2000);
   }
 
-  // Tarifi yükle ve pişirmeyi başlat.
+  // Tarifi yükle (varsa kaldığı yerden) ve pişirmeyi başlat.
   useEffect(() => {
-    loadRecipe(recipe);
-  }, [recipe, loadRecipe]);
+    loadRecipe(recipe, resumeDone);
+  }, [recipe, resumeDone, loadRecipe]);
 
   // Saniyede bir zamanlayıcıları ilerlet (süresi dolan timer'ları tamamlar).
   useEffect(() => {

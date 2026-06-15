@@ -21,6 +21,9 @@ export const tr = {
     times: 'kez',
     noResults: 'Sonuç yok.',
     noFavorites: 'Henüz favorin yok. Bir tarifte ☆ yıldıza dokunarak ekleyebilirsin.',
+    resumeLabel: 'Yarım kalan',
+    resume: 'Devam et',
+    resumeDismiss: 'Kapat',
     categories: {
       kahvalti: 'Kahvaltı',
       corba: 'Çorba',

@@ -21,6 +21,7 @@ import { SubscriptionGate } from './src/components/SubscriptionGate';
 import { ErrorBoundary } from './src/components/ErrorBoundary';
 import { initLocaleFromDevice } from './src/i18n/deviceLocale';
 import { useCookingStore } from './src/state/cookingStore';
+import { useCookSessionStore } from './src/state/cookSessionStore';
 import { useUiStore, useThemeColors } from './src/state/uiStore';
 import { useFavoritesStore } from './src/state/favoritesStore';
 import { useShoppingStore } from './src/state/shoppingStore';
@@ -43,6 +44,7 @@ import { setAnalytics, createMockAnalytics } from './src/services/analytics';
 import { createAsyncStorage } from './src/services/storage';
 import { getRecipe } from './src/recipes';
 import { parseRecipeLink } from './src/recipes/share';
+import { isResumable } from './src/recipes/session';
 import { PROXY_BASE_URL, PROXY_CLIENT_TOKEN } from './src/config';
 import type { Recipe } from './src/engine/types';
 
@@ -100,10 +102,16 @@ export default function App() {
     const onboarding = useOnboardingStore.getState();
     onboarding.setStore(storage);
     void onboarding.load();
+    // Aktif pişirme oturumu: yarım kalan iş varsa "devam et" teklifi için yükle.
+    const cookSession = useCookSessionStore.getState();
+    cookSession.setStore(storage);
+    void cookSession.load();
     return null;
   });
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [cooking, setCooking] = useState(false);
+  // Sürdürülen oturumda tamamlanmış adımlar (varsa CookingScreen'e geçilir).
+  const [resumeDone, setResumeDone] = useState<readonly string[] | undefined>(undefined);
   const [showShopping, setShowShopping] = useState(false);
   const [showPantry, setShowPantry] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
@@ -117,7 +125,18 @@ export default function App() {
     setShowSuggest(false);
     setShowPlan(false);
     setCooking(false); // önce önizleme
+    setResumeDone(undefined); // normal açılış: baştan başla
     setRecipe(r);
+  }
+
+  // "Kaldığın yerden devam et": önizlemeyi atla, doğrudan canlı pişirmeye gir.
+  function resumeRecipe(r: Recipe, doneIds: readonly string[]) {
+    setShowPantry(false);
+    setShowSuggest(false);
+    setShowPlan(false);
+    setResumeDone(doneIds);
+    setRecipe(r);
+    setCooking(true);
   }
 
   // Android donanım geri tuşu: açık alt ekranı kapat (uygulamadan çıkma).
@@ -214,7 +233,9 @@ export default function App() {
 
   function content() {
     if (recipe && cooking)
-      return <CookingScreen recipe={recipe} onBack={() => setCooking(false)} />;
+      return (
+        <CookingScreen recipe={recipe} resumeDone={resumeDone} onBack={() => setCooking(false)} />
+      );
     if (recipe)
       return (
         <RecipePreviewScreen
@@ -248,6 +269,11 @@ export default function App() {
         onOpenSuggest={() => setShowSuggest(true)}
         onOpenPlan={() => setShowPlan(true)}
         onOpenSettings={() => setShowSettings(true)}
+        resumeRecipe={resumable}
+        onResume={() => {
+          if (resumable && session) resumeRecipe(resumable, session.doneIds);
+        }}
+        onDismissResume={() => void clearSession()}
       />
     );
   }
@@ -256,6 +282,10 @@ export default function App() {
   const theme = useUiStore((s) => s.theme);
   const onboardingLoaded = useOnboardingStore((s) => s.loaded);
   const onboardingSeen = useOnboardingStore((s) => s.seen);
+  const session = useCookSessionStore((s) => s.session);
+  const clearSession = useCookSessionStore((s) => s.clear);
+  // Yarım kalan oturum sürdürülebilir mi (adım var + tarif mevcut)?
+  const resumable = isResumable(session) ? (getRecipe(session.recipeId) ?? null) : null;
 
   function gated() {
     // Kalıcı değer okunana dek nötr (onboarding dönen kullanıcıya yanıp sönmesin).

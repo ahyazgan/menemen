@@ -42,6 +42,12 @@ interface Props {
   onOpenSuggest: () => void;
   onOpenPlan: () => void;
   onOpenSettings: () => void;
+  /** Sürdürülebilir oturum varsa, kaldığı yerden devam edilecek tarif. */
+  resumeRecipe?: Recipe | null;
+  /** "Kaldığın yerden devam et" tıklanınca. */
+  onResume?: () => void;
+  /** Sürdürme teklifini kapat (oturumu unut). */
+  onDismissResume?: () => void;
 }
 
 export function RecipeListScreen({
@@ -52,6 +58,9 @@ export function RecipeListScreen({
   onOpenSuggest,
   onOpenPlan,
   onOpenSettings,
+  resumeRecipe,
+  onResume,
+  onDismissResume,
 }: Props) {
   const locale = useUiStore((s) => s.locale);
   const setLocale = useUiStore((s) => s.setLocale);
@@ -125,6 +134,36 @@ export function RecipeListScreen({
         </View>
       </View>
       <Text style={styles.subtitle}>{t('picker.subtitle')}</Text>
+
+      {resumeRecipe && onResume && (
+        <View style={styles.resumeBanner}>
+          <View style={styles.resumeTextBlock}>
+            <Text style={styles.resumeLabel}>{t('picker.resumeLabel')}</Text>
+            <Text style={styles.resumeTitle} numberOfLines={1}>
+              {localize(resumeRecipe.title, locale)}
+            </Text>
+          </View>
+          <Pressable
+            style={styles.resumeBtn}
+            onPress={onResume}
+            accessibilityRole="button"
+            accessibilityLabel={t('picker.resume')}
+          >
+            <Text style={styles.resumeBtnText}>{t('picker.resume')}</Text>
+          </Pressable>
+          {onDismissResume && (
+            <Pressable
+              style={styles.resumeDismiss}
+              hitSlop={10}
+              onPress={onDismissResume}
+              accessibilityRole="button"
+              accessibilityLabel={t('picker.resumeDismiss')}
+            >
+              <Text style={styles.resumeDismissText}>✕</Text>
+            </Pressable>
+          )}
+        </View>
+      )}
 
       <Pressable style={styles.suggest} onPress={onOpenSuggest}>
         <Text style={styles.suggestText}>{t('suggest.button')}</Text>
@@ -307,6 +346,30 @@ const makeStyles = (c: ThemeColors) =>
       marginBottom: 16,
     },
     suggestText: { color: c.onPrimary, fontSize: 16, fontWeight: '800' },
+    resumeBanner: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: c.surface,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: c.primary,
+      paddingVertical: 12,
+      paddingHorizontal: 14,
+      marginBottom: 16,
+      gap: 10,
+    },
+    resumeTextBlock: { flex: 1 },
+    resumeLabel: { fontSize: 12, color: c.label, fontWeight: '700', textTransform: 'uppercase' },
+    resumeTitle: { fontSize: 16, color: c.text, fontWeight: '700', marginTop: 2 },
+    resumeBtn: {
+      backgroundColor: c.primary,
+      borderRadius: 10,
+      paddingVertical: 9,
+      paddingHorizontal: 14,
+    },
+    resumeBtnText: { color: c.onPrimary, fontSize: 14, fontWeight: '800' },
+    resumeDismiss: { paddingHorizontal: 4 },
+    resumeDismissText: { color: c.textSubtle, fontSize: 16, fontWeight: '700' },
     recentBlock: { marginBottom: 14 },
     recentLabel: { fontSize: 13, fontWeight: '700', color: c.textMuted, marginBottom: 8 },
     recentChip: {
