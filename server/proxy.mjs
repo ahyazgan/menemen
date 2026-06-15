@@ -23,6 +23,7 @@ import https from 'node:https';
 import { randomUUID } from 'node:crypto';
 
 import { createRateLimiter } from './rateLimit.mjs';
+import { createLiveKitToken } from './livekitToken.mjs';
 import { verifyHS256, verifyRS256, verifyJwtWithJwks } from './jwt.mjs';
 import { ALLOWLIST, isAllowed } from './allowlist.mjs';
 import { contentLengthExceeds } from './bodyLimit.mjs';
@@ -104,6 +105,32 @@ function required(name) {
 function bearer(req) {
   const match = /^Bearer (.+)$/.exec(req.headers['authorization'] ?? '');
   return match?.[1];
+}
+
+/** İstek gövdesini (küçük JSON) sınır altında oku ve ayrıştır. */
+function readJsonBody(req, maxBytes) {
+  return new Promise((resolve, reject) => {
+    let data = '';
+    let size = 0;
+    req.on('data', (chunk) => {
+      size += chunk.length;
+      if (size > maxBytes) {
+        req.destroy();
+        reject(new Error('payload_too_large'));
+        return;
+      }
+      data += chunk;
+    });
+    req.on('end', () => {
+      if (!data) return resolve({});
+      try {
+        resolve(JSON.parse(data));
+      } catch (err) {
+        reject(err);
+      }
+    });
+    req.on('error', reject);
+  });
 }
 
 /** URL'den JSON çeker (http/https). JWKS fetcher'ı için. */
@@ -233,6 +260,28 @@ async function handleRequest(req, res) {
     return res.end(JSON.stringify({ error: 'Hız sınırı aşıldı.', retryAfterSeconds: retryAfter }));
   }
 
+  // 2.5) Canlı ses token'ı — yerel üretim (upstream'e gitmez). LiveKit API
+  // secret SUNUCUDA kalır; uygulamaya gömülmez. Kısa ömürlü oda token'ı döner.
+  if (url === '/voice-token' || url.startsWith('/voice-token?')) {
+    if (req.method !== 'POST') {
+      finalize(res, reqId, '/voice-token', 405);
+      return send(res, 405, { error: 'Yalnızca POST' }, reqId);
+    }
+    const apiKey = process.env.LIVEKIT_API_KEY ?? '';
+    const apiSecret = process.env.LIVEKIT_API_SECRET ?? '';
+    if (!apiKey || !apiSecret) {
+      finalize(res, reqId, '/voice-token', 501);
+      return send(res, 501, { error: 'LiveKit yapılandırılmadı', reason: 'livekit_unset' }, reqId);
+    }
+    const body = await readJsonBody(req, MAX_BODY).catch(() => ({}));
+    const room = typeof body.room === 'string' && body.room ? body.room : `cook-${randomUUID()}`;
+    const identity = `user-${randomUUID()}`;
+    const metadata = body.context ? JSON.stringify(body.context).slice(0, 1024) : undefined;
+    const token = createLiveKitToken({ apiKey, apiSecret, identity, room, metadata });
+    finalize(res, reqId, '/voice-token', 200);
+    return send(res, 200, { token, url: process.env.LIVEKIT_WS_URL ?? '', room, identity }, reqId);
+  }
+
   // 3) Yönlendirme
   const prefix = Object.keys(ROUTES).find(
     (p) => url === p || url.startsWith(`${p}/`) || url.startsWith(`${p}?`),
@@ -322,6 +371,7 @@ server.listen(PORT, () => {
       `    Anthropic (AI/Vision): ${ok(process.env.ANTHROPIC_API_KEY)}`,
       `    Deepgram (STT):        ${ok(process.env.DEEPGRAM_API_KEY)}`,
       `    ElevenLabs (TTS):      ${ok(process.env.ELEVENLABS_API_KEY)}`,
+      `    LiveKit (canlı ses):   ${ok(process.env.LIVEKIT_API_KEY && process.env.LIVEKIT_API_SECRET)}`,
       `  Auth modu: ${AUTH_MODE} · Hız limiti: ${process.env.RATE_LIMIT_RPM ?? 60}/dk · Allowlist: ${ALLOWLIST_ON ? 'on' : 'off'}`,
     ].join('\n'),
   );

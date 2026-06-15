@@ -86,6 +86,31 @@ useSubscriptionStore.getState().setBilling(createRevenueCatBilling({ iosApiKey, 
 
 4. `config/index.ts` → `REQUIRE_SUBSCRIPTION = true` (üretim).
 
+## 4.5 Canlı (full-duplex) ses — LiveKit (opsiyonel, v1'de KAPALI)
+
+**Neden:** Asıl ürün hendegi: kesintisiz, sözünü kesebildiğin gerçek-zamanlı
+konuşma. CLAUDE.md: v1'de değil → `flags.liveVoice` varsayılan **false**. Kod
+tarafı temel hazır (durum makinesi + servis + UI); açmak için altyapı gerekir.
+
+1. **LiveKit projesi** aç (LiveKit Cloud veya self-host). API key/secret + WS URL al.
+2. **Proxy**: `.env` → `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`, `LIVEKIT_WS_URL`.
+   Proxy `POST /voice-token` ile kısa ömürlü oda token'ı imzalar (secret sunucuda
+   kalır; uygulamaya gömülmez). Açılış özetinde "LiveKit (canlı ses): ✓" görünür.
+3. **App**: `src/config/index.ts` → `LIVEKIT_WS_URL`'i doldur. `PROXY_BASE_URL`
+   dolu + `LIVEKIT_WS_URL` dolu olunca App gerçek LiveKit servisini bağlar (yoksa
+   mock kalır). Native modül: `npx expo install @livekit/react-native` + dev-client.
+4. **Flag**: remote config'ten (`/config`) `{ "liveVoice": true }` döndür ya da
+   `DEFAULT_FLAGS.liveVoice`'i true yap. Önce küçük bir kullanıcı yüzdesinde aç.
+5. **AI ajanı (SENDE — en kritik parça)**: Odaya sunucu-taraflı bir ajan
+   katılmalı (LiveKit Agents): kullanıcı sesi → STT (Deepgram) → LLM (Claude,
+   pişirme bağlamıyla) → TTS (ElevenLabs) → odaya geri ses. Gecikme bütçesi
+   < ~1.5 sn (akışlı STT/LLM/TTS + VAD turn-detection). Gıda güvenliği dili
+   (CLAUDE.md) ajan prompt'una da gömülmeli.
+6. **Maliyet/gizlilik**: Canlı modda mikrofon süreklidir → net gösterge + tek
+   dokunuş sustur/bitir (UI'da var). Maliyet kontrolü: opt-in mod, oturum süre
+   sınırı, yalnızca abonelere açma. Mağaza incelemesinde sürekli dinlemeyi
+   gerekçelendir; mikrofon izin metnini canlı modu kapsayacak şekilde güncelle.
+
 ## 5. Görseller (tasarım)
 
 `assets/` içindeki **yer tutucu** ikon/splash/adaptive/favicon'ı gerçek
