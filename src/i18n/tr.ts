@@ -18,6 +18,7 @@ export const tr = {
     shopping: '🛒 Alışveriş listesi',
     pantry: '🧺 Elimde ne var?',
     recent: 'Son pişirdiklerin',
+    forYou: 'Sana özel',
     times: 'kez',
     noResults: 'Sonuç yok.',
     noFavorites: 'Henüz favorin yok. Bir tarifte ☆ yıldıza dokunarak ekleyebilirsin.',

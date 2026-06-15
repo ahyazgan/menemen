@@ -32,6 +32,7 @@ import { useRecipeSourceStore } from '../state/recipeSourceStore';
 import { useFlag } from '../state/flagsStore';
 import { cookCounts } from '../recipes/history';
 import { computeStreak, toDayNumber } from '../recipes/streak';
+import { forYou } from '../recipes/personalize';
 import { localize } from '../engine';
 import type { ThemeColors } from '../config/theme';
 import type { Recipe, RecipeCategory } from '../engine/types';
@@ -86,6 +87,11 @@ export function RecipeListScreen({
     [historyEntries],
   );
   const counts = useMemo(() => cookCounts(historyEntries), [historyEntries]);
+  // "Sana özel": geçmişe göre cihaz-içi kişiselleştirme (veri cihazda kalır).
+  const forYouPicks = useMemo(
+    () => forYou(sourceList, historyEntries),
+    [sourceList, historyEntries],
+  );
   const streaksEnabled = useFlag('streaks');
   const cookDays = useStreakStore((s) => s.days);
   const streak = useMemo(() => computeStreak(cookDays, toDayNumber(Date.now())), [cookDays]);
@@ -198,6 +204,24 @@ export function RecipeListScreen({
       <Pressable style={styles.suggest} onPress={onOpenSuggest}>
         <Text style={styles.suggestText}>{t('suggest.button')}</Text>
       </Pressable>
+
+      {forYouPicks.length > 0 && (
+        <View style={styles.recentBlock}>
+          <Text style={styles.recentLabel}>{t('picker.forYou')}</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {forYouPicks.map((r) => (
+              <Pressable key={r.id} style={styles.forYouChip} onPress={() => onSelect(r)}>
+                <Text style={styles.forYouText}>{localize(r.title, locale)}</Text>
+                {r.totalMinutes != null && (
+                  <Text style={styles.forYouMeta}>
+                    {r.totalMinutes} {t('picker.minutes')}
+                  </Text>
+                )}
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
+      )}
 
       {recent.length > 0 && (
         <View style={styles.recentBlock}>
@@ -425,6 +449,18 @@ const makeStyles = (c: ThemeColors) =>
       marginRight: 8,
     },
     recentText: { color: c.text, fontSize: 14, fontWeight: '600' },
+    forYouChip: {
+      backgroundColor: c.surface,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: c.accent,
+      paddingHorizontal: 14,
+      paddingVertical: 10,
+      marginRight: 8,
+      maxWidth: 200,
+    },
+    forYouText: { color: c.text, fontSize: 15, fontWeight: '700' },
+    forYouMeta: { color: c.textSubtle, fontSize: 12, marginTop: 2 },
     search: {
       backgroundColor: c.surface,
       borderRadius: 12,

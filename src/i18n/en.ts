@@ -20,6 +20,7 @@ export const en: TranslationTree = {
     shopping: '🛒 Shopping list',
     pantry: '🧺 What can I make?',
     recent: 'Recently cooked',
+    forYou: 'For you',
     times: '×',
     noResults: 'No results.',
     noFavorites: 'No favorites yet. Tap the ☆ star on a recipe to add one.',
