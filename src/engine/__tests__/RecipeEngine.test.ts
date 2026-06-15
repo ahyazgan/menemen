@@ -105,6 +105,28 @@ test('zamanlayıcı motorda tutulur ve süre dolar', () => {
   assert.equal(e.isExpired('simmer'), true);
 });
 
+test('duraklatma kalan süreyi dondurur, devam kaydırır', () => {
+  const clock = fakeClock();
+  const e = new RecipeEngine(sampleRecipe(), clock);
+  e.complete('chop');
+  e.complete('grate');
+  e.start('simmer');
+  clock.advance(20_000);
+  assert.equal(e.remainingSec('simmer'), 40);
+
+  e.pauseTimers();
+  assert.equal(e.isPaused, true);
+  clock.advance(60_000); // duraklatma sırasında geçen zaman sayılmaz
+  assert.equal(e.remainingSec('simmer'), 40);
+  assert.equal(e.isExpired('simmer'), false);
+
+  e.resumeTimers();
+  assert.equal(e.isPaused, false);
+  assert.equal(e.remainingSec('simmer'), 40);
+  clock.advance(40_000);
+  assert.equal(e.remainingSec('simmer'), 0);
+});
+
 test('kurtarma: fail → retry düğümü yeniden hazır yapar', () => {
   const e = new RecipeEngine(sampleRecipe(), fakeClock());
   e.start('chop');

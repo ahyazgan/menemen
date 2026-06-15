@@ -59,6 +59,13 @@ export const tr = {
     removePhoto: 'Fotoğrafı sil',
     step: 'Adım',
     beginnerHint: 'Acele yok, adım adım gidelim. Takılırsan bana sor.',
+    pause: '⏸ Duraklat',
+    resume: '▶ Devam et',
+    paused: 'Duraklatıldı',
+    exitTitle: 'Pişirmeden çık?',
+    exitMessage: 'İlerlemen kaybolacak. Çıkmak istediğine emin misin?',
+    exitConfirm: 'Çık',
+    exitCancel: 'Vazgeç',
   },
   safety: {
     cannotSkip: 'Bu adım güvenlik açısından atlanamaz.',

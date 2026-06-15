@@ -2,8 +2,18 @@
  * CookingScreen — canlı pişirme ekranı (CLAUDE.md → screens: sadece UI, mantık
  * yok). Tüm iş cookingStore action'larından geçer; burada servis çağrısı YOK.
  */
-import { useEffect, useMemo, useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  Alert,
+  BackHandler,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 
 import { useCookingStore } from '../state/cookingStore';
 import { useUiStore, useThemeColors } from '../state/uiStore';
@@ -21,7 +31,7 @@ import { PotCheckButton } from '../components/PotCheckButton';
 import { ingredientLabel } from '../recipes/ingredients';
 import type { ShoppingItem } from '../recipes/shopping';
 import { t } from '../i18n';
-import { localize } from '../engine';
+import { localize, formatDuration } from '../engine';
 import type { ThemeColors } from '../config/theme';
 import type { Recipe } from '../engine/types';
 
@@ -44,6 +54,9 @@ export function CookingScreen({ recipe, onBack }: Props) {
     retryNode,
     startNode,
     tick,
+    paused,
+    pauseCooking,
+    resumeCooking,
   } = useCookingStore();
   const locale = useUiStore((s) => s.locale);
   const colors = useThemeColors();
@@ -99,6 +112,30 @@ export function CookingScreen({ recipe, onBack }: Props) {
     return () => clearInterval(handle);
   }, [tick]);
 
+  // Pişirme ortasında çıkışta onay iste (ilerleme kaybolmasın).
+  const inProgress = !!snapshot && !snapshot.complete && snapshot.done.length > 0;
+  const confirmExit = useCallback(() => {
+    if (!onBack) return;
+    if (inProgress) {
+      Alert.alert(t('cooking.exitTitle'), t('cooking.exitMessage'), [
+        { text: t('cooking.exitCancel'), style: 'cancel' },
+        { text: t('cooking.exitConfirm'), style: 'destructive', onPress: onBack },
+      ]);
+    } else {
+      onBack();
+    }
+  }, [inProgress, onBack]);
+
+  // Android donanım geri tuşu: çıkış onayını tetikle.
+  useEffect(() => {
+    if (!onBack) return;
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      confirmExit();
+      return true;
+    });
+    return () => sub.remove();
+  }, [confirmExit, onBack]);
+
   if (!engine || !snapshot) return null;
 
   const current = currentNodeId ? engine.node(currentNodeId) : null;
@@ -107,7 +144,7 @@ export function CookingScreen({ recipe, onBack }: Props) {
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       {onBack && (
-        <Pressable onPress={onBack} style={styles.back}>
+        <Pressable onPress={confirmExit} style={styles.back}>
           <Text style={styles.backText}>{t('cooking.back')}</Text>
         </Pressable>
       )}
@@ -169,10 +206,29 @@ export function CookingScreen({ recipe, onBack }: Props) {
           <Text style={styles.cardLabel}>{t('cooking.active')}</Text>
           <Text style={styles.cardTitle}>{localize(current.title, locale)}</Text>
           <Text style={styles.instruction}>{localize(current.instruction, locale)}</Text>
-          {remaining != null && (
-            <Text style={styles.timer}>
-              ⏱ {remaining} sn {t('cooking.remaining')}
-            </Text>
+          {remaining != null && current.durationSec != null && (
+            <View style={styles.timerBlock}>
+              <Text style={styles.timer}>
+                ⏱ {formatDuration(remaining)} {t('cooking.remaining')}
+                {paused ? ` · ${t('cooking.paused')}` : ''}
+              </Text>
+              <View style={styles.timerTrack}>
+                <View
+                  style={[
+                    styles.timerFill,
+                    { width: `${Math.round((remaining / current.durationSec) * 100)}%` },
+                  ]}
+                />
+              </View>
+              <Pressable
+                style={styles.pauseBtn}
+                onPress={() => (paused ? resumeCooking() : pauseCooking())}
+              >
+                <Text style={styles.pauseText}>
+                  {paused ? t('cooking.resume') : t('cooking.pause')}
+                </Text>
+              </Pressable>
+            </View>
           )}
           {current.safety && (
             <Text style={styles.safety}>⚠️ {localize(current.safety.message, locale)}</Text>
@@ -378,7 +434,25 @@ const makeStyles = (c: ThemeColors) =>
     cardLabel: { fontSize: 12, color: c.label, fontWeight: '600', textTransform: 'uppercase' },
     cardTitle: { fontSize: 22, fontWeight: '700', color: c.text, marginTop: 4 },
     instruction: { fontSize: 17, color: c.textBody, marginTop: 8, lineHeight: 24 },
-    timer: { fontSize: 16, color: c.primary, marginTop: 12, fontWeight: '600' },
+    timerBlock: { marginTop: 12 },
+    timer: { fontSize: 16, color: c.primary, fontWeight: '600' },
+    timerTrack: {
+      height: 6,
+      borderRadius: 3,
+      backgroundColor: c.fill,
+      marginTop: 8,
+      overflow: 'hidden',
+    },
+    timerFill: { height: 6, borderRadius: 3, backgroundColor: c.primary },
+    pauseBtn: {
+      marginTop: 10,
+      alignSelf: 'flex-start',
+      backgroundColor: c.fill,
+      borderRadius: 10,
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+    },
+    pauseText: { color: c.textMuted, fontSize: 14, fontWeight: '700' },
     safety: { fontSize: 14, color: c.warning, marginTop: 12 },
     row: { flexDirection: 'row', gap: 10, marginTop: 18, flexWrap: 'wrap' },
     btn: {
