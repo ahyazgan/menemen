@@ -135,6 +135,11 @@ export const en: TranslationTree = {
     medium: 'Medium',
     hard: 'Hard',
   },
+  preview: {
+    cook: '🍳 Start cooking',
+    steps: 'Steps',
+    critical: 'Safety step',
+  },
   settings: {
     button: '⚙️',
     title: 'Settings',

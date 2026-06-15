@@ -48,8 +48,10 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   Ayrıca **malzemeye göre arama**, tarife özel **kişisel not** (kalıcı),
   kartlarda **"kaç kez pişirdin"** rozeti ve **"Elimde ne var?"** (elindeki
   malzemeleri seç → yapabileceğin tarifler, eksiği en az olandan; mantık saf+testli).
-  Her graf testlerle doğrulanıyor: geçerli DAG, başlatılabilir,
-  tamamlanabilir ve her **kritik** pişirme adımı iç sıcaklık eşiği taşıyor.
+  Tarife dokununca önce **önizleme** (`RecipePreviewScreen`: özet, süre/porsiyon/
+  zorluk/diyet rozetleri, malzemeler + porsiyon, tüm adımlar) açılır; "Pişirmeye
+  başla" ile canlı pişirmeye geçilir. Her graf testlerle doğrulanıyor: geçerli DAG,
+  başlatılabilir, tamamlanabilir ve her **kritik** pişirme adımı iç sıcaklık eşiği taşıyor.
   Metinler **çok dilli** (`LocalizedText` + saf `localize()`): **50/50 tarif
   baştan sona TR+EN** (başlık, özet, yönerge, sesli metin, kurtarma ve güvenlik
   mesajları dahil); bir test her tarifin her metin alanında tr+en olmasını zorlar.

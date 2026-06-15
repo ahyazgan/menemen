@@ -133,6 +133,11 @@ export const tr = {
     medium: 'Orta',
     hard: 'Zor',
   },
+  preview: {
+    cook: '🍳 Pişirmeye başla',
+    steps: 'Adımlar',
+    critical: 'Güvenlik adımı',
+  },
   settings: {
     button: '⚙️',
     title: 'Ayarlar',
