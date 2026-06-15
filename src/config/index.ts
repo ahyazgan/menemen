@@ -17,3 +17,6 @@ export const REQUIRE_SUBSCRIPTION = false;
 
 /** RevenueCat premium yetki kimliği. */
 export const ENTITLEMENT_ID = 'premium';
+
+/** Uygulama sürümü (Ayarlar ekranında gösterilir; app.json ile eşle). */
+export const APP_VERSION = '0.1.0';
