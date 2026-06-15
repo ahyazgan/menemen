@@ -42,25 +42,25 @@ interface Props {
 }
 
 export function CookingScreen({ recipe, onBack }: Props) {
-  const {
-    engine,
-    snapshot,
-    currentNodeId,
-    lastSpoken,
-    safetyNotice,
-    loadRecipe,
-    completeNode,
-    skipNode,
-    retryNode,
-    startNode,
-    tick,
-    paused,
-    pauseCooking,
-    resumeCooking,
-    speak,
-    handleUtterance,
-    lastVision,
-  } = useCookingStore();
+  // Alan-bazlı seçiciler: en karmaşık ekran, yalnızca ilgili alan değişince
+  // render olsun (tüm store'a abone olup her tick/konuşmada render etmesin).
+  const engine = useCookingStore((s) => s.engine);
+  const snapshot = useCookingStore((s) => s.snapshot);
+  const currentNodeId = useCookingStore((s) => s.currentNodeId);
+  const lastSpoken = useCookingStore((s) => s.lastSpoken);
+  const safetyNotice = useCookingStore((s) => s.safetyNotice);
+  const lastVision = useCookingStore((s) => s.lastVision);
+  const paused = useCookingStore((s) => s.paused);
+  const loadRecipe = useCookingStore((s) => s.loadRecipe);
+  const completeNode = useCookingStore((s) => s.completeNode);
+  const skipNode = useCookingStore((s) => s.skipNode);
+  const retryNode = useCookingStore((s) => s.retryNode);
+  const startNode = useCookingStore((s) => s.startNode);
+  const tick = useCookingStore((s) => s.tick);
+  const pauseCooking = useCookingStore((s) => s.pauseCooking);
+  const resumeCooking = useCookingStore((s) => s.resumeCooking);
+  const speak = useCookingStore((s) => s.speak);
+  const handleUtterance = useCookingStore((s) => s.handleUtterance);
   const [command, setCommand] = useState('');
   const locale = useUiStore((s) => s.locale);
   const colors = useThemeColors();

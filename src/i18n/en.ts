@@ -103,6 +103,7 @@ export const en: TranslationTree = {
     noTimer: 'Nothing on a timer right now.',
     checkPrompt: 'Point the phone at the pot — taking a photo now.',
     recoveryDefault: "Don't worry, we've got this. Lower the heat and tell me what's up.",
+    cannotCheck: "I couldn't check the pot just now — try again in a moment.",
   },
   notify: {
     timerDone: "Time's up!",

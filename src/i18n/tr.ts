@@ -101,6 +101,7 @@ export const tr = {
     noTimer: 'Şu an süreli bir iş yok.',
     checkPrompt: 'Telefonu tencereye doğrult, fotoğrafı çekiyorum.',
     recoveryDefault: 'Merak etme, hallederiz. Ateşi biraz kıs ve bana anlat.',
+    cannotCheck: 'Şu an tencereye bakamadım, birazdan tekrar dene.',
   },
   notify: {
     timerDone: 'Süre doldu!',
