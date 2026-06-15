@@ -34,6 +34,9 @@ import { useOnboardingStore } from './src/state/onboardingStore';
 import { createExpoNotify } from './src/services/notify';
 import { createExpoPhoto } from './src/services/photo';
 import { createRNShare } from './src/services/share';
+import { createExpoSpeechTTS } from './src/services/speech';
+import { VOICE_RATE_VALUE } from './src/state/uiStore';
+import { getLocale } from './src/i18n';
 import { setAnalytics, createMockAnalytics } from './src/services/analytics';
 import { createAsyncStorage } from './src/services/storage';
 import { getRecipe } from './src/recipes';
@@ -46,11 +49,20 @@ export default function App() {
     const detected = initLocaleFromDevice();
     useUiStore.getState().setLocale(detected);
     useCookingStore.getState().setNotify(createExpoNotify());
+    // Cihaz-içi TTS: uygulama anahtar/proxy olmadan da gerçekten konuşur.
+    useCookingStore.getState().setTts(
+      createExpoSpeechTTS({
+        getLocale,
+        isEnabled: () => useUiStore.getState().voiceEnabled,
+        getRate: () => VOICE_RATE_VALUE[useUiStore.getState().voiceRate],
+      }),
+    );
     // Kalıcı depoları (favori + alışveriş + tema) bağla ve yükle.
     const storage = createAsyncStorage();
     const ui = useUiStore.getState();
     ui.setThemeStore(storage);
     void ui.loadTheme();
+    void ui.loadVoice();
     const favorites = useFavoritesStore.getState();
     favorites.setStore(storage);
     void favorites.load();

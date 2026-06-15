@@ -57,6 +57,7 @@ export function CookingScreen({ recipe, onBack }: Props) {
     paused,
     pauseCooking,
     resumeCooking,
+    speak,
   } = useCookingStore();
   const locale = useUiStore((s) => s.locale);
   const colors = useThemeColors();
@@ -257,6 +258,12 @@ export function CookingScreen({ recipe, onBack }: Props) {
               label={t('cooking.retry')}
               subtle
               onPress={() => retryNode(current.id)}
+              styles={styles}
+            />
+            <Button
+              label={t('cooking.repeat')}
+              subtle
+              onPress={() => void speak(localize(current.instruction, locale), true)}
               styles={styles}
             />
           </View>
