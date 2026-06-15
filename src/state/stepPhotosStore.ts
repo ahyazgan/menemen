@@ -26,6 +26,8 @@ interface StepPhotosState {
   load: () => Promise<void>;
   /** Adıma fotoğraf çek (izin + tek kare); başarılıysa kaydeder. */
   capture: (recipeId: string, nodeId: string) => Promise<void>;
+  /** Hazır bir görüntü URI'sini adım fotoğrafı olarak kaydet (ör. tencere kontrolü karesi). */
+  setUri: (recipeId: string, nodeId: string, uri: string) => Promise<void>;
   /** Adımın fotoğrafını sil. */
   remove: (recipeId: string, nodeId: string) => Promise<void>;
 }
@@ -49,6 +51,12 @@ export const useStepPhotosStore = create<StepPhotosState>((set, get) => ({
     if (!granted) return;
     const uri = await photo.capture();
     if (!uri) return;
+    const map = setStepPhoto(get().map, recipeId, nodeId, uri);
+    set({ map });
+    await get().store.setItem(KEY, serializeStepPhotos(map));
+  },
+
+  setUri: async (recipeId, nodeId, uri) => {
     const map = setStepPhoto(get().map, recipeId, nodeId, uri);
     set({ map });
     await get().store.setItem(KEY, serializeStepPhotos(map));

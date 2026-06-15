@@ -18,6 +18,7 @@ import { SettingsScreen } from './src/screens/SettingsScreen';
 import { PrivacyScreen } from './src/screens/PrivacyScreen';
 import { OnboardingScreen } from './src/screens/OnboardingScreen';
 import { SubscriptionGate } from './src/components/SubscriptionGate';
+import { ErrorBoundary } from './src/components/ErrorBoundary';
 import { initLocaleFromDevice } from './src/i18n/deviceLocale';
 import { useCookingStore } from './src/state/cookingStore';
 import { useUiStore, useThemeColors } from './src/state/uiStore';
@@ -222,7 +223,7 @@ export default function App() {
   return (
     <SafeAreaView style={[styles.root, { backgroundColor: colors.bg }]}>
       <StatusBar barStyle={theme === 'dark' ? 'light-content' : 'dark-content'} />
-      {gated()}
+      <ErrorBoundary>{gated()}</ErrorBoundary>
     </SafeAreaView>
   );
 }

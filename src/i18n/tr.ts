@@ -55,6 +55,8 @@ export const tr = {
     retake: 'Tekrar çek',
     potCheckTitle: 'Tencere kontrolü',
     visionConfidence: 'görsel güven',
+    saveAsStepPhoto: '📷 Adım fotoğrafı olarak kaydet',
+    photoSaved: 'Adım fotoğrafına kaydedildi ✓',
     permissionNeeded: 'İzin gerekiyor.',
     micDenied: 'Mikrofon izni kapalı. Sesli yönlendirme için izin ver.',
     cameraDenied: 'Kamera izni kapalı. Tencereye bakmak için izin ver.',
@@ -88,6 +90,11 @@ export const tr = {
   },
   intent: {
     unknown: 'Tam anlayamadım, tekrar söyler misin?',
+  },
+  error: {
+    title: 'Bir şeyler ters gitti',
+    message: 'Beklenmedik bir hata oldu. Tekrar deneyebilirsin.',
+    retry: 'Tekrar dene',
   },
   voice: {
     secondsLeft: 'saniye kaldı',
