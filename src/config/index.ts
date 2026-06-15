@@ -20,3 +20,14 @@ export const ENTITLEMENT_ID = 'premium';
 
 /** Uygulama sürümü (Ayarlar ekranında gösterilir; app.json ile eşle). */
 export const APP_VERSION = '0.1.0';
+
+/**
+ * Backend proxy adresi. DOLU olursa App açılışta gerçek servisleri (Claude
+ * vision/intent + AI öneri + bulut STT) otomatik bağlar; cihaz-içi TTS korunur.
+ * BOŞ ise mock/yerel + cihaz-içi kalır. Üretimde buraya proxy URL'ini yaz
+ * (ör. 'https://api.lezzet.app'); kodu elle değiştirmen gerekmez.
+ */
+export const PROXY_BASE_URL = '';
+
+/** Proxy'ye gönderilecek istemci oturum token'ı (Bearer). Opsiyonel. */
+export const PROXY_CLIENT_TOKEN = '';

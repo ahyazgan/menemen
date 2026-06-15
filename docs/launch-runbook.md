@@ -36,23 +36,23 @@ sunucu tarafında ekler.
 4. JWT doğrulaması + hız sınırı + allowlist zaten açık. Sağlık: `GET /health`,
    ölçüm: `GET /metrics`.
 
-## 2. Uygulamayı proxy'ye bağla
+## 2. Uygulamayı proxy'ye bağla (tek satır)
 
-`REQUIRE_SUBSCRIPTION` gibi, gerçek servisler de tek yerden açılır:
+`src/config/index.ts` içinde **`PROXY_BASE_URL`**'i doldurman yeterli:
 
 ```ts
-import { useCookingStore } from './src/state/cookingStore';
-import { createRealServices, proxyRealConfig } from './src/services/real';
-
-useCookingStore
-  .getState()
-  .setServices(
-    createRealServices(proxyRealConfig('https://api.lezzet.app', { clientToken: userJwt })),
-  );
+export const PROXY_BASE_URL = 'https://api.lezzet.app';
+export const PROXY_CLIENT_TOKEN = ''; // gerekiyorsa Bearer token
 ```
 
+Dolu olunca App açılışta gerçek servisleri **otomatik** bağlar (Claude
+vision/intent + AI öneri + bulut STT) ve olayları proxy'ye gönderir. Kod
+düzenlemen gerekmez; boş bırakırsan mock/yerel kalır.
+
 > Cihaz-içi TTS (expo-speech) ve cihaz-içi STT (@react-native-voice) **anahtarsız**
-> çalışır; yalnızca Vision/AI ve (isteğe bağlı) bulut STT/TTS için proxy gerekir.
+> çalışır ve proxy bağlanınca da **korunur** (ses cihazda kalır). Yalnızca
+> Vision/AI ve (isteğe bağlı) bulut STT için proxy gerekir. İleri kullanım için
+> `setServices(createRealServices(proxyRealConfig(...)))` ile elle de bağlanabilir.
 
 ## 3. Dev-client build + cihaz duman testi
 
