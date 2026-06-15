@@ -12,6 +12,17 @@ ANTHROPIC_API_KEY=... DEEPGRAM_API_KEY=... ELEVENLABS_API_KEY=... node server/pr
 # veya: npm run proxy   (ortam değişkenlerini önceden ihraç ettiysen)
 ```
 
+### Docker (önerilir, sıfır bağımlılık)
+
+```bash
+# repo kökünden:
+docker build -f server/Dockerfile -t lezzet-proxy .
+docker run -p 8787:8787 --env-file .env lezzet-proxy
+```
+
+Açılışta yapılandırma özeti loglanır (hangi sağlayıcı anahtarı var/yok, auth modu,
+hız limiti) — yanlış kurulum hemen görünür. `HEALTHCHECK` `/health`'i yoklar.
+
 ## Yollar
 
 | Yol             | Hedef                       | Eklenen kimlik                   |

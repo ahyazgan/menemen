@@ -1,0 +1,10 @@
+# Proxy imajı yalnızca server/ kullanır; kalan her şeyi build bağlamından çıkar.
+node_modules
+.expo
+.test-build
+.git
+assets
+src
+App.tsx
+*.md
+.github
