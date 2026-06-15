@@ -40,6 +40,16 @@ export const tr = {
     weekly: 'Bu hafta {count}/7 gün',
     best: 'Rekor: {count} gün',
   },
+  nudge: {
+    dinner: {
+      title: 'Akşam yemeği vakti 🍳',
+      body: 'Bugün ne pişirelim? Birlikte 20 dakikada bir şeyler yapalım.',
+    },
+    comeback: {
+      title: 'Mutfak seni özledi 👩‍🍳',
+      body: 'Hadi yeniden başlayalım — canının çektiği bir tarif seçeyim.',
+    },
+  },
   cooking: {
     back: '‹ Tarifler',
     ingredients: 'Malzemeler',
@@ -183,6 +193,8 @@ export const tr = {
     restoreDone: 'Geri yüklendi ✓',
     subscribedBadge: 'Aboneliğin aktif',
     notSubscribed: 'Abonelik yok',
+    nudges: 'Hatırlatmalar',
+    nudgesHint: 'Akşam yemeği vakti ve uzun süre uğramayınca nazik hatırlatma gönderir.',
     voice: 'Sesli yönlendirme',
     voiceHint: 'Adımları cihazının sesiyle yüksek sesle okur (internet gerekmez).',
     voiceOn: 'Açık',

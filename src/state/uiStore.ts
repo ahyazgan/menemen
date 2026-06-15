@@ -12,6 +12,7 @@ import { createMemoryStore, type KeyValueStore } from '../services/storage';
 const THEME_KEY = 'lezzet.theme';
 const VOICE_KEY = 'lezzet.voiceEnabled';
 const RATE_KEY = 'lezzet.voiceRate';
+const NUDGES_KEY = 'lezzet.nudgesEnabled';
 
 export type VoiceRate = 'slow' | 'normal' | 'fast';
 
@@ -31,6 +32,8 @@ interface UiState {
   voiceEnabled: boolean;
   /** Konuşma hızı. */
   voiceRate: VoiceRate;
+  /** Yaşam döngüsü (re-engagement) bildirimleri açık mı? */
+  nudgesEnabled: boolean;
   /** Tema/ses kalıcılığı için depo. */
   store: KeyValueStore;
   /** Dili değiştir: i18n'i günceller ve abone bileşenleri yeniden render eder. */
@@ -49,6 +52,8 @@ interface UiState {
   setVoiceEnabled: (enabled: boolean) => Promise<void>;
   /** Konuşma hızını ayarla ve kalıcılaştır. */
   setVoiceRate: (rate: VoiceRate) => Promise<void>;
+  /** Yaşam döngüsü bildirimlerini aç/kapat ve kalıcılaştır. */
+  setNudgesEnabled: (enabled: boolean) => Promise<void>;
 }
 
 export const useUiStore = create<UiState>((set, get) => ({
@@ -56,6 +61,7 @@ export const useUiStore = create<UiState>((set, get) => ({
   theme: 'light',
   voiceEnabled: true,
   voiceRate: 'normal',
+  nudgesEnabled: true,
   store: createMemoryStore(),
   setLocale: (locale) => {
     applyLocale(locale);
@@ -67,12 +73,14 @@ export const useUiStore = create<UiState>((set, get) => ({
     if (raw === 'light' || raw === 'dark') set({ theme: raw });
   },
   loadVoice: async () => {
-    const [enabled, rate] = await Promise.all([
+    const [enabled, rate, nudges] = await Promise.all([
       get().store.getItem(VOICE_KEY),
       get().store.getItem(RATE_KEY),
+      get().store.getItem(NUDGES_KEY),
     ]);
     if (enabled === 'false') set({ voiceEnabled: false });
     if (rate === 'slow' || rate === 'normal' || rate === 'fast') set({ voiceRate: rate });
+    if (nudges === 'false') set({ nudgesEnabled: false });
   },
   setTheme: async (theme) => {
     set({ theme });
@@ -88,6 +96,10 @@ export const useUiStore = create<UiState>((set, get) => ({
   setVoiceRate: async (rate) => {
     set({ voiceRate: rate });
     await get().store.setItem(RATE_KEY, rate);
+  },
+  setNudgesEnabled: async (enabled) => {
+    set({ nudgesEnabled: enabled });
+    await get().store.setItem(NUDGES_KEY, String(enabled));
   },
 }));
 

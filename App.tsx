@@ -45,6 +45,7 @@ import { VOICE_RATE_VALUE } from './src/state/uiStore';
 import { getLocale } from './src/i18n';
 import { setAnalytics, createMockAnalytics, track } from './src/services/analytics';
 import { useFlagsStore } from './src/state/flagsStore';
+import { rescheduleNudges } from './src/state/nudges';
 import { createAsyncStorage } from './src/services/storage';
 import { getRecipe } from './src/recipes';
 import { parseRecipeLink } from './src/recipes/share';
@@ -203,6 +204,14 @@ export default function App() {
     const sub = Linking.addEventListener('url', (e) => handle(e.url));
     return () => sub.remove();
   }, []);
+
+  // Yaşam döngüsü (re-engagement) bildirimlerini planla. cookDays değişince
+  // (açılışta yükleme + her yeni pişirme günü) yeniden planlanır → "bugün
+  // pişirdi mi" ve "son etkinlik" referansları güncel kalır.
+  const cookDays = useStreakStore((s) => s.days);
+  useEffect(() => {
+    void rescheduleNudges();
+  }, [cookDays]);
 
   // Proxy adresi yapılandırıldıysa gerçek servisleri otomatik bağla (Claude
   // vision/intent + AI öneri + bulut STT). Cihaz-içi TTS korunur (anahtarsız).

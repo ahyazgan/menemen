@@ -42,6 +42,16 @@ export const en: TranslationTree = {
     weekly: '{count}/7 days this week',
     best: 'Best: {count} days',
   },
+  nudge: {
+    dinner: {
+      title: 'Dinner time 🍳',
+      body: 'What shall we cook tonight? Let’s make something in 20 minutes.',
+    },
+    comeback: {
+      title: 'Your kitchen misses you 👩‍🍳',
+      body: 'Let’s get back to it — I’ll pick a recipe you’ll love.',
+    },
+  },
   cooking: {
     back: '‹ Recipes',
     ingredients: 'Ingredients',
@@ -185,6 +195,8 @@ export const en: TranslationTree = {
     restoreDone: 'Restored ✓',
     subscribedBadge: 'Your subscription is active',
     notSubscribed: 'No subscription',
+    nudges: 'Reminders',
+    nudgesHint: 'Sends a gentle nudge at dinner time and if you’ve been away a while.',
     voice: 'Voice guidance',
     voiceHint: 'Reads steps aloud with your device’s voice (no internet needed).',
     voiceOn: 'On',

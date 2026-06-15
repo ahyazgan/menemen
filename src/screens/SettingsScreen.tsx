@@ -8,6 +8,7 @@ import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
 
 import { AVAILABLE_LOCALES, t } from '../i18n';
 import { useTransientFlag } from '../hooks/useTransientFlag';
+import { rescheduleNudges } from '../state/nudges';
 import { useUiStore, useThemeColors, type VoiceRate } from '../state/uiStore';
 import { useSubscriptionStore } from '../state/subscriptionStore';
 import { useCookingStore } from '../state/cookingStore';
@@ -38,6 +39,12 @@ export function SettingsScreen({
   const setTheme = useUiStore((s) => s.setTheme);
   const voiceEnabled = useUiStore((s) => s.voiceEnabled);
   const setVoiceEnabled = useUiStore((s) => s.setVoiceEnabled);
+  const nudgesEnabled = useUiStore((s) => s.nudgesEnabled);
+  const setNudgesEnabled = useUiStore((s) => s.setNudgesEnabled);
+
+  function onSetNudges(enabled: boolean): void {
+    void setNudgesEnabled(enabled).then(() => rescheduleNudges());
+  }
   const voiceRate = useUiStore((s) => s.voiceRate);
   const setVoiceRate = useUiStore((s) => s.setVoiceRate);
   const speak = useCookingStore((s) => s.speak);
@@ -146,6 +153,27 @@ export function SettingsScreen({
           </Pressable>
         </>
       )}
+
+      <Text style={styles.section}>{t('settings.nudges')}</Text>
+      <Text style={styles.hint}>{t('settings.nudgesHint')}</Text>
+      <View style={styles.row}>
+        <Pressable
+          style={[styles.pill, nudgesEnabled && styles.pillOn]}
+          onPress={() => void onSetNudges(true)}
+        >
+          <Text style={[styles.pillText, nudgesEnabled && styles.pillTextOn]}>
+            {t('settings.voiceOn')}
+          </Text>
+        </Pressable>
+        <Pressable
+          style={[styles.pill, !nudgesEnabled && styles.pillOn]}
+          onPress={() => void onSetNudges(false)}
+        >
+          <Text style={[styles.pillText, !nudgesEnabled && styles.pillTextOn]}>
+            {t('settings.voiceOff')}
+          </Text>
+        </Pressable>
+      </View>
 
       <Text style={styles.section}>{t('settings.subscription')}</Text>
       <Text style={styles.status}>
