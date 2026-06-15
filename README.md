@@ -24,6 +24,14 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   seslendirilir. Pişirme ekranında **🔊 Tekrar et**; Ayarlar'da **aç/kapa + hız**
   (yavaş/normal/hızlı, kalıcı) + **Sesi dene**. Bulut TTS (ElevenLabs) gerekince
   `services/real` ile değiştirilir.
+- **Sesli komut anlama (anahtarsız)** — `engine/intent.ts` saf, **testli** kural
+  tabanlı NLU (TR+EN): "sonraki / tekrar et / ne kadar kaldı / yaktım …" gibi
+  komutları Claude/anahtar olmadan niyete çevirir (yerel Intent servisi bunu sarar).
+  Girdi üç yoldan gelebilir: **cihaz-içi canlı tanıma** (`services/stt`,
+  `@react-native-voice/voice`; **dev-client gerektirir**, dinamik import → Expo
+  Go'da güvenle yedeğe düşer), eski **kayıt → STT** yolu (mock/Deepgram cloud) ve
+  pişirme ekranındaki **yazılı komut** kutusu (her yerde çalışır). Bulut STT
+  (Deepgram) gerekince `services/real` ile devreye girer.
 - **`src/state/cookingStore.ts`** — motoru Zustand'a saran durum makinesi;
   servisleri buraya bağlar. Ekranlar yalnızca buradaki action'ları çağırır.
 - **`src/screens/CookingScreen.tsx`** — canlı pişirme ekranı (sadece UI).

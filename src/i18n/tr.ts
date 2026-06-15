@@ -71,6 +71,7 @@ export const tr = {
     exitConfirm: 'Çık',
     exitCancel: 'Vazgeç',
     repeat: '🔊 Tekrar et',
+    commandPlaceholder: 'Komut yaz (örn. sonraki, tekrar et, ne kadar kaldı)…',
   },
   safety: {
     cannotSkip: 'Bu adım güvenlik açısından atlanamaz.',

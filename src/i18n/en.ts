@@ -73,6 +73,7 @@ export const en: TranslationTree = {
     exitConfirm: 'Leave',
     exitCancel: 'Stay',
     repeat: '🔊 Repeat',
+    commandPlaceholder: 'Type a command (e.g. next, repeat, how long)…',
   },
   safety: {
     cannotSkip: 'This step cannot be skipped for safety reasons.',

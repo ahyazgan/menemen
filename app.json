@@ -19,6 +19,7 @@
       "infoPlist": {
         "NSMicrophoneUsageDescription": "Yemek yaparken sizi sesle yönlendirmek için mikrofona ihtiyacımız var.",
         "NSCameraUsageDescription": "Yalnızca siz isteyince tencerenizi kontrol etmek için kamerayı tek kare olarak kullanırız.",
+        "NSSpeechRecognitionUsageDescription": "Sesli komutlarınızı (örn. \"sonraki\", \"tekrar et\") anlamak için konuşma tanımayı kullanırız.",
         "UIBackgroundModes": ["audio"]
       }
     },

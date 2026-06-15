@@ -58,7 +58,9 @@ export function CookingScreen({ recipe, onBack }: Props) {
     pauseCooking,
     resumeCooking,
     speak,
+    handleUtterance,
   } = useCookingStore();
+  const [command, setCommand] = useState('');
   const locale = useUiStore((s) => s.locale);
   const colors = useThemeColors();
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -331,6 +333,22 @@ export function CookingScreen({ recipe, onBack }: Props) {
       <VoiceButton />
       <PotCheckButton />
 
+      {/* Yazılı komut yedeği (mikrofon yokken/Expo Go'da bile çalışır) */}
+      <TextInput
+        style={styles.commandInput}
+        placeholder={t('cooking.commandPlaceholder')}
+        placeholderTextColor={colors.placeholder}
+        value={command}
+        onChangeText={setCommand}
+        autoCorrect={false}
+        returnKeyType="send"
+        onSubmitEditing={() => {
+          const text = command.trim();
+          setCommand('');
+          if (text) void handleUtterance(text);
+        }}
+      />
+
       {lastSpoken && <Text style={styles.spoken}>“{lastSpoken}”</Text>}
 
       {/* Kişisel notlar (kalıcı) */}
@@ -518,6 +536,17 @@ const makeStyles = (c: ThemeColors) =>
       borderColor: c.warningBorder,
     },
     safetyBannerText: { color: c.warning, fontSize: 14, fontWeight: '600' },
+    commandInput: {
+      marginTop: 12,
+      backgroundColor: c.surface,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: c.border,
+      paddingHorizontal: 14,
+      paddingVertical: 10,
+      fontSize: 15,
+      color: c.text,
+    },
     spoken: { marginTop: 14, fontStyle: 'italic', color: c.textMuted, textAlign: 'center' },
     notesBlock: { marginTop: 24 },
     notesLabel: { fontSize: 13, fontWeight: '700', color: c.textMuted, marginBottom: 8 },
