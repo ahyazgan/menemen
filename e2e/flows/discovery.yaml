@@ -1,0 +1,7 @@
+appId: com.lezzet.app
+---
+# Keşif akışı: onboarding'i geç, ara, sonucu gör.
+- runFlow: onboarding.yaml
+- tapOn: 'Tarif ara…'
+- inputText: 'menemen'
+- assertVisible: 'Menemen'

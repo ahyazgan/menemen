@@ -1,0 +1,10 @@
+appId: com.lezzet.app
+---
+# Onboarding akışı: temiz durumdan başla, 3 adımı geç, ana ekrana ulaş.
+- launchApp:
+    clearState: true
+- assertVisible: 'Mutfakta yanında bir usta'
+- tapOn: 'Devam'
+- tapOn: 'Devam'
+- tapOn: 'Hadi başlayalım'
+- assertVisible: 'Ne pişsem?'

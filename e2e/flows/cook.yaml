@@ -1,0 +1,10 @@
+appId: com.lezzet.app
+---
+# Pişirme akışı (smoke): onboarding → tarif seç → önizleme → canlı pişirme ekranı.
+# Adım-tamamlama doğrulamaları tarif grafına bağlıdır; testID eklenince genişletilebilir
+# (bkz. e2e/README.md).
+- runFlow: onboarding.yaml
+- tapOn: 'Menemen'
+- assertVisible: '🍳 Pişirmeye başla'
+- tapOn: '🍳 Pişirmeye başla'
+- assertVisible: 'Malzemeler'
