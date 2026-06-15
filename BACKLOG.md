@@ -5,10 +5,7 @@
 
 ## Now (yukarıdan aşağı, durmadan)
 
-- [ ] Ses/kamera butonları temaya uyumlu + izin reddi yönlendirmesi
-  Done when: VoiceButton ve PotCheckButton `useThemeColors` ile (karanlık modda
-  doğru), izin reddedilince net mesaj + "Ayarları aç" (Linking.openSettings)
-  gösterir; tsc/eslint/prettier/test yeşil.
+- [x] Ses/kamera butonları temaya uyumlu + izin reddi yönlendirmesi (fbce57b)
 - [ ] Erişilebilirlik etiketleri
   Done when: ana etkileşimli öğeler (ses/kamera, pişirme tamam/atla/tekrar/
   duraklat, önizleme pişir+favori, ayarlar/tema) accessibilityRole+Label taşır;

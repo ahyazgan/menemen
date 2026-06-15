@@ -61,7 +61,13 @@ export function RecipePreviewScreen({ recipe, onCook, onBack }: Props) {
 
       <View style={styles.header}>
         <Text style={styles.title}>{localize(recipe.title, locale)}</Text>
-        <Pressable hitSlop={10} onPress={() => void toggleFavorite(recipe.id)} style={styles.star}>
+        <Pressable
+          hitSlop={10}
+          onPress={() => void toggleFavorite(recipe.id)}
+          style={styles.star}
+          accessibilityRole="button"
+          accessibilityLabel={t('picker.favorites')}
+        >
           <Text style={[styles.starText, fav && styles.starActive]}>{fav ? '★' : '☆'}</Text>
         </Pressable>
       </View>
@@ -76,7 +82,12 @@ export function RecipePreviewScreen({ recipe, onCook, onBack }: Props) {
         {dietLabel && <Badge text={dietLabel} styles={styles} />}
       </View>
 
-      <Pressable style={styles.cook} onPress={onCook}>
+      <Pressable
+        style={styles.cook}
+        onPress={onCook}
+        accessibilityRole="button"
+        accessibilityLabel={t('preview.cook')}
+      >
         <Text style={styles.cookText}>{t('preview.cook')}</Text>
       </Pressable>
 

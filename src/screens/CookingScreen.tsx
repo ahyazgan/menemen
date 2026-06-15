@@ -197,7 +197,12 @@ export function CookingScreen({ recipe, onBack }: Props) {
       {snapshot.complete ? (
         <View>
           <Text style={styles.finished}>{t('cooking.finished')}</Text>
-          <Pressable style={styles.share} onPress={onShare}>
+          <Pressable
+            style={styles.share}
+            onPress={onShare}
+            accessibilityRole="button"
+            accessibilityLabel={t('cooking.share')}
+          >
             <Text style={styles.shareText}>{t('cooking.share')}</Text>
           </Pressable>
         </View>
@@ -223,6 +228,8 @@ export function CookingScreen({ recipe, onBack }: Props) {
               <Pressable
                 style={styles.pauseBtn}
                 onPress={() => (paused ? resumeCooking() : pauseCooking())}
+                accessibilityRole="button"
+                accessibilityLabel={paused ? t('cooking.resume') : t('cooking.pause')}
               >
                 <Text style={styles.pauseText}>
                   {paused ? t('cooking.resume') : t('cooking.pause')}
@@ -350,7 +357,12 @@ function Button({
   styles: ReturnType<typeof makeStyles>;
 }) {
   return (
-    <Pressable style={[styles.btn, subtle && styles.btnSubtle]} onPress={onPress}>
+    <Pressable
+      style={[styles.btn, subtle && styles.btnSubtle]}
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+    >
       <Text style={[styles.btnText, subtle && styles.btnTextSubtle]}>{label}</Text>
     </Pressable>
   );
