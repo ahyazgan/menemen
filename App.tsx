@@ -26,6 +26,7 @@ import { useUiStore, useThemeColors } from './src/state/uiStore';
 import { useFavoritesStore } from './src/state/favoritesStore';
 import { useShoppingStore } from './src/state/shoppingStore';
 import { useHistoryStore } from './src/state/historyStore';
+import { useStreakStore } from './src/state/streakStore';
 import { useNotesStore } from './src/state/notesStore';
 import { usePantryStore } from './src/state/pantryStore';
 import { useStepPhotosStore } from './src/state/stepPhotosStore';
@@ -81,6 +82,9 @@ export default function App() {
     const history = useHistoryStore.getState();
     history.setStore(storage);
     void history.load();
+    const streak = useStreakStore.getState();
+    streak.setStore(storage);
+    void streak.load();
     const notes = useNotesStore.getState();
     notes.setStore(storage);
     void notes.load();

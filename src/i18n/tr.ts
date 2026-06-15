@@ -32,6 +32,14 @@ export const tr = {
       pilav: 'Pilav',
     },
   },
+  streak: {
+    title: '🔥 {count} günlük seri',
+    today: 'Bugün de pişirdin, seri sürüyor! 👏',
+    keepGoing: 'Bugün pişir, serini sürdür.',
+    start: 'Bugün pişir, seriye başla! 🔥',
+    weekly: 'Bu hafta {count}/7 gün',
+    best: 'Rekor: {count} gün',
+  },
   cooking: {
     back: '‹ Tarifler',
     ingredients: 'Malzemeler',

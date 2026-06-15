@@ -19,6 +19,7 @@ import { useCookingStore } from '../state/cookingStore';
 import { useUiStore, useThemeColors } from '../state/uiStore';
 import { useShoppingStore } from '../state/shoppingStore';
 import { useHistoryStore } from '../state/historyStore';
+import { useStreakStore } from '../state/streakStore';
 import { useNotesStore } from '../state/notesStore';
 import { useStepPhotosStore } from '../state/stepPhotosStore';
 import { useProfileStore } from '../state/profileStore';
@@ -70,6 +71,7 @@ export function CookingScreen({ recipe, onBack, resumeDone }: Props) {
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const addToShopping = useShoppingStore((s) => s.add);
   const recordHistory = useHistoryStore((s) => s.record);
+  const recordStreak = useStreakStore((s) => s.record);
   const note = useNotesStore((s) => s.notes[recipe.id] ?? '');
   const setNote = useNotesStore((s) => s.setNote);
   const photoMap = useStepPhotosStore((s) => s.map);
@@ -91,10 +93,13 @@ export function CookingScreen({ recipe, onBack, resumeDone }: Props) {
   const [added, flashAdded] = useTransientFlag();
   const complete = snapshot?.complete ?? false;
 
-  // Tarif tamamlanınca pişirme geçmişine kaydet (bir kez).
+  // Tarif tamamlanınca pişirme geçmişine ve günlük seriye kaydet (bir kez).
   useEffect(() => {
-    if (complete) void recordHistory(recipe.id);
-  }, [complete, recipe.id, recordHistory]);
+    if (complete) {
+      void recordHistory(recipe.id);
+      void recordStreak();
+    }
+  }, [complete, recipe.id, recordHistory, recordStreak]);
 
   function onAddToShopping(): void {
     if (!recipe.ingredients) return;

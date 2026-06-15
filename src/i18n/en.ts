@@ -34,6 +34,14 @@ export const en: TranslationTree = {
       pilav: 'Pilaf',
     },
   },
+  streak: {
+    title: '🔥 {count}-day streak',
+    today: 'You cooked today — streak alive! 👏',
+    keepGoing: 'Cook today to keep your streak.',
+    start: 'Cook today to start a streak! 🔥',
+    weekly: '{count}/7 days this week',
+    best: 'Best: {count} days',
+  },
   cooking: {
     back: '‹ Recipes',
     ingredients: 'Ingredients',

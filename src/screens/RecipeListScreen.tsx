@@ -26,8 +26,11 @@ import { AVAILABLE_LOCALES, t } from '../i18n';
 import { useUiStore, useThemeColors } from '../state/uiStore';
 import { useFavoritesStore } from '../state/favoritesStore';
 import { useHistoryStore } from '../state/historyStore';
+import { useStreakStore } from '../state/streakStore';
 import { useProfileStore } from '../state/profileStore';
+import { useFlag } from '../state/flagsStore';
 import { cookCounts } from '../recipes/history';
+import { computeStreak, toDayNumber } from '../recipes/streak';
 import { localize } from '../engine';
 import type { ThemeColors } from '../config/theme';
 import type { Recipe, RecipeCategory } from '../engine/types';
@@ -81,6 +84,9 @@ export function RecipeListScreen({
     [historyEntries],
   );
   const counts = useMemo(() => cookCounts(historyEntries), [historyEntries]);
+  const streaksEnabled = useFlag('streaks');
+  const cookDays = useStreakStore((s) => s.days);
+  const streak = useMemo(() => computeStreak(cookDays, toDayNumber(Date.now())), [cookDays]);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<RecipeCategory | null>(null);
   const [onlyFavorites, setOnlyFavorites] = useState(false);
@@ -134,6 +140,28 @@ export function RecipeListScreen({
         </View>
       </View>
       <Text style={styles.subtitle}>{t('picker.subtitle')}</Text>
+
+      {streaksEnabled && (
+        <View style={styles.streakCard}>
+          <Text style={styles.streakTitle}>
+            {streak.current > 0 ? t('streak.title', { count: streak.current }) : t('streak.start')}
+          </Text>
+          <Text style={styles.streakSub}>
+            {streak.cookedToday
+              ? t('streak.today')
+              : streak.current > 0
+                ? t('streak.keepGoing')
+                : t('streak.weekly', { count: streak.weeklyCount })}
+          </Text>
+          <View style={styles.streakDots}>
+            {[6, 5, 4, 3, 2, 1, 0].map((back) => {
+              const day = toDayNumber(Date.now()) - back;
+              const on = cookDays.includes(day);
+              return <View key={back} style={[styles.streakDot, on && styles.streakDotOn]} />;
+            })}
+          </View>
+        </View>
+      )}
 
       {resumeRecipe && onResume && (
         <View style={styles.resumeBanner}>
@@ -346,6 +374,19 @@ const makeStyles = (c: ThemeColors) =>
       marginBottom: 16,
     },
     suggestText: { color: c.onPrimary, fontSize: 16, fontWeight: '800' },
+    streakCard: {
+      backgroundColor: c.surface,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: c.border,
+      padding: 16,
+      marginBottom: 16,
+    },
+    streakTitle: { fontSize: 18, fontWeight: '800', color: c.text },
+    streakSub: { fontSize: 14, color: c.textMuted, marginTop: 4 },
+    streakDots: { flexDirection: 'row', gap: 8, marginTop: 12 },
+    streakDot: { flex: 1, height: 8, borderRadius: 4, backgroundColor: c.fill },
+    streakDotOn: { backgroundColor: c.accent },
     resumeBanner: {
       flexDirection: 'row',
       alignItems: 'center',
