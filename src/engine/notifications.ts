@@ -36,11 +36,14 @@ export function buildTimerNotification(
   locale: string,
   body: string,
   remainingSec?: number,
+  recipeTitle?: string,
 ): TimerNotification {
   const seconds = remainingSec ?? node.durationSec ?? 0;
+  const step = localize(node.title, locale);
   return {
     id: timerNotificationId(node.id),
-    title: localize(node.title, locale),
+    // Kilit ekranında net olsun: "Tarif · Adım".
+    title: recipeTitle ? `${recipeTitle} · ${step}` : step,
     body,
     inSeconds: Math.max(1, Math.ceil(seconds)),
   };

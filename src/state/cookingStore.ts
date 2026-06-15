@@ -15,6 +15,7 @@ import {
   localize,
   safeCookingAdvice,
   timerNotificationId,
+  withTimeout,
   type EngineSnapshot,
   type Recipe,
 } from '../engine';
@@ -25,6 +26,15 @@ import type { NotificationService } from '../services/notify';
 import { track } from '../services/analytics';
 import { INTENT_CONFIDENCE_THRESHOLD } from '../config';
 import { getLocale, t } from '../i18n';
+
+/**
+ * Ağ üzerinden gelen servis çağrıları için zaman aşımları (ms). Gerçek
+ * sağlayıcılar (proxy) takılırsa uygulama donmasın; süre dolunca güvenle düşülür.
+ */
+const STT_TIMEOUT_MS = 15_000;
+const INTENT_TIMEOUT_MS = 12_000;
+const VISION_TIMEOUT_MS = 20_000;
+const TTS_TIMEOUT_MS = 15_000;
 
 interface CookingState {
   // --- durum ---
@@ -142,11 +152,13 @@ export const useCookingStore = create<CookingState>((set, get) => ({
       const body = node.voice_on_complete
         ? localize(node.voice_on_complete, locale)
         : t('notify.timerDone');
+      const recipeTitle = get().recipe ? localize(get().recipe!.title, locale) : undefined;
       const notice = buildTimerNotification(
         node,
         locale,
         body,
         engine.remainingSec(nodeId) ?? undefined,
+        recipeTitle,
       );
       void get().notify.schedule(notice);
     }
@@ -208,8 +220,11 @@ export const useCookingStore = create<CookingState>((set, get) => ({
   listen: async (audioUri) => {
     set({ listening: true });
     try {
-      const text = await get().services.stt.transcribe(audioUri);
+      const text = await withTimeout(get().services.stt.transcribe(audioUri), STT_TIMEOUT_MS);
       await get().handleUtterance(text);
+    } catch {
+      // STT takıldı/başarısız → kullanıcıyı dondurma, nazikçe bildir.
+      await get().speak(t('intent.unknown'));
     } finally {
       set({ listening: false });
     }
@@ -219,10 +234,19 @@ export const useCookingStore = create<CookingState>((set, get) => ({
     const { engine, currentNodeId, services } = get();
     if (!engine) return;
     const node = currentNodeId ? engine.node(currentNodeId) : undefined;
-    const intent = await services.intent.parse(text, {
-      currentNodeId: currentNodeId ?? undefined,
-      recoveryKeys: node?.recovery_rules ? Object.keys(node.recovery_rules) : [],
-    });
+    let intent;
+    try {
+      intent = await withTimeout(
+        services.intent.parse(text, {
+          currentNodeId: currentNodeId ?? undefined,
+          recoveryKeys: node?.recovery_rules ? Object.keys(node.recovery_rules) : [],
+        }),
+        INTENT_TIMEOUT_MS,
+      );
+    } catch {
+      await get().speak(t('intent.unknown'));
+      return;
+    }
 
     const locale = getLocale();
 
@@ -277,7 +301,14 @@ export const useCookingStore = create<CookingState>((set, get) => ({
     const { engine, currentNodeId, services } = get();
     const node = currentNodeId && engine ? engine.node(currentNodeId) : undefined;
     const prompt = node ? localize(node.instruction, getLocale()) : '';
-    const result = await services.vision.analyze(imageUri, prompt);
+    let result;
+    try {
+      result = await withTimeout(services.vision.analyze(imageUri, prompt), VISION_TIMEOUT_MS);
+    } catch {
+      // Vision takıldı/başarısız → spinner'da kilitlenme; nazikçe bildir.
+      await get().speak(t('voice.cannotCheck'));
+      return;
+    }
     set({ lastVision: result });
     // GIDA GÜVENLİĞİ: kritik adımda asla onay verme — temkinli öneriye düş.
     if (node?.safety?.critical) {
@@ -305,6 +336,11 @@ export const useCookingStore = create<CookingState>((set, get) => ({
 
   speak: async (text, interrupt = false) => {
     set({ lastSpoken: text });
-    await get().services.tts.speak(text, { interrupt });
+    // TTS takılırsa akış (adım geçişleri vb.) bloklanmasın → süre dolunca yut.
+    try {
+      await withTimeout(get().services.tts.speak(text, { interrupt }), TTS_TIMEOUT_MS);
+    } catch {
+      // sessiz: konuşma başarısız olsa da pişirme akışı devam etmeli
+    }
   },
 }));

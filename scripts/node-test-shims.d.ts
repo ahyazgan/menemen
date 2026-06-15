@@ -19,3 +19,7 @@ declare module 'node:assert/strict' {
   const assert: Assert;
   export default assert;
 }
+
+// Zamanlayıcı globalleri (engine/async.ts için; @types/node olmadan derlensin).
+declare function setTimeout(handler: () => void, ms: number): number;
+declare function clearTimeout(id: number): void;

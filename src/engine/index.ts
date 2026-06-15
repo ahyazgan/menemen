@@ -6,3 +6,4 @@ export * from './localize';
 export * from './notifications';
 export * from './format';
 export * from './intent';
+export * from './async';
