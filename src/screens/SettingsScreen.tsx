@@ -7,11 +7,20 @@ import { useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AVAILABLE_LOCALES, t } from '../i18n';
-import { useUiStore, useThemeColors } from '../state/uiStore';
+import { useUiStore, useThemeColors, type VoiceRate } from '../state/uiStore';
 import { useSubscriptionStore } from '../state/subscriptionStore';
+import { useCookingStore } from '../state/cookingStore';
 import { resetUserData } from '../state/reset';
 import { APP_VERSION } from '../config';
 import type { ThemeColors } from '../config/theme';
+
+const RATES: readonly VoiceRate[] = ['slow', 'normal', 'fast'];
+
+function rateLabel(rate: VoiceRate): string {
+  if (rate === 'slow') return t('settings.rateSlow');
+  if (rate === 'fast') return t('settings.rateFast');
+  return t('settings.rateNormal');
+}
 
 export function SettingsScreen({
   onBack,
@@ -26,6 +35,11 @@ export function SettingsScreen({
   const setLocale = useUiStore((s) => s.setLocale);
   const theme = useUiStore((s) => s.theme);
   const setTheme = useUiStore((s) => s.setTheme);
+  const voiceEnabled = useUiStore((s) => s.voiceEnabled);
+  const setVoiceEnabled = useUiStore((s) => s.setVoiceEnabled);
+  const voiceRate = useUiStore((s) => s.voiceRate);
+  const setVoiceRate = useUiStore((s) => s.setVoiceRate);
+  const speak = useCookingStore((s) => s.speak);
   const subscribed = useSubscriptionStore((s) => s.subscribed);
   const restore = useSubscriptionStore((s) => s.restore);
   const [restored, setRestored] = useState(false);
@@ -95,6 +109,50 @@ export function SettingsScreen({
         </Pressable>
       </View>
 
+      <Text style={styles.section}>{t('settings.voice')}</Text>
+      <Text style={styles.hint}>{t('settings.voiceHint')}</Text>
+      <View style={styles.row}>
+        <Pressable
+          style={[styles.pill, voiceEnabled && styles.pillOn]}
+          onPress={() => void setVoiceEnabled(true)}
+        >
+          <Text style={[styles.pillText, voiceEnabled && styles.pillTextOn]}>
+            {t('settings.voiceOn')}
+          </Text>
+        </Pressable>
+        <Pressable
+          style={[styles.pill, !voiceEnabled && styles.pillOn]}
+          onPress={() => void setVoiceEnabled(false)}
+        >
+          <Text style={[styles.pillText, !voiceEnabled && styles.pillTextOn]}>
+            {t('settings.voiceOff')}
+          </Text>
+        </Pressable>
+      </View>
+      {voiceEnabled && (
+        <>
+          <View style={[styles.row, styles.rowGap]}>
+            {RATES.map((r) => (
+              <Pressable
+                key={r}
+                style={[styles.pill, voiceRate === r && styles.pillOn]}
+                onPress={() => void setVoiceRate(r)}
+              >
+                <Text style={[styles.pillText, voiceRate === r && styles.pillTextOn]}>
+                  {rateLabel(r)}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+          <Pressable
+            style={styles.action}
+            onPress={() => void speak(t('settings.voiceSample'), true)}
+          >
+            <Text style={styles.actionText}>{t('settings.testVoice')}</Text>
+          </Pressable>
+        </>
+      )}
+
       <Text style={styles.section}>{t('settings.subscription')}</Text>
       <Text style={styles.status}>
         {subscribed ? t('settings.subscribedBadge') : t('settings.notSubscribed')}
@@ -140,6 +198,8 @@ const makeStyles = (c: ThemeColors) =>
       textTransform: 'uppercase',
     },
     row: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+    rowGap: { marginTop: 10 },
+    hint: { fontSize: 13, color: c.textSubtle, marginBottom: 10, lineHeight: 19 },
     pill: {
       backgroundColor: c.surface,
       borderRadius: 20,

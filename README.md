@@ -17,6 +17,13 @@ Tarif uygulaması değil — **canlı deneyim**. Ayrıntılı ürün/teknik kura
   Deepgram (STT), ElevenLabs (TTS), Claude Vision + Claude Intent (tool use).
   Vision gıda güvenliği kuralına uyar (kesin hüküm yok). Store, `setServices` ile
   mock'tan gerçeğe geçer.
+- **Cihaz-içi sesli yönlendirme (anahtarsız)** — `services/speech/expoSpeechTTS.ts`
+  telefonun yerleşik TTS'iyle konuşur (`expo-speech`; **anahtar/proxy gerekmez**,
+  Expo Go'da çalışır). Uygulama açılışta TTS'i buna bağlar (`cookingStore.setTts`),
+  böylece adım girişleri/tamamlanmaları, kurtarma ve "yemek hazır" otomatik
+  seslendirilir. Pişirme ekranında **🔊 Tekrar et**; Ayarlar'da **aç/kapa + hız**
+  (yavaş/normal/hızlı, kalıcı) + **Sesi dene**. Bulut TTS (ElevenLabs) gerekince
+  `services/real` ile değiştirilir.
 - **`src/state/cookingStore.ts`** — motoru Zustand'a saran durum makinesi;
   servisleri buraya bağlar. Ekranlar yalnızca buradaki action'ları çağırır.
 - **`src/screens/CookingScreen.tsx`** — canlı pişirme ekranı (sadece UI).

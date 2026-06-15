@@ -46,6 +46,8 @@ interface CookingState {
   // --- action'lar ---
   /** Servisleri değiştir (mock → gerçek geçişi; bkz. services/real). */
   setServices: (services: Services) => void;
+  /** Yalnızca TTS'i değiştir (örn. cihaz-içi expo-speech; diğerleri korunur). */
+  setTts: (tts: Services['tts']) => void;
   /** Bildirim servisini değiştir (mock → expo; bkz. services/notify). */
   setNotify: (notify: NotificationService) => void;
   loadRecipe: (recipe: Recipe) => void;
@@ -85,6 +87,7 @@ export const useCookingStore = create<CookingState>((set, get) => ({
   paused: false,
 
   setServices: (services) => set({ services }),
+  setTts: (tts) => set({ services: { ...get().services, tts } }),
   setNotify: (notify) => set({ notify }),
 
   loadRecipe: (recipe) => {
