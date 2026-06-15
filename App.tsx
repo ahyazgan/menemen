@@ -13,6 +13,7 @@ import { PantryScreen } from './src/screens/PantryScreen';
 import { ProfileScreen } from './src/screens/ProfileScreen';
 import { SuggestScreen } from './src/screens/SuggestScreen';
 import { WeeklyPlanScreen } from './src/screens/WeeklyPlanScreen';
+import { RecipePreviewScreen } from './src/screens/RecipePreviewScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { PrivacyScreen } from './src/screens/PrivacyScreen';
 import { OnboardingScreen } from './src/screens/OnboardingScreen';
@@ -84,6 +85,7 @@ export default function App() {
     return null;
   });
   const [recipe, setRecipe] = useState<Recipe | null>(null);
+  const [cooking, setCooking] = useState(false);
   const [showShopping, setShowShopping] = useState(false);
   const [showPantry, setShowPantry] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
@@ -96,13 +98,18 @@ export default function App() {
     setShowPantry(false);
     setShowSuggest(false);
     setShowPlan(false);
+    setCooking(false); // önce önizleme
     setRecipe(r);
   }
 
   // Android donanım geri tuşu: açık alt ekranı kapat (uygulamadan çıkma).
-  // Pişirme ekranı kendi geri tuşunu yönetir; orada bu devre dışı.
+  // Canlı pişirme ekranı kendi geri tuşunu/onayını yönetir.
   const handleHardwareBack = useCallback(() => {
-    if (recipe) return false; // CookingScreen kendi onayını yönetir
+    if (recipe && cooking) return false; // CookingScreen kendi onayını yönetir
+    if (recipe) {
+      setRecipe(null); // önizlemeden listeye dön
+      return true;
+    }
     const closers: [boolean, () => void][] = [
       [showPrivacy, () => setShowPrivacy(false)],
       [showSettings, () => setShowSettings(false)],
@@ -120,6 +127,7 @@ export default function App() {
     return false;
   }, [
     recipe,
+    cooking,
     showPrivacy,
     showSettings,
     showSuggest,
@@ -148,7 +156,16 @@ export default function App() {
   }, []);
 
   function content() {
-    if (recipe) return <CookingScreen recipe={recipe} onBack={() => setRecipe(null)} />;
+    if (recipe && cooking)
+      return <CookingScreen recipe={recipe} onBack={() => setCooking(false)} />;
+    if (recipe)
+      return (
+        <RecipePreviewScreen
+          recipe={recipe}
+          onCook={() => setCooking(true)}
+          onBack={() => setRecipe(null)}
+        />
+      );
     if (showShopping) return <ShoppingListScreen onBack={() => setShowShopping(false)} />;
     if (showPantry)
       return <PantryScreen onSelect={openRecipe} onBack={() => setShowPantry(false)} />;
@@ -167,7 +184,7 @@ export default function App() {
       );
     return (
       <RecipeListScreen
-        onSelect={setRecipe}
+        onSelect={openRecipe}
         onOpenShopping={() => setShowShopping(true)}
         onOpenPantry={() => setShowPantry(true)}
         onOpenProfile={() => setShowProfile(true)}
